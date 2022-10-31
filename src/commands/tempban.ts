@@ -8,18 +8,18 @@ import { cannotPunish, ModerationAction } from "../lib/errors/common/permissions
 
 module.exports = {
 	data: new SlashCommandBuilder()
-		.setName("kick")
-		.setDescription("Kick a user")
+		.setName("tempban")
+		.setDescription("tempban a user")
 		.addUserOption((option) =>
 			option
 				.setName("target")
-				.setDescription("The member to kick")
+				.setDescription("The member to tempban")
 				.setRequired(true)
 		)
         .addStringOption((option) =>
 			option
 				.setName("reason")
-				.setDescription("Reason for the kick")
+				.setDescription("Reason for the tempban")
 				.setRequired(false)
 		)
 		.setDefaultMemberPermissions(PermissionFlagsBits.KickMembers)
