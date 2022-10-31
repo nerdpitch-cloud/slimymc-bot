@@ -1,6 +1,6 @@
 import { CommandInteraction, PermissionFlagsBits, SlashCommandBuilder, TextChannel } from "discord.js";
 import SlimyClient from "../client";
-import { ErrorChannelId } from "../conf/log.json";
+import { ErrorlogChannelId } from "../conf/log.json";
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -12,13 +12,13 @@ module.exports = {
 	async execute(client: SlimyClient, interaction: CommandInteraction) {
         if (!interaction.guild) return;
 
-        let errorLogChannel = await interaction.guild.channels.fetch(ErrorChannelId);
+        let errorLogChannel = await interaction.guild.channels.fetch(ErrorlogChannelId);
 
         if (errorLogChannel && errorLogChannel instanceof TextChannel ) {
             await errorLogChannel.bulkDelete(100);
 
             await interaction.reply({
-                content: `Cleared the <#${ErrorChannelId}> channel`,
+                content: `Cleared the <#${ErrorlogChannelId}> channel`,
                 ephemeral: true
             });
             return;

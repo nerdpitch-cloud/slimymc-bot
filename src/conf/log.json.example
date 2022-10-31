@@ -1,4 +1,4 @@
 {
     "ModlogChannelId": "000000000000000000",
-    "ErrorChannelId": "000000000000000000"
+    "ErrorLogChannelId": "000000000000000000"
 }

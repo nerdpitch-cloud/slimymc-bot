@@ -22,7 +22,7 @@ module.exports = {
 				.setDescription("Reason for the warning")
 				.setRequired(false)
 		)
-		.setDefaultMemberPermissions(PermissionFlagsBits.KickMembers)
+		.setDefaultMemberPermissions(PermissionFlagsBits.ModerateMembers)
         .setDMPermission(false),
 
 	async execute(client: SlimyClient, interaction: CommandInteraction) {

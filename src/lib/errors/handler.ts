@@ -1,6 +1,6 @@
 import { EmbedBuilder, codeBlock, TextBasedChannel, ChannelType, CommandInteraction } from "discord.js";
 import SlimyClient from "../../client";
-import { ErrorChannelId } from "../../conf/log.json"
+import { ErrorlogChannelId } from "../../conf/log.json"
 import { addEmbedFooter } from "../embed-footer";
 
 var errorLogChannel: TextBasedChannel | null;
@@ -39,7 +39,7 @@ async function _errorReply(embed: EmbedBuilder, interaction: CommandInteraction)
 }
 
 export async function loadErrorLogChannel(client: SlimyClient) {
-    let channel = await client.channels.fetch(ErrorChannelId);
+    let channel = await client.channels.fetch(ErrorlogChannelId);
 
     if (channel?.type == ChannelType.GuildText) {
         errorLogChannel = channel;
