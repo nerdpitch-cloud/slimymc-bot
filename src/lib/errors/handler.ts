@@ -5,7 +5,7 @@ import { addEmbedFooter } from "../embed-footer";
 
 var errorLogChannel: TextBasedChannel | null;
 
-process.on('uncaughtException', error => {
+process.on("uncaughtException", error => {
     console.log(error);
 
     let errorTxt: string
@@ -15,7 +15,7 @@ process.on('uncaughtException', error => {
     } else {
         errorTxt = error.name + error.message
     }
-
+;
     const errorEmbed = new EmbedBuilder()
     .setColor(0xba2020)
     .setTitle("An unexpected Node error occured")
@@ -47,10 +47,8 @@ export async function loadErrorLogChannel(client: SlimyClient) {
 }
 
 export async function handleUnexpectedError(client: SlimyClient, error: any) {
-    if (error !instanceof Error) return;
-
     let errorTxt: string
-    console.log(error);
+
 
     if (error.stack) {
         errorTxt = error.stack
@@ -64,7 +62,7 @@ export async function handleUnexpectedError(client: SlimyClient, error: any) {
         .setDescription(`Error log:\n${codeBlock(errorTxt)}`)
         .setTimestamp()
         await addEmbedFooter(client, errorEmbed)
-
+        
     _sendErrorLog(errorEmbed);
 }
 

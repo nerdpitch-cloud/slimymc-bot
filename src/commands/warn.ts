@@ -30,7 +30,7 @@ module.exports = {
         if(!moderationCommand) return;
 
         let warnEmbed = new EmbedBuilder()
-            .setColor(0xedb32b)
+            .setColor(0xbb2525)
             .setTitle("You have been warned")
             .setDescription(`You have been warned by **${interaction.user.username}#${interaction.user.discriminator}** in **${moderationCommand.guild.name}** for: ${inlineCode(moderationCommand.reason)}`)
             .setTimestamp()
@@ -39,7 +39,7 @@ module.exports = {
         await sendDmEmbed(client, moderationCommand.target, warnEmbed);
 
         let modlogEmbed = new EmbedBuilder()
-            .setColor(0xedb32b)
+            .setColor(0xd210e8)
             .setTitle("A user has been warned")
             .setDescription(`<@${interaction.user.id}> has warned <@${moderationCommand.target.id}>\nwith the following reason:\n${inlineCode(moderationCommand.reason)}`)
             .setTimestamp()

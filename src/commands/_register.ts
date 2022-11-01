@@ -4,9 +4,8 @@ import fs from "node:fs";
 
 const commands = [];
 
-
 const commandFiles = fs
-	.readdirSync("./src/commands")
+	.readdirSync("./dist/commands")
 	.filter((file) => file.endsWith(".js") && !file.startsWith("_"));
 
 for (const file of commandFiles) {

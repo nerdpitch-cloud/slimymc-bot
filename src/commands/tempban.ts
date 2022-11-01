@@ -15,7 +15,13 @@ module.exports = {
 				.setName("target")
 				.setDescription("The member to tempban")
 				.setRequired(true)
-		)
+		)        
+        .addIntegerOption((option) =>
+            option
+                .setName("duration")
+                .setDescription("Duration of the tempban (IN HOURS)")
+                .setRequired(true)
+        )
         .addStringOption((option) =>
 			option
 				.setName("reason")
@@ -26,19 +32,20 @@ module.exports = {
         .setDMPermission(false),
 
 	async execute(client: SlimyClient, interaction: CommandInteraction) {
-        let moderationCommand = await moderationSetup(client, interaction, ModerationAction.KICK)
-        if(!moderationCommand) return;
+        let moderationCommand = await moderationSetup(client, interaction, ModerationAction.TEMPBAN)
+        if(!moderationCommand) throw new Error(`moderationCommand was null`);
+        if(!moderationCommand.duration) throw new Error(`moderationCommand.duration was null/undefined`);
 
         let memberTarget = await moderationCommand.guild.members.fetch(moderationCommand.target.id)
 
         if (!memberTarget.kickable) {
-            return cannotPunish(client, interaction, ModerationAction.KICK, moderationCommand.target)
+            return cannotPunish(client, interaction, ModerationAction.TEMPBAN, moderationCommand.target)
         }
 
         let kickEmbed = new EmbedBuilder()
-            .setColor(0xe86831)
-            .setTitle("You have been kicked")
-            .setDescription(`You have been kicked by **${interaction.user.username}#${interaction.user.discriminator}** from **${moderationCommand.guild.name}** for: ${inlineCode(moderationCommand.reason)}`)
+            .setColor(0xbb2525)
+            .setTitle("You have been temporarily banned")
+            .setDescription(`You have been kicked by **${interaction.user.username}#${interaction.user.discriminator}** from **${moderationCommand.guild.name}** \nfor the duration of **${moderationCommand.duration} hours**\nfor: ${inlineCode(moderationCommand.reason)}`)
             .setTimestamp()
             await addEmbedFooter(client, kickEmbed);
 
@@ -47,9 +54,9 @@ module.exports = {
         await moderationCommand.guild.members.kick(moderationCommand.target.id);
 
         let modlogEmbed = new EmbedBuilder()
-            .setColor(0xe86831)
-            .setTitle("A user has been kicked")
-            .setDescription(`<@${interaction.user.id}> has kicked <@${moderationCommand.target.id}>\nwith the kicked reason:\n${inlineCode(moderationCommand.reason)}`)
+            .setColor(0x5110e8)
+            .setTitle("A user has been temporarily banned")
+            .setDescription(`<@${interaction.user.id}> has kicked <@${moderationCommand.target.id}>\nfor **${moderationCommand.duration} hours**\nwith the following reason:\n${inlineCode(moderationCommand.reason)}`)
             .setTimestamp()
             await addEmbedFooter(client, modlogEmbed);
             

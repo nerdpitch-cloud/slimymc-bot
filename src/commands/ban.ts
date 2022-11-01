@@ -36,7 +36,7 @@ module.exports = {
         }
 
         let banEmbed = new EmbedBuilder()
-            .setColor(0xeb2a1c)
+            .setColor(0xbb2525)
             .setTitle("You have been banned")
             .setDescription(`You have been banned by **${interaction.user.username}#${interaction.user.discriminator}** from **${moderationCommand.guild.name}** for: ${inlineCode(moderationCommand.reason)}`)
             .setTimestamp()
@@ -47,7 +47,7 @@ module.exports = {
         await moderationCommand.guild.members.ban(moderationCommand.target.id);
 
         let modlogEmbed = new EmbedBuilder()
-            .setColor(0xeb2a1c)
+            .setColor(0x1058e8)
             .setTitle("A user has been banned")
             .setDescription(`<@${interaction.user.id}> has banned <@${moderationCommand.target.id}>\nwith the following reason:\n${inlineCode(moderationCommand.reason)}`)
             .setTimestamp()

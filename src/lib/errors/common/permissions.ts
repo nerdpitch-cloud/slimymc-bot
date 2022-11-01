@@ -4,7 +4,8 @@ import { handleExpectedError } from "../handler";
 
 export class ModerationAction {
     static BAN = "ban"
-    static KICK = "kick"
+    static TEMPBAN = "tempban"
+    static TEMPMUTE = "tempmute"
     static WARN = "warn"
 }
 

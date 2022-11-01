@@ -16,7 +16,6 @@ client.once(Events.ClientReady, () => {
 client.on(Events.UserUpdate, async (oldUser, newUser) => {
 	handleUserUpdate(oldUser, newUser);
 })
-
 client.on(Events.GuildMemberUpdate, async (oldMember, newMember) => {
 	handleGuildMemberUpdate(oldMember, newMember);
 })
