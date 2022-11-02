@@ -6,6 +6,7 @@ import { handleUnexpectedError } from "../lib/errors/handler";
 import { moderationSetup } from "../lib/moderation/moderation";
 import { sendModLog } from "../lib/moderation/modlog";
 import { sendDmEmbed } from "../lib/moderation/send-dm";
+import { TempBanFile } from "../lib/moderation/tempban";
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -39,12 +40,13 @@ module.exports = {
 
         let memberTarget = await moderationCommand.guild.members.fetch(moderationCommand.target.id)
 
-        await memberTarget.timeout(moderationCommand.duration * 60  * 60 * 1000);
+        await memberTarget.timeout(moderationCommand.duration * 3600000);
+        let durationTimestamp = await TempBanFile.genExpiration(moderationCommand.duration)
 
         let tempmuteEmbed = new EmbedBuilder()
         .setColor(0xbb2525)
         .setTitle("You have been temporarily muted")
-        .setDescription(`You have been temporarily muted by **${interaction.user.username}#${interaction.user.discriminator}** on **${moderationCommand.guild.name}**\nfor the duration of **${moderationCommand.duration} hours**\nfor: ${inlineCode(moderationCommand.reason)}`)
+        .setDescription(`You have been temporarily muted by **${interaction.user.username}#${interaction.user.discriminator}** on **${moderationCommand.guild.name}**\nfor the duration of **${moderationCommand.duration} hours** (expires on <t:${durationTimestamp}>\nfor: ${inlineCode(moderationCommand.reason)}`)
         .setTimestamp()
         await addEmbedFooter(client, tempmuteEmbed);
 
@@ -53,7 +55,7 @@ module.exports = {
         let modlogEmbed = new EmbedBuilder()
             .setColor(0x2ab0a7)
             .setTitle("A user has temporarily muted")
-            .setDescription(`<@${interaction.user.id}> has temporarily muted <@${moderationCommand.target.id}>\nfor **${moderationCommand.duration} hours**\nwith the following reason:\n${inlineCode(moderationCommand.reason)}`)
+            .setDescription(`<@${interaction.user.id}> has temporarily muted <@${moderationCommand.target.id}>\nfor **${moderationCommand.duration} hours** (expires on <t:${durationTimestamp}>)\nwith the following reason:\n${inlineCode(moderationCommand.reason)}`)
             .setTimestamp()
             await addEmbedFooter(client, modlogEmbed);
 

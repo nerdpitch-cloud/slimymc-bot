@@ -47,8 +47,9 @@ export async function loadErrorLogChannel(client: SlimyClient) {
 }
 
 export async function handleUnexpectedError(client: SlimyClient, error: any) {
+    console.log(error)
+    
     let errorTxt: string
-
 
     if (error.stack) {
         errorTxt = error.stack

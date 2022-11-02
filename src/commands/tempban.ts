@@ -6,6 +6,7 @@ import { addEmbedFooter } from "../lib/embed-footer";
 import { moderationSetup } from "../lib/moderation/moderation";
 import { cannotPunish, ModerationAction } from "../lib/errors/common/permissions";
 import {promises as fsp} from "fs"
+import { TempBanFile } from "../lib/moderation/tempban";
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -43,27 +44,25 @@ module.exports = {
             return cannotPunish(client, interaction, ModerationAction.TEMPBAN, moderationCommand.target)
         }
 
+        let durationTimestamp = await TempBanFile.genExpiration(moderationCommand.duration)
+
         let kickEmbed = new EmbedBuilder()
             .setColor(0xbb2525)
             .setTitle("You have been temporarily banned")
-            .setDescription(`You have been kicked by **${interaction.user.username}#${interaction.user.discriminator}** from **${moderationCommand.guild.name}** \nfor the duration of **${moderationCommand.duration} hours**\nfor: ${inlineCode(moderationCommand.reason)}`)
+            .setDescription(`You have been kicked by **${interaction.user.username}#${interaction.user.discriminator}** from **${moderationCommand.guild.name}** \nfor the duration of **${moderationCommand.duration} hours** (expires on <t:${durationTimestamp}>\nfor: ${inlineCode(moderationCommand.reason)}`)
             .setTimestamp()
             await addEmbedFooter(client, kickEmbed);
 
         await sendDmEmbed(client, moderationCommand.target, kickEmbed);
 
-        //await moderationCommand.guild.members.ban(moderationCommand.target.id);
+        await moderationCommand.guild.members.ban(moderationCommand.target.id);
 
-        let currentTempbans = await fsp.readFile(`${__dirname}/tempbans.json`).toString()
-        let currentTempbansObj = JSON.parse(currentTempbans)
-        currentTempbansObj[moderationCommand.target.id].push({ "expires": (Date.now() / 1000) + (moderationCommand.duration / 60 / 60) })
-    
-        await fsp.writeFile(`${__dirname}/tempbans.json`, JSON.stringify(currentTempbansObj, null, 4));
+        TempBanFile.addMember(moderationCommand.target.id, moderationCommand.guild.id, durationTimestamp)
 
         let modlogEmbed = new EmbedBuilder()
             .setColor(0x5110e8)
             .setTitle("A user has been temporarily banned")
-            .setDescription(`<@${interaction.user.id}> has kicked <@${moderationCommand.target.id}>\nfor **${moderationCommand.duration} hours**\nwith the following reason:\n${inlineCode(moderationCommand.reason)}`)
+            .setDescription(`<@${interaction.user.id}> has kicked <@${moderationCommand.target.id}>\nfor **${moderationCommand.duration} hours** (expires on <t:${durationTimestamp}>\nwith the following reason:\n${durationTimestamp}`)
             .setTimestamp()
             await addEmbedFooter(client, modlogEmbed);
             
