@@ -10,7 +10,7 @@ module.exports = {
         .setDMPermission(false),
 
 	async execute(client: SlimyClient, interaction: CommandInteraction) {
-        if (!interaction.guild) return;
+        if (!interaction.guild) throw new Error("interaction.guild was null");
 
         let errorLogChannel = await interaction.guild.channels.fetch(ErrorlogChannelId);
 

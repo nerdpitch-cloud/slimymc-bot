@@ -3,9 +3,10 @@ import { UserlogChannelId } from "../../conf/log.json"
 
 export async function handleGuildMemberUpdate(oldMember: GuildMember | PartialGuildMember, newMember: GuildMember) {
     let logChannel = await newMember.client.channels.fetch(UserlogChannelId);
-    if (!logChannel) return;
-    if (!logChannel.isTextBased()) return;
-    
+    if (!logChannel) throw new Error("logChannel was null");
+    if (!logChannel.isTextBased()) throw new Error("logChannel wasn't text based ");
+
+
     let LogEmbed = new EmbedBuilder()
         .setColor(0x4286f4)
         .setFooter({ text: `ID - ${newMember.id}` })

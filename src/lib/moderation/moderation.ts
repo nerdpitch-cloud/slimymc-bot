@@ -17,8 +17,8 @@ export async function moderationSetup(client: SlimyClient, interaction: CommandI
     let reasonTxt: string;
     let durationInt: number | null = null;
 
-    if (!interaction.guild) return;
-    if (typeof targetArg?.user == "undefined") return;
+    if (!interaction.guild) throw new Error("interaction.guild was null");
+    if (typeof targetArg?.user == "undefined") throw new Error("targetArg?.user was undefined");
 
     if (typeof reasonArg?.value == "undefined") {
         reasonTxt = "not specified"
@@ -26,7 +26,6 @@ export async function moderationSetup(client: SlimyClient, interaction: CommandI
         reasonTxt = String(reasonArg.value)
     }
 
-    if (typeof targetArg?.user == "undefined") return;
     targetUsr = targetArg.user
 
     if (durationArg?.value) {

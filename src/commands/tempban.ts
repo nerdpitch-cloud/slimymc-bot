@@ -5,6 +5,7 @@ import SlimyClient from "../client";
 import { addEmbedFooter } from "../lib/embed-footer";
 import { moderationSetup } from "../lib/moderation/moderation";
 import { cannotPunish, ModerationAction } from "../lib/errors/common/permissions";
+import {promises as fsp} from "fs"
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -33,8 +34,8 @@ module.exports = {
 
 	async execute(client: SlimyClient, interaction: CommandInteraction) {
         let moderationCommand = await moderationSetup(client, interaction, ModerationAction.TEMPBAN)
-        if(!moderationCommand) throw new Error(`moderationCommand was null`);
-        if(!moderationCommand.duration) throw new Error(`moderationCommand.duration was null/undefined`);
+        if(!moderationCommand) throw new Error("moderationCommand was null");
+        if(!moderationCommand.duration) throw new Error("moderationCommand.duration was null/undefined");
 
         let memberTarget = await moderationCommand.guild.members.fetch(moderationCommand.target.id)
 
@@ -51,7 +52,13 @@ module.exports = {
 
         await sendDmEmbed(client, moderationCommand.target, kickEmbed);
 
-        await moderationCommand.guild.members.kick(moderationCommand.target.id);
+        //await moderationCommand.guild.members.ban(moderationCommand.target.id);
+
+        let currentTempbans = await fsp.readFile(`${__dirname}/tempbans.json`).toString()
+        let currentTempbansObj = JSON.parse(currentTempbans)
+        currentTempbansObj[moderationCommand.target.id].push({ "expires": (Date.now() / 1000) + (moderationCommand.duration / 60 / 60) })
+    
+        await fsp.writeFile(`${__dirname}/tempbans.json`, JSON.stringify(currentTempbansObj, null, 4));
 
         let modlogEmbed = new EmbedBuilder()
             .setColor(0x5110e8)

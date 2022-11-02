@@ -39,9 +39,12 @@ async function _sendVerifyMessage(client: SlimyClient, channel: TextBasedChannel
     let conf = JSON.stringify({
         verifyChannelId: verifyChannelId,
         verifyMessageId: message.id
-    })
+        },
+        null,
+        4
+    )
 
-    await fsp.writeFile(`${__dirname}/../conf/verify.json`, JSON.stringify(conf));
+    await fsp.writeFile(`${__dirname}/../conf/verify.json`, conf);
 
 }
 

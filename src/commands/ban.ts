@@ -27,7 +27,7 @@ module.exports = {
 
 	async execute(client: SlimyClient, interaction: CommandInteraction) {
         let moderationCommand = await moderationSetup(client, interaction, ModerationAction.BAN)
-        if(!moderationCommand) return;
+        if(!moderationCommand) throw new Error("moderationCommand was null");
 
         let memberTarget = await moderationCommand.guild.members.fetch(moderationCommand.target.id)
 

@@ -27,7 +27,7 @@ module.exports = {
 
 	async execute(client: SlimyClient, interaction: CommandInteraction) {
         let moderationCommand = await moderationSetup(client, interaction, ModerationAction.WARN)
-        if(!moderationCommand) return;
+        if(!moderationCommand) throw new Error("moderationCommand was null");
 
         let warnEmbed = new EmbedBuilder()
             .setColor(0xbb2525)
