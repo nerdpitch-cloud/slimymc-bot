@@ -4,7 +4,7 @@ import { cannotPunish } from "../errors/common/permissions";
 
 export type Punishment = {
     text: string;
-    id?: number;
+    id: number;
 };
 
 export class ModerationAction {
