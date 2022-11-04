@@ -1,7 +1,8 @@
 import { SlashCommandBuilder, PermissionFlagsBits, CommandInteraction, EmbedBuilder, inlineCode } from "discord.js";
 import SlimyClient from "../client";
 import { addEmbedFooter } from "../lib/embed-footer";
-import { cannotPunish, ModerationAction } from "../lib/errors/common/permissions";
+import { cannotPunish } from "../lib/errors/common/permissions";
+import { ModerationAction } from "../lib/moderation/moderation";
 import { handleUnexpectedError } from "../lib/errors/handler";
 import { moderationSetup } from "../lib/moderation/moderation";
 import { sendModLog } from "../lib/moderation/modlog";

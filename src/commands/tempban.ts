@@ -4,7 +4,8 @@ import { sendModLog } from "../lib/moderation/modlog";
 import SlimyClient from "../client";
 import { addEmbedFooter } from "../lib/embed-footer";
 import { moderationSetup } from "../lib/moderation/moderation";
-import { cannotPunish, ModerationAction } from "../lib/errors/common/permissions";
+import { cannotPunish } from "../lib/errors/common/permissions";
+import { ModerationAction } from "../lib/moderation/moderation";
 import {promises as fsp} from "fs"
 import { TempBanFile } from "../lib/moderation/tempban";
 

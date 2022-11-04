@@ -1,6 +1,18 @@
 import { CommandInteraction, Guild, User } from "discord.js";
 import SlimyClient from "../../client";
-import { cannotPunish, ModerationAction } from "../errors/common/permissions";
+import { cannotPunish } from "../errors/common/permissions";
+
+export type Punishment = {
+    text: string;
+    id?: number;
+};
+
+export class ModerationAction {
+    static BAN: Punishment = { text: "ban", id: 1 }
+    static TEMPBAN: Punishment = { text: "tempban", id: 1}
+    static TEMPMUTE: Punishment = { text: "tempmue", id: 2}
+    static WARN: Punishment = { text: "warn", id: 3}
+}
 
 interface SetupReturn {
     target: User;
@@ -9,7 +21,7 @@ interface SetupReturn {
     guild: Guild
 }
 
-export async function moderationSetup(client: SlimyClient, interaction: CommandInteraction, action: ModerationAction): Promise<SetupReturn | void> {
+export async function moderationSetup(client: SlimyClient, interaction: CommandInteraction, action: Punishment): Promise<SetupReturn | void> {
     let targetArg = interaction.options.get("target");
     let reasonArg = interaction.options.get("reason");
     let durationArg = interaction.options.get("duration");
@@ -33,7 +45,7 @@ export async function moderationSetup(client: SlimyClient, interaction: CommandI
     }
     
     if (targetUsr == client.user) {
-        return cannotPunish(client, interaction, action, targetUsr, "cannot punish itself")
+        return cannotPunish(client, interaction, action.text, targetUsr, "cannot punish itself")
     }
 
     return {
