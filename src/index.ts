@@ -9,7 +9,7 @@ import { handleUserUpdate } from "./events/guild/user-update";
 import { handleInviteCreate, handleInviteDelete, handleMemberAdd } from "./events/guild/member-add";
 import { handleMemberRemove } from "./events/guild/member-remove";
 
-const client = new SlimyClient({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers] });
+const client = new SlimyClient({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildInvites ] });
 
 client.once(Events.ClientReady, () => {
 	runReady(client);

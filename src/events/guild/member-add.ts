@@ -13,7 +13,6 @@ export async function invitesInit(client: SlimyClient) {
 }
 export async function handleInviteCreate(invite: Invite) {
     if (!invite.guild) throw new Error("invite.guild was null");
-
     invites.get(invite.guild.id)?.set(invite.code, invite.uses);
 }
 
@@ -30,10 +29,10 @@ async function getUsedInvite(newInvites: Collection<string, Invite>, oldInvites:
 
         let oldInviteUses = oldInvites.get(newInvite.code)
 
-        if (oldInviteUses == null) throw new Error("oldInviteUses was null")
-
-        if (newInvite.uses > oldInviteUses) {
-            return newInvite;
+        if (oldInviteUses != null) {
+            if (newInvite.uses > oldInviteUses) {
+                return newInvite;
+            }
         }
     }
 }
