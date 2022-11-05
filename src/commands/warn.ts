@@ -5,6 +5,8 @@ import SlimyClient from "../client";
 import { addEmbedFooter } from "../lib/embed-footer";
 import { moderationSetup } from "../lib/moderation/moderation";
 import { ModerationAction } from "../lib/moderation/moderation";
+import { InfractionsDB } from "../lib/mysql/infractions";
+import { handleUnexpectedError } from "../lib/errors/handler";
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -28,6 +30,12 @@ module.exports = {
 	async execute(client: SlimyClient, interaction: CommandInteraction) {
         let moderationCommand = await moderationSetup(client, interaction, ModerationAction.WARN)
         if(!moderationCommand) throw new Error("moderationCommand was null");
+
+        let dbRes = await InfractionsDB.addInfraction(moderationCommand.target.id, ModerationAction.WARN, moderationCommand.reason)
+        if (!dbRes.result) return handleUnexpectedError(client, dbRes.result);
+
+        let memberTarget = await moderationCommand.guild.members.fetch(moderationCommand.target.id);
+        await memberTarget.timeout(30 * 60000);
 
         let warnEmbed = new EmbedBuilder()
             .setColor(0xbb2525)

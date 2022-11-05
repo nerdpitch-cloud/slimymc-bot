@@ -6,6 +6,8 @@ import { addEmbedFooter } from "../lib/embed-footer";
 import { moderationSetup } from "../lib/moderation/moderation";
 import { cannotPunish } from "../lib/errors/common/permissions";
 import { ModerationAction } from "../lib/moderation/moderation";
+import { InfractionsDB } from "../lib/mysql/infractions";
+import { handleUnexpectedError } from "../lib/errors/handler";
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -36,13 +38,15 @@ module.exports = {
             return cannotPunish(client, interaction, ModerationAction.BAN, moderationCommand.target)
         }
 
+        let dbRes = await InfractionsDB.addInfraction(moderationCommand.target.id, ModerationAction.BAN, moderationCommand.reason)
+        if (!dbRes.result) return handleUnexpectedError(client, dbRes.result);
+
         let banEmbed = new EmbedBuilder()
             .setColor(0xbb2525)
             .setTitle("You have been banned")
             .setDescription(`You have been banned by **${interaction.user.username}#${interaction.user.discriminator}** from **${moderationCommand.guild.name}** for: ${inlineCode(moderationCommand.reason)}`)
             .setTimestamp()
             await addEmbedFooter(client, banEmbed);
-
         await sendDmEmbed(client, moderationCommand.target, banEmbed);
 
         await moderationCommand.guild.members.ban(moderationCommand.target.id);
@@ -53,7 +57,6 @@ module.exports = {
             .setDescription(`<@${interaction.user.id}> has banned <@${moderationCommand.target.id}>\nwith the following reason:\n${inlineCode(moderationCommand.reason)}`)
             .setTimestamp()
             await addEmbedFooter(client, modlogEmbed);
-
         await sendModLog(client, modlogEmbed)
 
         await interaction.reply({

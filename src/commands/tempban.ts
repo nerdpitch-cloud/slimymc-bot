@@ -6,8 +6,9 @@ import { addEmbedFooter } from "../lib/embed-footer";
 import { moderationSetup } from "../lib/moderation/moderation";
 import { cannotPunish } from "../lib/errors/common/permissions";
 import { ModerationAction } from "../lib/moderation/moderation";
-import {promises as fsp} from "fs"
 import { TempBanFile } from "../lib/moderation/tempban";
+import { InfractionsDB } from "../lib/mysql/infractions";
+import { handleExpectedError, handleUnexpectedError } from "../lib/errors/handler";
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -45,6 +46,9 @@ module.exports = {
             return cannotPunish(client, interaction, ModerationAction.TEMPBAN, moderationCommand.target)
         }
 
+        let dbRes = await InfractionsDB.addInfraction(moderationCommand.target.id, ModerationAction.TEMPBAN, moderationCommand.reason)
+        if (!dbRes.result) return handleUnexpectedError(client, dbRes.result);
+
         let durationTimestamp = await TempBanFile.genExpiration(moderationCommand.duration)
 
         let kickEmbed = new EmbedBuilder()
@@ -53,7 +57,6 @@ module.exports = {
             .setDescription(`You have been kicked by **${interaction.user.username}#${interaction.user.discriminator}** from **${moderationCommand.guild.name}** \nfor the duration of **${moderationCommand.duration} hours** (expires on <t:${durationTimestamp}>\nfor: ${inlineCode(moderationCommand.reason)}`)
             .setTimestamp()
             await addEmbedFooter(client, kickEmbed);
-
         await sendDmEmbed(client, moderationCommand.target, kickEmbed);
 
         await moderationCommand.guild.members.ban(moderationCommand.target.id);
@@ -66,7 +69,6 @@ module.exports = {
             .setDescription(`<@${interaction.user.id}> has kicked <@${moderationCommand.target.id}>\nfor **${moderationCommand.duration} hours** (expires on <t:${durationTimestamp}>\nwith the following reason:\n${inlineCode(moderationCommand.reason)}`)
             .setTimestamp()
             await addEmbedFooter(client, modlogEmbed);
-            
         await sendModLog(client, modlogEmbed);
 
         await interaction.reply({

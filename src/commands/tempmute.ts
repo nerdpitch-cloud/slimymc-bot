@@ -8,6 +8,7 @@ import { moderationSetup } from "../lib/moderation/moderation";
 import { sendModLog } from "../lib/moderation/modlog";
 import { sendDmEmbed } from "../lib/moderation/send-dm";
 import { TempBanFile } from "../lib/moderation/tempban";
+import { InfractionsDB } from "../lib/mysql/infractions";
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -41,16 +42,18 @@ module.exports = {
 
         let memberTarget = await moderationCommand.guild.members.fetch(moderationCommand.target.id)
 
+        let dbRes = await InfractionsDB.addInfraction(moderationCommand.target.id, ModerationAction.TEMPMUTE, moderationCommand.reason)
+        if (!dbRes.result) return handleUnexpectedError(client, dbRes.result);
+
         await memberTarget.timeout(moderationCommand.duration * 3600000);
         let durationTimestamp = await TempBanFile.genExpiration(moderationCommand.duration)
 
         let tempmuteEmbed = new EmbedBuilder()
-        .setColor(0xbb2525)
-        .setTitle("You have been temporarily muted")
-        .setDescription(`You have been temporarily muted by **${interaction.user.username}#${interaction.user.discriminator}** on **${moderationCommand.guild.name}**\nfor the duration of **${moderationCommand.duration} hours** (expires on <t:${durationTimestamp}>\nfor: ${inlineCode(moderationCommand.reason)}`)
-        .setTimestamp()
-        await addEmbedFooter(client, tempmuteEmbed);
-
+            .setColor(0xbb2525)
+            .setTitle("You have been temporarily muted")
+            .setDescription(`You have been temporarily muted by **${interaction.user.username}#${interaction.user.discriminator}** on **${moderationCommand.guild.name}**\nfor the duration of **${moderationCommand.duration} hours** (expires on <t:${durationTimestamp}>\nfor: ${inlineCode(moderationCommand.reason)}`)
+            .setTimestamp()
+            await addEmbedFooter(client, tempmuteEmbed);
         await sendDmEmbed(client, moderationCommand.target, tempmuteEmbed);
 
         let modlogEmbed = new EmbedBuilder()
@@ -59,7 +62,6 @@ module.exports = {
             .setDescription(`<@${interaction.user.id}> has temporarily muted <@${moderationCommand.target.id}>\nfor **${moderationCommand.duration} hours** (expires on <t:${durationTimestamp}>)\nwith the following reason:\n${inlineCode(moderationCommand.reason)}`)
             .setTimestamp()
             await addEmbedFooter(client, modlogEmbed);
-
         await sendModLog(client, modlogEmbed)
 
         await interaction.reply({
