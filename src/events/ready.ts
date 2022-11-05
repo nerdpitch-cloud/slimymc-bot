@@ -4,11 +4,13 @@ import { checkVerifyMessage } from "../lib/verify";
 import { CronJob } from "cron"
 import { tempbanCheck } from "../lib/moderation/tempban";
 import { initSQLPool } from "../lib/mysql/_base";
+import { invitesInit } from "./guild/member-add";
 
 export async function runReady(client: SlimyClient) {
     loadErrorLogChannel(client);
     checkVerifyMessage(client);
     initSQLPool();
+    invitesInit(client)
     tempbanCheck(client);
 
     let job = new CronJob("*/15 * * * *", function() {
