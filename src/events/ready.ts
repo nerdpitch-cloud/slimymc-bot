@@ -1,6 +1,6 @@
 import SlimyClient from "../client";
 import { loadErrorLogChannel } from "../lib/errors/handler";
-import { checkVerifyMessage } from "../lib/verify";
+import { checkVerifyMessage } from "../events/guild/verify";
 import { CronJob } from "cron"
 import { tempbanCheck } from "../lib/moderation/tempban";
 import { initSQLPool } from "../lib/mysql/_base";

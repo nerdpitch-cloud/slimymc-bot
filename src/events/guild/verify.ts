@@ -1,7 +1,7 @@
 import { ButtonStyle, EmbedBuilder, TextBasedChannel, ButtonBuilder, ActionRowBuilder, ButtonInteraction, TextChannel } from "discord.js";
-import SlimyClient from "../client"
-import { verifyChannelId, verifyMessageId, verifyRoleId } from "../conf/verify.json"
-import { addEmbedFooter } from "./embed-footer";
+import SlimyClient from "../../client"
+import { verifyChannelId, verifyMessageId, verifyRoleId } from "../../conf/verify.json"
+import { addEmbedFooter } from "../../lib/embed-footer";
 import {promises as fsp} from "fs"
 
 const verifyEmbed = new EmbedBuilder()
