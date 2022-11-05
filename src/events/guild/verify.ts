@@ -1,8 +1,8 @@
 import { ButtonStyle, EmbedBuilder, TextBasedChannel, ButtonBuilder, ActionRowBuilder, ButtonInteraction, TextChannel } from "discord.js";
 import SlimyClient from "../../client"
-import { verifyChannelId, verifyMessageId, verifyRoleId } from "../../conf/verify.json"
+import { verifyChannelId, verifyMessageId, verifyRoleId, recommendedChannels } from "../../conf/verify.json"
 import { addEmbedFooter } from "../../lib/embed-footer";
-import {promises as fsp} from "fs"
+import { promises as fsp } from "fs"
 
 const verifyEmbed = new EmbedBuilder()
     .setColor(0xabf243)
@@ -15,7 +15,6 @@ export async function checkVerifyMessage(client: SlimyClient) {
         if (channel instanceof TextChannel) {
             channel.bulkDelete(100);
             _sendVerifyMessage(client, channel);
-            _addVerifyButton();
         }
     }
     
@@ -61,13 +60,9 @@ export async function handleVerifyButton(interaction: ButtonInteraction) {
         else {
             member.roles.add(verifyRoleId);
             interaction.reply({
-                content: `Verified successfully, take a look at xx & yy`,
+                content: `Verified successfully, take a look at <#${recommendedChannels[0]}> & <#${recommendedChannels[1]}>`,
                 ephemeral: true
             });
         }
     }
-}
-
-async function _addVerifyButton() {
-
 }

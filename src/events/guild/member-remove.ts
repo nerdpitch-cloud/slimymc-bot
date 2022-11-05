@@ -17,7 +17,7 @@ export async function handleMemberRemove(client: SlimyClient, member: GuildMembe
         .setColor(0xfff6af)
         .setTitle("Member left")
         .setAuthor( {name: member.user.tag, iconURL: member.displayAvatarURL()} )
-        .setDescription(`<@${member.id}> joined at ${joinedAt}\nRoles: ${member.roles}`)
+        .setDescription(`<@${member.id}> joined at ${joinedAt}\nWe now have we now have **${member.guild.memberCount}** members!\nRoles: ${member.roles}`)
         .setTimestamp()
         .setFooter( {text: `ID - ${member.user.id}`})
 

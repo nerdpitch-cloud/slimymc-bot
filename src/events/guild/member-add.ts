@@ -2,7 +2,6 @@ import { Collection, EmbedBuilder, Guild, GuildMember, inlineCode, Invite, Snowf
 import SlimyClient from "../../client";
 import { InviteLogsId } from "../../conf/log.json"
 import { guildId } from "../../conf/discord.json"
-import { addEmbedFooter } from "../../lib/embed-footer";
 
 type UserInviteCollection = Collection<Snowflake, Collection<string, number | null>>
 let invites: UserInviteCollection = new Collection();
@@ -55,9 +54,9 @@ export async function handleMemberAdd(client: SlimyClient, member: GuildMember) 
 
 
     if (usedInvite.inviter) {
-        inviteLogEmbed.setDescription(`<@${member.user.id}> joined using invite code ${inlineCode(usedInvite.code)} (${usedInvite.uses} uses) from <@${usedInvite.inviter.id}>\nAccount created ${time(member.user.createdAt, "F")}`)
+        inviteLogEmbed.setDescription(`<@${member.user.id}> joined, we now have **${member.guild.memberCount}** members!\nOrigin: ${inlineCode(usedInvite.code)} (${usedInvite.uses}) made by <@${usedInvite.inviter.id}>\nAccount created ${time(member.user.createdAt, "F")}`)
     } else {
-        inviteLogEmbed.setDescription(`<@${member.user.id}> joined using invite code ${inlineCode(usedInvite.code)} from <not found>\nAccount created ${time(member.user.createdAt, "F")}`)
+        inviteLogEmbed.setDescription(`<@${member.user.id}> joined, we now have **${(member.guild.memberCount)}** members!\nnOrigin: ${inlineCode(usedInvite.code)} (${usedInvite.uses}) by unknown member\nAccount created ${time(member.user.createdAt, "F")}`)
     }
 
     await inviteLogChannel.send({ embeds: [inviteLogEmbed] })
