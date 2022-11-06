@@ -23,7 +23,7 @@ export async function handleMemberRemove(member: GuildMember | PartialGuildMembe
         .setColor(0xfff6af)
         .setTitle("Member left")
         .setAuthor( {name: member.user.tag, iconURL: member.displayAvatarURL()} )
-        .setDescription(`<@${member.id}> joined at ${joinedAt}\nWe now have we now have **${member.guild.memberCount}** members!\nRoles: ${rolesMention}`)
+        .setDescription(`<@${member.id}> joined at ${joinedAt}\nWe now have **${member.guild.memberCount}** members!\nRoles: ${rolesMention}`)
         .setTimestamp()
         .setFooter( {text: `ID - ${member.user.id}`})
 
