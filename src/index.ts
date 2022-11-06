@@ -1,4 +1,4 @@
-import { Events, GatewayIntentBits } from "discord.js";
+import { Events, GatewayIntentBits, Partials  } from "discord.js";
 import { token } from "./conf/discord.json";
 import { runReady } from "./events/ready";
 import SlimyClient from "./client"
@@ -8,8 +8,12 @@ import { handleGuildMemberUpdate } from "./events/guild/member-update";
 import { handleUserUpdate } from "./events/guild/user-update";
 import { handleInviteCreate, handleInviteDelete, handleMemberAdd } from "./events/guild/member-add";
 import { handleMemberRemove } from "./events/guild/member-remove";
+import { handleMessageUpdate } from "./events/message-update";
+import { handleMessageDelete } from "./events/message-delete";
 
-const client = new SlimyClient({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildInvites ] });
+const client = new SlimyClient({ 
+	intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildInvites, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMessages],
+	partials: [Partials.Message] });
 
 client.once(Events.ClientReady, () => {
 	runReady(client);
@@ -23,11 +27,18 @@ client.on(Events.InviteDelete, (invite) => {
 });
 
 client.on(Events.GuildMemberAdd, async (member) =>{
-	handleMemberAdd(client, member);
+	handleMemberAdd(member);
 });
 client.on(Events.GuildMemberRemove, async (member) =>{
-	handleMemberRemove(client, member);
+	handleMemberRemove(member);
 });
+
+client.on(Events.MessageUpdate, async (oldMessage, newMessage) => {
+	handleMessageUpdate(oldMessage, newMessage);
+})
+client.on(Events.MessageDelete, async (message) => {
+	handleMessageDelete(message);
+})
 
 client.on(Events.UserUpdate, async (oldUser, newUser) => {
 	handleUserUpdate(oldUser, newUser);

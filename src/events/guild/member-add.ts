@@ -37,7 +37,7 @@ async function getUsedInvite(newInvites: Collection<string, Invite>, oldInvites:
     }
 }
 
-export async function handleMemberAdd(client: SlimyClient, member: GuildMember) {
+export async function handleMemberAdd(member: GuildMember) {
     let usedInvite = await getUsedInvite(await member.guild.invites.fetch(), invites.get(member.guild.id));
     if (!usedInvite) throw new Error("usedInvite was null");
 
