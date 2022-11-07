@@ -10,6 +10,7 @@ import { handleInviteCreate, handleInviteDelete, handleMemberAdd } from "./event
 import { handleMemberRemove } from "./events/guild/member-remove";
 import { handleMessageUpdate } from "./events/message-update";
 import { handleMessageDelete } from "./events/message-delete";
+import { handleSelectMenu } from "./events/_handle-select";
 
 const client = new SlimyClient({ 
 	intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildInvites, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMessages],
@@ -51,7 +52,9 @@ client.on(Events.InteractionCreate, async (interaction) => {
 	if (interaction.isChatInputCommand()) {
 		await handleCommand(client, interaction);
 	} else if (interaction.isButton()) {
-		handleButton(client, interaction)
+		await handleButton(client, interaction)
+	} else if (interaction.isSelectMenu()) {
+		await handleSelectMenu(interaction)
 	}
 });
 

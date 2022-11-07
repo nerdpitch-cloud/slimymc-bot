@@ -16,7 +16,7 @@ module.exports = {
 		.setDescription("tempban a user")
 		.addUserOption((option) =>
 			option
-				.setName("target")
+				.setName("user")
 				.setDescription("The member to tempban")
 				.setRequired(true)
 		)        

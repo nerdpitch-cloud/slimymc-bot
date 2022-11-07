@@ -1,4 +1,4 @@
-import { time , ChatInputCommandInteraction , SlashCommandBuilder, EmbedBuilder, codeBlock, Embed } from "discord.js";
+import { time , ChatInputCommandInteraction , SlashCommandBuilder, EmbedBuilder, codeBlock, Embed, ActionRowBuilder, SelectMenuBuilder, SelectMenuComponentOptionData } from "discord.js";
 import SlimyClient from "../client";
 import { convertUTCDateToLocalDate } from "../lib/date";
 import { addEmbedFooter } from "../lib/embed-footer";
@@ -66,10 +66,39 @@ module.exports = {
 
             interaction.reply( {embeds: [infractionsEmbed] })
         } else if (subCommand == "remove") {
-            let dbRes = await InfractionsDB.removeInfraction(target.id)
-            if (!dbRes.success) return handleUnexpectedError(client, dbRes.result);
+            let allInfractions = await InfractionsDB.getInfractions(target.id)
+            if (!allInfractions.success) return handleUnexpectedError(client, allInfractions.result);
 
-            interaction.reply(`Removed the last infraction of <@${target.id}>`);
+            let actionRow = new ActionRowBuilder<SelectMenuBuilder>()
+                .addComponents(
+                    new SelectMenuBuilder()
+                        .setCustomId("infractions")
+                        .setPlaceholder("Nothing selected")
+                );
+            
+            let options: Array<SelectMenuComponentOptionData> = [];
+            
+            for (let i = 0; i < allInfractions.result.length; i++) {
+                let curr = allInfractions.result[i]
+                options.push({
+                    label: await punishmentTextFromId(curr.punishment),
+                    description: `${curr.reason} - issued at: ${curr.date_issued}`,
+                    value: `remove-infraction_${curr.punishment_id}`,
+                })
+            }
+            
+            if (options.length == 0) {
+                interaction.reply("User has no infractions")
+                return
+            }
+            
+            actionRow.components[0].addOptions(options)
+
+            interaction.reply({ content: "Pick an infraction to remove", components: [actionRow] })
+            //let dbRes = await InfractionsDB.removeInfraction(target.id)
+            //if (!dbRes.success) return handleUnexpectedError(client, dbRes.result);
+
+            //interaction.reply(`Removed the last infraction of <@${target.id}>`);
         }
 	},
 };

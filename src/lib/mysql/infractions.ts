@@ -2,6 +2,7 @@ import { Punishment } from "../moderation/moderation"
 import { sendSQLQuery } from "./_base"
 
 interface Infraction {
+    punishment_id: number
     user_id: string
     punishment: number
     reason: string
@@ -20,6 +21,7 @@ export class InfractionsDB {
         for (let i = 0; i < infractionsArr.length; i++) {
 
             res.push({
+                punishment_id: Number(infractionsArr[i]["punishment_id"]),
                 user_id: String(infractionsArr[i]["user_id"]),
                 punishment: Number(infractionsArr[i]["punishment"]),
                 reason: String(infractionsArr[i]["reason"]),
@@ -35,8 +37,8 @@ export class InfractionsDB {
         return await sendSQLQuery("INSERT INTO infractions (user_id, punishment, reason) VALUES (?, ?, ?);", [userId, punishment.id, reason])
     }
 
-    public static async removeInfraction(userId: string) {
-        return await sendSQLQuery("DELETE FROM infractions WHERE user_id = ? ORDER BY date_issued DESC LIMIT 1;", [userId])
+    public static async removeInfraction(punishmentId: number) {
+        return await sendSQLQuery("DELETE FROM infractions WHERE punishment_id = ?", [punishmentId])
     }
 
     public static async getInfractions(userId: string): Promise<GetInfractionsRes> {
