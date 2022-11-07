@@ -1,5 +1,6 @@
 import { EmbedBuilder, GuildMember, PartialGuildMember, time } from "discord.js";
 import { InviteLogsId } from "../../conf/log.json"
+import { InvitesDB } from "../../lib/mysql/invites";
 
 export async function handleMemberRemove(member: GuildMember | PartialGuildMember) {
     let inviteLogChannel = await member.guild.channels.fetch(InviteLogsId);
@@ -18,6 +19,8 @@ export async function handleMemberRemove(member: GuildMember | PartialGuildMembe
     for (let i = 0; i < memberRoles.length; i++) {
         rolesMention += `<@&${memberRoles[i]}> `
     }
+
+    await InvitesDB.removeInvite(member.id);
 
     let inviteLogEmbed = new EmbedBuilder()
         .setColor(0xfff6af)

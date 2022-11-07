@@ -2,6 +2,7 @@ import { Collection, EmbedBuilder, Guild, GuildMember, inlineCode, Invite, Snowf
 import SlimyClient from "../../client";
 import { InviteLogsId } from "../../conf/log.json"
 import { guildId } from "../../conf/discord.json"
+import { InvitesDB } from "../../lib/mysql/invites";
 
 type UserInviteCollection = Collection<Snowflake, Collection<string, number | null>>
 let invites: UserInviteCollection = new Collection();
@@ -53,6 +54,7 @@ export async function handleMemberAdd(member: GuildMember) {
 
 
     if (usedInvite.inviter) {
+        await InvitesDB.addInvite(usedInvite.inviter.id, member.user.id);
         inviteLogEmbed.setDescription(`<@${member.user.id}> joined, we now have **${member.guild.memberCount}** members!\nOrigin: ${inlineCode(usedInvite.code)} (${usedInvite.uses}) made by <@${usedInvite.inviter.id}>\nAccount created ${time(member.user.createdAt, "F")}`)
     } else {
         inviteLogEmbed.setDescription(`<@${member.user.id}> joined, we now have **${(member.guild.memberCount)}** members!\nnOrigin: ${inlineCode(usedInvite.code)} (${usedInvite.uses}) by unknown member\nAccount created ${time(member.user.createdAt, "F")}`)
