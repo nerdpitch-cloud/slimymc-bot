@@ -58,7 +58,8 @@ module.exports = {
                 let curr = allInfractions.result[i]
                 let date_issued = await convertUTCDateToLocalDate(curr.date_issued)
 
-                infractionsSrc += `**${await punishmentTextFromId(curr.punishment)}** - ${time(date_issued, "F")} - ${curr.reason}\n`
+                let punishmentStr = await punishmentTextFromId(curr.punishment)
+                infractionsSrc += `**${punishmentStr.charAt(0).toUpperCase() + punishmentStr.slice(1)}** - ${time(date_issued, "F")} - ${curr.reason}\n`
             }
 
             infractionsEmbed.setDescription(`Infractions of <@${target.id}>\n\n${infractionsSrc}`)
