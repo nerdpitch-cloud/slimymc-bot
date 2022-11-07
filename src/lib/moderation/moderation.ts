@@ -33,7 +33,7 @@ export async function punishmentTextFromId(id: number) {
 }
 
 export async function moderationSetup(client: SlimyClient, interaction: CommandInteraction, action: Punishment): Promise<SetupReturn | void> {
-    let targetArg = interaction.options.get("target");
+    let targetArg = interaction.options.get("user");
     let reasonArg = interaction.options.get("reason");
     let durationArg = interaction.options.get("duration");
     let targetUsr: User;

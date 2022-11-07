@@ -16,7 +16,7 @@ module.exports = {
 		.setDescription("tempmute a user")
 		.addUserOption((option) =>
 			option
-				.setName("target")
+				.setName("user")
 				.setDescription("The member to tempmute")
 				.setRequired(true)
 		)

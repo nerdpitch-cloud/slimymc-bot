@@ -1,0 +1,10 @@
+import {promises as fsp} from "fs"
+
+let filepath = `${__dirname}/commands/tempban.json`
+
+let currentTempbans = await fsp.readFile(filepath);
+return JSON.parse(currentTempbans.toString());
+
+async function _write(data: Object) {
+    await fsp.writeFile(TempBanFile.filepath, JSON.stringify(data, null, 4));
+}

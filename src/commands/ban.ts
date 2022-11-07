@@ -15,7 +15,7 @@ module.exports = {
 		.setDescription("Ban a user")
 		.addUserOption((option) =>
 			option
-				.setName("target")
+				.setName("user")
 				.setDescription("The member to ban")
 				.setRequired(true)
 		)

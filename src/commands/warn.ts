@@ -14,7 +14,7 @@ module.exports = {
 		.setDescription("Warn a user")
 		.addUserOption((option) =>
 			option
-				.setName("target")
+				.setName("user")
 				.setDescription("The member to warn")
 				.setRequired(true)
 		)
