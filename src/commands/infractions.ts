@@ -91,14 +91,10 @@ module.exports = {
                 interaction.reply("User has no infractions")
                 return
             }
-            
+
             actionRow.components[0].addOptions(options)
 
             interaction.reply({ content: "Pick an infraction to remove", components: [actionRow] })
-            //let dbRes = await InfractionsDB.removeInfraction(target.id)
-            //if (!dbRes.success) return handleUnexpectedError(client, dbRes.result);
-
-            //interaction.reply(`Removed the last infraction of <@${target.id}>`);
         }
 	},
 };
