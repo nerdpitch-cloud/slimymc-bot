@@ -11,7 +11,7 @@ export async function handleMessageDelete(message: Message<boolean> | PartialMes
     let logEmbed = new EmbedBuilder()
         .setColor(0xdd5e53)
         .setTitle(`Message deleted in ${channel.name}`)
-        .setDescription(message.content)
+        .setDescription(message.content || "no content")
         .setTimestamp()
 
     if (message.author) {

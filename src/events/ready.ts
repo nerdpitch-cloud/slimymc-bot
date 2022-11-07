@@ -25,7 +25,7 @@ export async function runReady(client: SlimyClient) {
     job.start()
 
     try {
-        await fsp.access(`${__dirname}/../commands/tempbans.json`)
+        await fsp.access(`${__dirname}/../commands/tempbans.json`, constants.R_OK | constants.W_OK)
     } catch {
         await fsp.writeFile(`${__dirname}/../commands/tempbans.json`, "{}")
     }

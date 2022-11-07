@@ -66,13 +66,13 @@ module.exports = {
         let modlogEmbed = new EmbedBuilder()
             .setColor(0x5110e8)
             .setTitle("A user has been temporarily banned")
-            .setDescription(`<@${interaction.user.id}> has kicked <@${moderationCommand.target.id}>\nfor **${moderationCommand.duration} hours** (expires on <t:${durationTimestamp}>\nwith the following reason:\n${inlineCode(moderationCommand.reason)}`)
+            .setDescription(`<@${interaction.user.id}> temporarily banned <@${moderationCommand.target.id}>\nfor **${moderationCommand.duration} hours** (expires on <t:${durationTimestamp}>\nwith the following reason:\n${inlineCode(moderationCommand.reason)}`)
             .setTimestamp()
             await addEmbedFooter(client, modlogEmbed);
         await sendModLog(client, modlogEmbed);
 
         await interaction.reply({
-            content: `Kicked <@${moderationCommand.target.id}> for ${moderationCommand.reason}`,
+            content: `Temporarily banned <@${moderationCommand.target.id}> for ${moderationCommand.reason}`,
             ephemeral: true
         });
 	},

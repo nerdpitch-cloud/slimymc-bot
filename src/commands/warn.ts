@@ -59,5 +59,11 @@ module.exports = {
             content: `Warned <@${moderationCommand.target.id}> for ${moderationCommand.reason}`,
             ephemeral: true
         });
+
+        let allInfractions = await InfractionsDB.getInfractions(moderationCommand.target.id)
+        if (allInfractions.result.length >= 5) {
+            let memberTarget = await moderationCommand.guild.members.fetch(moderationCommand.target.id)
+            await memberTarget.timeout( 30 * 60000, moderationCommand.reason);
+        }
 	},
 };
