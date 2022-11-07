@@ -5,6 +5,8 @@ import { CronJob } from "cron"
 import { tempbanCheck } from "../lib/moderation/tempban";
 import { initSQLPool } from "../lib/mysql/_base";
 import { invitesInit } from "./guild/member-add";
+import { promises as fsp } from "fs"
+import { constants } from 'fs';
 
 export async function runReady(client: SlimyClient) {
     loadErrorLogChannel(client);
@@ -21,6 +23,12 @@ export async function runReady(client: SlimyClient) {
     );
 
     job.start()
+
+    try {
+        await fsp.access(`${__dirname}/../commands/tempbans.json`)
+    } catch {
+        await fsp.writeFile(`${__dirname}/../commands/tempbans.json`, "{}")
+    }
 
     console.log("Ready!");
 }
