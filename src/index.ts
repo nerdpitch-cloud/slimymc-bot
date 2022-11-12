@@ -3,14 +3,14 @@ import { token } from "./conf/discord.json";
 import { runReady } from "./events/ready";
 import SlimyClient from "./client"
 import { handleCommand } from "./commands/_handle";
-import { handleButton } from "./events/_handle-btn";
 import { handleGuildMemberUpdate } from "./events/guild/member-update";
 import { handleUserUpdate } from "./events/guild/user-update";
 import { handleInviteCreate, handleInviteDelete, handleMemberAdd } from "./events/guild/member-add";
 import { handleMemberRemove } from "./events/guild/member-remove";
 import { handleMessageUpdate } from "./events/message-update";
 import { handleMessageDelete } from "./events/message-delete";
-import { handleSelectMenu } from "./events/_handle-select";
+import { handleButton } from "./events/buttons/_handle-btn";
+import { handleSelectMenu } from "./events/selects/_handle-select";
 
 const client = new SlimyClient({ 
 	intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildInvites, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMessages],
@@ -52,7 +52,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
 	if (interaction.isChatInputCommand()) {
 		await handleCommand(client, interaction);
 	} else if (interaction.isButton()) {
-		await handleButton(client, interaction)
+		await handleButton(interaction)
 	} else if (interaction.isSelectMenu()) {
 		await handleSelectMenu(interaction)
 	}
