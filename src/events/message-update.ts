@@ -2,6 +2,8 @@ import { EmbedBuilder, Message, PartialMessage } from "discord.js";
 import { UserlogChannelId } from "../conf/log.json"
 
 export async function handleMessageUpdate(oldMessage: Message<boolean> | PartialMessage, newMessage: Message<boolean> | PartialMessage) {
+    if (oldMessage.content === newMessage.content) return;
+    
     let logChannel = await oldMessage.client.channels.fetch(UserlogChannelId);
     if (!logChannel?.isTextBased()) throw new Error("logChannel is not text based");
     if (!newMessage.author) throw new Error("newMessage.author was null")
