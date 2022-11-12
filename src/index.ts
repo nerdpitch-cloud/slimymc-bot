@@ -11,6 +11,7 @@ import { handleMessageUpdate } from "./events/message-update";
 import { handleMessageDelete } from "./events/message-delete";
 import { handleButton } from "./events/buttons/_handle-btn";
 import { handleSelectMenu } from "./events/selects/_handle-select";
+import { handleMessageCreate } from "./events/message-create";
 
 const client = new SlimyClient({ 
 	intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildInvites, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMessages],
@@ -40,6 +41,10 @@ client.on(Events.MessageUpdate, async (oldMessage, newMessage) => {
 client.on(Events.MessageDelete, async (message) => {
 	handleMessageDelete(message);
 })
+
+client.on(Events.MessageCreate, async (message) => {
+	handleMessageCreate(client, message);
+});
 
 client.on(Events.UserUpdate, async (oldUser, newUser) => {
 	handleUserUpdate(oldUser, newUser);

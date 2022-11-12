@@ -7,6 +7,7 @@ module.exports = {
 	data: new SlashCommandBuilder()
 		.setName("invites")
 		.setDescription("See the invites leaderboard"),
+        
 	async execute(client: SlimyClient, interaction: CommandInteraction) {
 		let leaderboard = await InvitesDB.getAll()
 
