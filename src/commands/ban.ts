@@ -49,7 +49,7 @@ module.exports = {
             await addEmbedFooter(client, banEmbed);
         await sendDmEmbed(client, moderationCommand.target, banEmbed);
 
-        await moderationCommand.guild.members.ban(moderationCommand.target.id);
+        await moderationCommand.guild.members.ban(moderationCommand.target.id, { reason: moderationCommand.reason });
 
         let modlogEmbed = new EmbedBuilder()
             .setColor(0x1058e8)

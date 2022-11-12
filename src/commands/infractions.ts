@@ -25,11 +25,11 @@ module.exports = {
         .addSubcommand((subcommand) => 
             subcommand
                 .setName("remove")
-                .setDescription("Remove member's latest infraction from the database")
+                .setDescription("Remove member's infraction from the database")
                 .addUserOption((option) =>
                 option 
                     .setName("member")
-                    .setDescription("Member who's latest infraction you want to remove")
+                    .setDescription("Member who's infraction you want to remove")
                     .setRequired(true)
             )
             

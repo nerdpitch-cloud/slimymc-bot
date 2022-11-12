@@ -17,7 +17,9 @@ export async function handleMemberRemove(member: GuildMember | PartialGuildMembe
 
     let rolesMention = "";
     for (let i = 0; i < memberRoles.length; i++) {
-        rolesMention += `<@&${memberRoles[i]}> `
+        if (memberRoles[i] !== member.guild.roles.everyone.id) {
+            rolesMention += `<@&${memberRoles[i]}> `
+        }
     }
 
     await InvitesDB.removeInvite(member.id);

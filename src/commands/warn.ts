@@ -7,6 +7,7 @@ import { moderationSetup } from "../lib/moderation/moderation";
 import { ModerationAction } from "../lib/moderation/moderation";
 import { InfractionsDB } from "../lib/mysql/infractions";
 import { handleUnexpectedError } from "../lib/errors/handler";
+import { TempBanFile } from "../lib/moderation/tempban";
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -35,21 +36,41 @@ module.exports = {
         if (!dbRes.result) return handleUnexpectedError(client, dbRes.result);
 
         let memberTarget = await moderationCommand.guild.members.fetch(moderationCommand.target.id);
-        await memberTarget.timeout(30 * 60000);
+        let recentInfractions = await InfractionsDB.getRecentInfractions(moderationCommand.target.id);
+        let additionalPunishment = "No additional punishment"
+        
+        if (recentInfractions.result.length == 2) {
+            await memberTarget.timeout(1 * 3600000, moderationCommand.reason); // 1 hour
+            additionalPunishment = "1 hour timeout";
+
+        } else if(recentInfractions.result.length == 3 || recentInfractions.result.length == 4) {
+            await memberTarget.timeout(24 * 3600000, moderationCommand.reason); // 24 hours
+            additionalPunishment = "24 hour timeout";
+
+        } else if (recentInfractions.result.length >= 5) {
+            additionalPunishment = "1 week temporary ban";
+
+            let durationTimestamp = await TempBanFile.genExpiration(168);
+            TempBanFile.addMember(moderationCommand.target.id, moderationCommand.guild.id, durationTimestamp)
+        }
 
         let warnEmbed = new EmbedBuilder()
             .setColor(0xbb2525)
             .setTitle("You have been warned")
-            .setDescription(`You have been warned by **${interaction.user.username}#${interaction.user.discriminator}** in **${moderationCommand.guild.name}** for: ${inlineCode(moderationCommand.reason)}`)
+            .setDescription(`You have been warned by **${interaction.user.username}#${interaction.user.discriminator}** in **${moderationCommand.guild.name}** for: ${inlineCode(moderationCommand.reason)}\nSince you have received ${recentInfractions.result.length} warning already, you have also gotten an additional punishment in type of: ${additionalPunishment}`)
             .setTimestamp()
             await addEmbedFooter(client, warnEmbed);
 
         await sendDmEmbed(client, moderationCommand.target, warnEmbed);
 
+        if (additionalPunishment === "1 week temporary ban") {
+            await moderationCommand.guild.members.ban(moderationCommand.target.id, { reason: moderationCommand.reason });
+        }
+        
         let modlogEmbed = new EmbedBuilder()
             .setColor(0xd210e8)
             .setTitle("A user has been warned")
-            .setDescription(`<@${interaction.user.id}> has warned <@${moderationCommand.target.id}>\nwith the following reason:\n${inlineCode(moderationCommand.reason)}`)
+            .setDescription(`<@${interaction.user.id}> has warned <@${moderationCommand.target.id}>\nwith the following reason:\n${inlineCode(moderationCommand.reason)}\nAdditional punishment: ${additionalPunishment}`)
             .setTimestamp()
             await addEmbedFooter(client, modlogEmbed);
 
@@ -59,11 +80,5 @@ module.exports = {
             content: `Warned <@${moderationCommand.target.id}> for ${moderationCommand.reason}`,
             ephemeral: true
         });
-
-        let allInfractions = await InfractionsDB.getInfractions(moderationCommand.target.id)
-        if (allInfractions.result.length >= 5) {
-            let memberTarget = await moderationCommand.guild.members.fetch(moderationCommand.target.id)
-            await memberTarget.timeout( 30 * 60000, moderationCommand.reason);
-        }
 	},
 };

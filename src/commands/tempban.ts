@@ -59,7 +59,7 @@ module.exports = {
             await addEmbedFooter(client, kickEmbed);
         await sendDmEmbed(client, moderationCommand.target, kickEmbed);
 
-        await moderationCommand.guild.members.ban(moderationCommand.target.id);
+        await moderationCommand.guild.members.ban(moderationCommand.target.id, { reason: moderationCommand.reason });
 
         TempBanFile.addMember(moderationCommand.target.id, moderationCommand.guild.id, durationTimestamp)
 

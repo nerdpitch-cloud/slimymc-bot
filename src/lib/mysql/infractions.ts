@@ -54,4 +54,18 @@ export class InfractionsDB {
             result: formattedRes
         }
     }
+
+    public static async getRecentInfractions(userId: string): Promise<GetInfractionsRes> {
+        let res = await sendSQLQuery("SELECT * FROM infractions WHERE user_id = ? ORDER BY date_issued DESC WHERE date_issued >= @startOfPreviousMonth AND date_issued < @startOfCurrentMonth", [userId])
+        if(!res.success) throw new Error(String(res.result));
+        if (!Array.isArray(res.result)) throw new Error("res.result was not an array");
+        if (!Array.isArray(res.result[0])) throw new Error("res.result[0] was not an array");
+        
+        let formattedRes = await InfractionsDB._formatGetInfractions(res.result[0])
+
+        return {
+            success: res.success, 
+            result: formattedRes
+        }
+    }
 }

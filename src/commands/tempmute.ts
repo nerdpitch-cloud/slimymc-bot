@@ -45,7 +45,7 @@ module.exports = {
         let dbRes = await InfractionsDB.addInfraction(moderationCommand.target.id, ModerationAction.TEMPMUTE, moderationCommand.reason)
         if (!dbRes.result) return handleUnexpectedError(client, dbRes.result);
 
-        await memberTarget.timeout(moderationCommand.duration * 3600000);
+        await memberTarget.timeout(moderationCommand.duration * 3600000, moderationCommand.reason);
         let durationTimestamp = await TempBanFile.genExpiration(moderationCommand.duration)
 
         let tempmuteEmbed = new EmbedBuilder()
