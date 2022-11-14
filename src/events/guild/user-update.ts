@@ -1,8 +1,8 @@
 import { EmbedBuilder, PartialUser, User } from "discord.js";
-import { UserlogChannelId } from "../../conf/log.json"
+import { Config } from "../../conf/config";
 
-export async function handleUserUpdate(oldUser: User | PartialUser, newUser: User) {
-    let logChannel = await newUser.client.channels.fetch(UserlogChannelId);
+export async function handleUserUpdate(config: Config, oldUser: User | PartialUser, newUser: User) {
+    let logChannel = await newUser.client.channels.fetch(config.log.userlogChannelId);
     if (!logChannel) throw new Error("logChannel was null");
     if (!logChannel.isTextBased()) throw new Error("logChannel wasn't text based");
 

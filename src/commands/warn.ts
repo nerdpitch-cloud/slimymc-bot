@@ -8,6 +8,7 @@ import { ModerationAction } from "../lib/moderation/moderation";
 import { InfractionsDB } from "../lib/mysql/infractions";
 import { handleUnexpectedError } from "../lib/errors/handler";
 import { TempBanFile } from "../lib/moderation/tempban";
+import { Config } from "../conf/config";
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -28,7 +29,7 @@ module.exports = {
 		.setDefaultMemberPermissions(PermissionFlagsBits.ModerateMembers)
         .setDMPermission(false),
 
-	async execute(client: SlimyClient, interaction: CommandInteraction) {
+	async execute(client: SlimyClient, config: Config, interaction: CommandInteraction) {
         let moderationCommand = await moderationSetup(client, interaction, ModerationAction.WARN)
         if(!moderationCommand) throw new Error("moderationCommand was null");
 
@@ -74,7 +75,7 @@ module.exports = {
             .setTimestamp()
             await addEmbedFooter(client, modlogEmbed);
 
-        await sendModLog(client, modlogEmbed);
+        await sendModLog(client, config, modlogEmbed);
 
         await interaction.reply({
             content: `Warned <@${moderationCommand.target.id}> for ${moderationCommand.reason}`,

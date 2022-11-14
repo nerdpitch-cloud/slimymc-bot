@@ -1,8 +1,8 @@
 import { EmbedBuilder, Message, PartialMessage } from "discord.js";
-import { UserlogChannelId } from "../conf/log.json"
+import { Config } from "../conf/config";
 
-export async function handleMessageDelete(message: Message<boolean> | PartialMessage) {
-    let logChannel = await message.client.channels.fetch(UserlogChannelId);
+export async function handleMessageDelete(config: Config, message: Message<boolean> | PartialMessage) {
+    let logChannel = await message.client.channels.fetch(config.log.userlogChannelId);
     if (!logChannel?.isTextBased()) throw new Error("logChannel is not text based");
 
     let channel = await message.channel.fetch()

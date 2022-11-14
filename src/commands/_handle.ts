@@ -1,8 +1,9 @@
 import { CommandInteraction } from "discord.js";
 import SlimyClient from "../client";
+import { Config } from "../conf/config";
 import { handleUnexpectedError } from "../lib/errors/handler";
 
-export async function handleCommand(client: SlimyClient, interaction: CommandInteraction) {
+export async function handleCommand(client: SlimyClient, config: Config, interaction: CommandInteraction) {
     const command = client.commands.get(interaction.commandName);
 
     if (!command) {
@@ -11,7 +12,7 @@ export async function handleCommand(client: SlimyClient, interaction: CommandInt
     }
 
     try {
-        await command.execute(client, interaction);
+        await command.execute(client, config, interaction);
     } catch (error) {
         handleUnexpectedError(client, error);
         await interaction.reply({

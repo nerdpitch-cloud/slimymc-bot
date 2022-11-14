@@ -1,8 +1,8 @@
 import { EmbedBuilder, GuildMember, PartialGuildMember } from "discord.js";
-import { UserlogChannelId } from "../../conf/log.json"
+import { Config } from "../../conf/config";
 
-export async function handleGuildMemberUpdate(oldMember: GuildMember | PartialGuildMember, newMember: GuildMember) {
-    let logChannel = await newMember.client.channels.fetch(UserlogChannelId);
+export async function handleGuildMemberUpdate(config: Config, oldMember: GuildMember | PartialGuildMember, newMember: GuildMember) {
+    let logChannel = await newMember.client.channels.fetch(config.log.userlogChannelId);
     if (!logChannel) throw new Error("logChannel was null");
     if (!logChannel.isTextBased()) throw new Error("logChannel wasn't text based ");
 

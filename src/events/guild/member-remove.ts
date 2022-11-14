@@ -1,9 +1,9 @@
 import { EmbedBuilder, GuildMember, PartialGuildMember, time } from "discord.js";
-import { InviteLogsId } from "../../conf/log.json"
+import { Config } from "../../conf/config";
 import { InvitesDB } from "../../lib/mysql/invites";
 
-export async function handleMemberRemove(member: GuildMember | PartialGuildMember) {
-    let inviteLogChannel = await member.guild.channels.fetch(InviteLogsId);
+export async function handleMemberRemove(config: Config, member: GuildMember | PartialGuildMember) {
+    let inviteLogChannel = await member.guild.channels.fetch(config.log.inviteLogsId);
     if (!inviteLogChannel?.isTextBased()) throw new Error ("inviteLogChannel was not text based") ;
 
     let joinedAt

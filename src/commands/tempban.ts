@@ -9,6 +9,7 @@ import { ModerationAction } from "../lib/moderation/moderation";
 import { TempBanFile } from "../lib/moderation/tempban";
 import { InfractionsDB } from "../lib/mysql/infractions";
 import { handleExpectedError, handleUnexpectedError } from "../lib/errors/handler";
+import { Config } from "../conf/config";
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -35,7 +36,7 @@ module.exports = {
 		.setDefaultMemberPermissions(PermissionFlagsBits.KickMembers)
         .setDMPermission(false),
 
-	async execute(client: SlimyClient, interaction: CommandInteraction) {
+	async execute(client: SlimyClient, config: Config, interaction: CommandInteraction) {
         let moderationCommand = await moderationSetup(client, interaction, ModerationAction.TEMPBAN)
         if(!moderationCommand) throw new Error("moderationCommand was null");
         if(!moderationCommand.duration) throw new Error("moderationCommand.duration was null/undefined");
@@ -69,7 +70,7 @@ module.exports = {
             .setDescription(`<@${interaction.user.id}> temporarily banned <@${moderationCommand.target.id}>\nfor **${moderationCommand.duration} hours** (expires on <t:${durationTimestamp}>\nwith the following reason:\n${inlineCode(moderationCommand.reason)}`)
             .setTimestamp()
             await addEmbedFooter(client, modlogEmbed);
-        await sendModLog(client, modlogEmbed);
+        await sendModLog(client, config, modlogEmbed);
 
         await interaction.reply({
             content: `Temporarily banned <@${moderationCommand.target.id}> for ${moderationCommand.reason}`,

@@ -1,4 +1,4 @@
-import { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder, inlineCode, CommandInteraction, User } from "discord.js";
+import { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder, inlineCode, CommandInteraction } from "discord.js";
 import { sendDmEmbed } from "../lib/moderation/send-dm"
 import { sendModLog } from "../lib/moderation/modlog";
 import SlimyClient from "../client";
@@ -8,6 +8,7 @@ import { cannotPunish } from "../lib/errors/common/permissions";
 import { ModerationAction } from "../lib/moderation/moderation";
 import { InfractionsDB } from "../lib/mysql/infractions";
 import { handleUnexpectedError } from "../lib/errors/handler";
+import { Config } from "../conf/config";
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -28,7 +29,7 @@ module.exports = {
 		.setDefaultMemberPermissions(PermissionFlagsBits.BanMembers)
         .setDMPermission(false),
 
-	async execute(client: SlimyClient, interaction: CommandInteraction) {
+	async execute(client: SlimyClient, config: Config, interaction: CommandInteraction) {
         let moderationCommand = await moderationSetup(client, interaction, ModerationAction.BAN)
         if(!moderationCommand) throw new Error("moderationCommand was null");
 
@@ -57,7 +58,7 @@ module.exports = {
             .setDescription(`<@${interaction.user.id}> has banned <@${moderationCommand.target.id}>\nwith the following reason:\n${inlineCode(moderationCommand.reason)}`)
             .setTimestamp()
             await addEmbedFooter(client, modlogEmbed);
-        await sendModLog(client, modlogEmbed)
+        await sendModLog(client, config, modlogEmbed)
 
         await interaction.reply({
             content: `Banned <@${moderationCommand.target.id}> for ${moderationCommand.reason}`,

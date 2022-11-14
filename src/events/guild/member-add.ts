@@ -1,14 +1,13 @@
-import { Collection, EmbedBuilder, Guild, GuildMember, inlineCode, Invite, Snowflake, time } from "discord.js";
+import { Collection, EmbedBuilder, GuildMember, inlineCode, Invite, Snowflake, time } from "discord.js";
 import SlimyClient from "../../client";
-import { InviteLogsId } from "../../conf/log.json"
-import { guildId } from "../../conf/discord.json"
+import { Config } from "../../conf/config";
 import { InvitesDB } from "../../lib/mysql/invites";
 
 type UserInviteCollection = Collection<Snowflake, Collection<string, number | null>>
 let invites: UserInviteCollection = new Collection();
 
-export async function invitesInit(client: SlimyClient) {
-    let guild = await client.guilds.fetch(guildId)
+export async function invitesInit(client: SlimyClient, config: Config) {
+    let guild = await client.guilds.fetch(config.discord.guildId)
     let firstInvites = await guild.invites.fetch();
     invites.set(guild.id, new Collection(firstInvites.map((invite) => [invite.code, invite.uses])));
 }
@@ -38,11 +37,11 @@ async function getUsedInvite(newInvites: Collection<string, Invite>, oldInvites:
     }
 }
 
-export async function handleMemberAdd(member: GuildMember) {
+export async function handleMemberAdd(config: Config, member: GuildMember) {
     let usedInvite = await getUsedInvite(await member.guild.invites.fetch(), invites.get(member.guild.id));
     if (!usedInvite) throw new Error("usedInvite was null");
 
-    let inviteLogChannel = await member.guild.channels.fetch(InviteLogsId);
+    let inviteLogChannel = await member.guild.channels.fetch(config.log.inviteLogsId);
     if (!inviteLogChannel?.isTextBased()) throw new Error ("inviteLogChannel was not text based") ;
 
     let inviteLogEmbed = new EmbedBuilder()

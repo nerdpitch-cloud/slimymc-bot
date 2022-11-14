@@ -1,6 +1,8 @@
 import { REST, Routes } from "discord.js";
-import { clientId, guildId, token } from "../conf/discord.json";
 import fs from "node:fs";
+import { Config, Enviroment } from "../conf/config";
+
+let config = new Config(Enviroment.PROD)
 
 const commands = [];
 
@@ -14,14 +16,14 @@ for (const file of commandFiles) {
 	commands.push(command.data.toJSON());
 }
 
-const rest = new REST({ version: "10" }).setToken(token);
+const rest = new REST({ version: "10" }).setToken(config.discord.token);
 
 (async () => {
 	try {
 		console.log(`Started refreshing ${commands.length} application (/) commands.`);
 
 		const data = await rest.put(
-			Routes.applicationGuildCommands(clientId, guildId),
+			Routes.applicationGuildCommands(config.discord.clientId, config.discord.guildId),
 			{ body: commands }
 		);
 		

@@ -1,14 +1,14 @@
 import { createPool, Pool } from "mysql2/promise"
-import { host, username, password, database } from "../../conf/mysql.json"
+import { Config } from "../../conf/config";
 
 var pool: Pool;
 
-export async function initSQLPool() {
+export async function initSQLPool(config: Config) {
     pool = await createPool({
-        host: host,
-        user: username,
-        password: password,
-        database: database,
+        host: config.mysql.host,
+        user: config.mysql.username,
+        password: config.mysql.password,
+        database: config.mysql.database,
         supportBigNumbers: true
     });
 
