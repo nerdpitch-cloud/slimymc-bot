@@ -44,7 +44,7 @@ client.on(Events.MessageDelete, async (message) => {
 })
 
 client.on(Events.MessageCreate, async (message) => {
-	handleMessageCreate(client, message);
+	handleMessageCreate(client, config, message);
 });
 
 client.on(Events.UserUpdate, async (oldUser, newUser) => {

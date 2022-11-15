@@ -31,18 +31,24 @@ export class Config {
         verifyRoleId: string,
         recommendedChannels: Array<string>
     }
+    readonly levels: {
+        ignoredChannels: Array<string>
+    }
+
     constructor(enviroment: Enviroment ) {
         if (enviroment == Enviroment.PROD) {
             this.discord = prod.discord
             this.log = prod.log
             this.mysql = prod.mysql
             this.verify = prod.verify
+            this.levels = prod.levels
         } else {
             // handle DEV
             this.discord = prod.discord
             this.log = prod.log
             this.mysql = prod.mysql
             this.verify = prod.verify
+            this.levels = prod.levels
 
         }
 

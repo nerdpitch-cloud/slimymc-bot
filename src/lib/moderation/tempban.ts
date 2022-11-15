@@ -8,8 +8,8 @@ export async function tempbanCheck(client: SlimyClient) {
 
     for (let key in currentTempbansObj){
         if(Math.round(Date.now() / 1000) > currentTempbansObj[key]["expires"]) {
-            await (await client.guilds.fetch(currentTempbansObj[key]["guild"])).members.unban(key);
             TempBanFile.removeMember(key);
+            await (await client.guilds.fetch(currentTempbansObj[key]["guild"])).members.unban(key);
         }
     }
 }
