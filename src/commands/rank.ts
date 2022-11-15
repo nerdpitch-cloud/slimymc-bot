@@ -1,7 +1,8 @@
-import { ChatInputCommandInteraction, CommandInteraction, EmbedBuilder, inlineCode, PermissionFlagsBits, SlashCommandBuilder } from "discord.js";
+import { ChatInputCommandInteraction, CommandInteraction, EmbedBuilder, inlineCode, PermissionFlagsBits, PermissionsBitField, SlashCommandBuilder, User } from "discord.js";
 import SlimyClient from "../client";
 import { Config } from "../conf/config";
 import { addEmbedFooter } from "../lib/embed-footer";
+import { userMissingPermissions } from "../lib/errors/common/permissions";
 import { LevelsDB } from "../lib/mysql/levels";
 import { xpToLevel } from "../lib/xp";
 
@@ -27,18 +28,20 @@ module.exports = {
         )
         .addSubcommand(subcommand =>
             subcommand
-                .setName("give")
+                .setName("give-xp")
                 .setDescription("Give xp to a user")
             .addUserOption((option) =>
                 option
                     .setName("user")
                     .setDescription("User who'd you like to add the xp to")
-                    .setRequired(false)
+                    .setRequired(true)
             )
+            .addNumberOption((option) =>
+            option
+                .setName("xp")
+                .setDescription("The amount of xp you'd like to give the user")
+                .setRequired(true)
         )
-        .addSubcommandGroup(subcommandgroup =>
-            subcommandgroup
-                
         )
 		.setDefaultMemberPermissions(PermissionFlagsBits.BanMembers)
         .setDMPermission(false),
@@ -73,7 +76,6 @@ module.exports = {
             }
 
             let xp = await LevelsDB.getXp(user.id)
-            console.log(xp)
             if (!xp) return interaction.reply(`Failed to get the rank of ${user.tag}`)
 
             let level = await xpToLevel(xp);
@@ -86,6 +88,28 @@ module.exports = {
                 await addEmbedFooter(client, levelEmbed)
             
             interaction.reply({ embeds: [levelEmbed] })
+        }
+
+        else if (subCommand == "give-xp") {
+            if (interaction.member?.permissions instanceof PermissionsBitField) {
+                let user = interaction.options.getUser("user")
+                let xpToAdd = interaction.options.get("xp")?.value
+
+                if (interaction.member?.permissions.has(PermissionFlagsBits.ModerateMembers)) {
+                    if (user instanceof User && xpToAdd) {
+
+                        LevelsDB.addXp(user.id, Number(xpToAdd))
+                        interaction.reply(`Added ${xpToAdd} xp to <@${user.id}>`)
+                    } else {
+                        console.log(typeof(user))
+                        console.log(typeof(xpToAdd))
+                    }
+
+                } else{
+                    userMissingPermissions(client, interaction, "add xp")
+                }
+            }
+
         }
     }
 }

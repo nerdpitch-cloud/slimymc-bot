@@ -33,6 +33,7 @@ export class Config {
     }
     readonly levels: {
         ignoredChannels: Array<string>
+        roles: { [key: string]: string }
     }
 
     constructor(enviroment: Enviroment ) {

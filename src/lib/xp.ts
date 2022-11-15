@@ -100,14 +100,14 @@ export let levels = [
 1899250,
 ]
 
-export async function xpToLevel(xp: number): Promise<Number | undefined> {
+export async function xpToLevel(xp: number): Promise<number> {
     if (xp <= 100) {
         return 1
     }
 
     let currentLvlXp = Math.max(...levels.filter(num => num <= xp));
 
-    if (!currentLvlXp) return;
+    if (!currentLvlXp) return -1;
 
     return levels.indexOf(currentLvlXp) + 1;
 }
