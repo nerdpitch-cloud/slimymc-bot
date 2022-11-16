@@ -25,7 +25,7 @@ export async function handleMemberRemove(config: Config, member: GuildMember | P
     await InvitesDB.removeInvite(member.id);
 
     let inviteLogEmbed = new EmbedBuilder()
-        .setColor(0xfff6af)
+        .setColor(0xdb4d40)
         .setTitle("Member left")
         .setAuthor( {name: member.user.tag, iconURL: member.displayAvatarURL()} )
         .setDescription(`<@${member.id}> joined at ${joinedAt}\nWe now have **${member.guild.memberCount}** members!\nRoles: ${rolesMention}`)

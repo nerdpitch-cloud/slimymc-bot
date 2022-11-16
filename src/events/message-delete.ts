@@ -2,12 +2,12 @@ import { EmbedBuilder, Message, PartialMessage } from "discord.js";
 import { Config } from "../conf/config";
 
 export async function handleMessageDelete(config: Config, message: Message<boolean> | PartialMessage) {
+    if (!message.content) return;
     let logChannel = await message.client.channels.fetch(config.log.userlogChannelId);
     if (!logChannel?.isTextBased()) throw new Error("logChannel is not text based");
 
     let channel = await message.channel.fetch()
-    if(channel.isDMBased()) throw new Error("channel was DM channel")
-
+    if(channel.isDMBased()) return;
     let logEmbed = new EmbedBuilder()
         .setColor(0xdd5e53)
         .setTitle(`Message deleted in ${channel.name}`)

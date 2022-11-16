@@ -45,7 +45,7 @@ export async function handleMemberAdd(config: Config, member: GuildMember) {
     if (!inviteLogChannel?.isTextBased()) throw new Error ("inviteLogChannel was not text based") ;
 
     let inviteLogEmbed = new EmbedBuilder()
-        .setColor(0x53ddad)
+        .setColor(0x62c421)
         .setTitle("Member joined")
         .setAuthor( {name: member.user.tag, iconURL: member.displayAvatarURL()} )
         .setTimestamp()

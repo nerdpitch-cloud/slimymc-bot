@@ -66,15 +66,15 @@ module.exports = {
                 let leaderboard = await LevelsDB.getLeaderboard()
 
                 let leaderboardEmbed = new EmbedBuilder()
-                    .setColor(0x03fc9d)
+                    .setColor(0x77b94d)
                     .setTitle("Rank leaderboard")
                     .setTimestamp()
                     await addEmbedFooter(client, leaderboardEmbed)
                 
-                let embedDescription = "Showing top 10 rank"
+                let embedDescription = "Showing top 10 ranks"
     
                 for (let i = 0; i < leaderboard.length; i++) {
-                    embedDescription += `\n<@${leaderboard[i].user_id}> - **${inlineCode(String(await xpToLevel(leaderboard[i].xp)))}**`
+                    embedDescription += `\n**${i+1} • **${inlineCode(`lvl ${String(await xpToLevel(leaderboard[i].xp))}`)}** • **<@${leaderboard[i].user_id}>`
                 }
     
                 leaderboardEmbed.setDescription(embedDescription);
@@ -94,7 +94,7 @@ module.exports = {
     
                 let level = await xpToLevel(xp);
                 let levelEmbed = new EmbedBuilder()
-                    .setColor(0x03fc9d)
+                    .setColor(0x77b94d)
                     .setTitle(`Rank of ${user.tag}`)
                     .setDescription(`Current rank is ${inlineCode(String(level))}`)
                     .setTimestamp()
