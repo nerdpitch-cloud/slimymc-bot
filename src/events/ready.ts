@@ -8,6 +8,7 @@ import { promises as fsp } from "fs"
 import { constants } from 'fs';
 import { checkVerifyMessage } from "./buttons/verify";
 import { Config } from "../conf/config";
+import { refreshDbVariables } from "../lib/variables";
 
 export async function runReady(client: SlimyClient, config: Config) {
     try {
@@ -16,12 +17,13 @@ export async function runReady(client: SlimyClient, config: Config) {
         await fsp.writeFile(`${__dirname}/../commands/tempbans.json`, "{}")
     }
     
-    loadErrorLogChannel(client, config);
-    checkVerifyMessage(client, config);
-    initSQLPool(config);
-    invitesInit(client, config)
-    tempbanCheck(client);
-
+    await loadErrorLogChannel(client, config);
+    await checkVerifyMessage(client, config);
+    await initSQLPool(config);
+    await invitesInit(client, config)
+    await tempbanCheck(client);
+    await refreshDbVariables()
+    
     let job = new CronJob("*/15 * * * *", function() {
             tempbanCheck(client);
         },

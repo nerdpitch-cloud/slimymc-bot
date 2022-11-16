@@ -1,5 +1,6 @@
 import { CommandInteraction, EmbedBuilder, SlashCommandBuilder } from "discord.js";
 import SlimyClient from "../client";
+import { Config } from "../conf/config";
 import { addEmbedFooter } from "../lib/embed-footer";
 import { InvitesDB } from "../lib/mysql/invites";
 
@@ -8,7 +9,7 @@ module.exports = {
 		.setName("invites")
 		.setDescription("See the invites leaderboard"),
         
-	async execute(client: SlimyClient, interaction: CommandInteraction) {
+	async execute(client: SlimyClient, config: Config, interaction: CommandInteraction) {
 		let leaderboard = await InvitesDB.getAll()
 
         var items = Object.keys(leaderboard).map(function(key) {

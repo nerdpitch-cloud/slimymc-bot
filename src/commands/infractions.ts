@@ -1,5 +1,6 @@
 import { time , ChatInputCommandInteraction , SlashCommandBuilder, EmbedBuilder, codeBlock, Embed, ActionRowBuilder, SelectMenuBuilder, SelectMenuComponentOptionData } from "discord.js";
 import SlimyClient from "../client";
+import { Config } from "../conf/config";
 import { convertUTCDateToLocalDate } from "../lib/date";
 import { addEmbedFooter } from "../lib/embed-footer";
 import { handleUnexpectedError } from "../lib/errors/handler";
@@ -36,7 +37,7 @@ module.exports = {
     ),
                     
 
-	async execute(client: SlimyClient, interaction: ChatInputCommandInteraction) {
+	async execute(client: SlimyClient, config: Config, interaction: ChatInputCommandInteraction) {
         let subCommand = interaction.options.getSubcommand()
 
 		let target = interaction.options.getUser("member");

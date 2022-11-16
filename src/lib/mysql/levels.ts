@@ -1,7 +1,6 @@
 import { sendSQLQuery } from "./_base";
 
 
-
 interface leaderboardEntry {
     user_id: string,
     xp: number    

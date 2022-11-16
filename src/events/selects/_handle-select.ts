@@ -4,7 +4,7 @@ import { removeInteractionFromSelect } from "../remove-infraction";
 
 export async function handleSelectMenu(config: Config, interaction: SelectMenuInteraction) {
     switch(interaction.customId) {
-        case "infractions": removeInteractionFromSelect(interaction);
+        case "infractions": 
+            removeInteractionFromSelect(interaction);
     }
-    
 }
