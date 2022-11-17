@@ -26,10 +26,10 @@ export class InvitesDB {
     }
 
     static async addInvite(inviterId: string, userId: string) {
-        await sendSQLQuery("INSERT INTO invites (inviter_id, user_id) VALUES (?, ?)", [inviterId, userId])
+        await sendSQLQuery("INSERT INTO invites (inviter_id, user_id) VALUES (?, ?);", [inviterId, userId])
     }
 
     static async removeInvite(userId: string) {
-        await sendSQLQuery("DELETE FROM invites WHERE user_id = ?", [userId])
+        await sendSQLQuery("DELETE FROM invites WHERE user_id = ?;", [userId])
     }
 }

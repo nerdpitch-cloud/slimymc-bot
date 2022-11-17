@@ -35,6 +35,9 @@ export class Config {
         ignoredChannels: Array<string>
         roles: { [key: string]: string }
     }
+    readonly counting: {
+        channelId: string
+    }
 
     constructor(enviroment: Enviroment ) {
         if (enviroment == Enviroment.PROD) {
@@ -43,6 +46,7 @@ export class Config {
             this.mysql = prod.mysql
             this.verify = prod.verify
             this.levels = prod.levels
+            this.counting = prod.counting
         } else {
             // handle DEV
             this.discord = prod.discord
@@ -50,7 +54,7 @@ export class Config {
             this.mysql = prod.mysql
             this.verify = prod.verify
             this.levels = prod.levels
-
+            this.counting = prod.counting
         }
 
     }

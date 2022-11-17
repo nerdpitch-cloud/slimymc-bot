@@ -6,16 +6,16 @@ export interface dbVariable {
     value: string
 }
 export class VariablesDB {
-    static async set(name: string, value: string) {
-        let res = await sendSQLQuery("INSERT INTO variables (name, value) VALUES (?, ?) ON DUPLICATE KEY UPDATE value = ?", [name, value, value]);
+    static async set(name: string, value: string | number) {
+        let res = await sendSQLQuery("INSERT INTO variables (name, value) VALUES (?, ?) ON DUPLICATE KEY UPDATE value = ?;", [name, value, value]);
         
         await refreshDbVariables()
 
         return res;
     }
 
-    static async get(name: string): Promise <string | null> {
-        let res = await sendSQLQuery("SELECT value FROM variables WHERE name = ?", [name]);
+    static async get(name: string | number): Promise <string | null> {
+        let res = await sendSQLQuery("SELECT value FROM variables WHERE name = ?;", [name]);
 
         if (Array.isArray(res.result)) {
             return res.result[0][0]["value"]
@@ -25,7 +25,7 @@ export class VariablesDB {
     }
 
     static async getAll(): Promise<Array<dbVariable> | null> {
-        let res = await sendSQLQuery("SELECT * FROM variables");
+        let res = await sendSQLQuery("SELECT * FROM variables;");
         
         let allVariables: Array<dbVariable> = []
 
