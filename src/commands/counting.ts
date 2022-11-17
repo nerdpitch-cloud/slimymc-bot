@@ -16,6 +16,19 @@ module.exports = {
                 .setName("current")
                 .setDescription("Get the current count")
         )
+
+        .addSubcommand(subcommand =>
+            subcommand
+                .setName("set-current")
+                .setDescription("Get the current count")
+                .addNumberOption((option) =>
+                    option
+                        .setName("value")
+                        .setDescription("Value to which you'd like to set the current count to")
+                        .setRequired(true)
+            )
+        )
+
 		.setDefaultMemberPermissions(PermissionFlagsBits.BanMembers)
         .setDMPermission(false),
 
@@ -25,8 +38,26 @@ module.exports = {
         switch (subCommand) {
             case "current": 
                 let latestCount = await VariablesDB.get("latestCount")
-                console.log(latestCount)
+
                 interaction.reply(`Latest count is ${inlineCode(String(latestCount))}`)
+
+                break;
+
+            case "set-current":
+                if (interaction.member?.permissions instanceof PermissionsBitField) {
+                    if (interaction.member?.permissions.has(PermissionFlagsBits.ModerateMembers)) {
+                        let val = interaction.options.getNumber("value")
+                        if (!val) throw new Error("value was none")
+
+                        await VariablesDB.set("latestCount", val)
+
+                        interaction.reply(`Current count set to ${inlineCode(String(val))}`)
+                    } else{
+                        userMissingPermissions(client, interaction, "add xp")
+                    }
+                }
+
+                break;
         }
     }
 }

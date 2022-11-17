@@ -65,11 +65,7 @@ export async function handleMessageCreate(client: SlimyClient, config: Config, m
 
         let lastMsg = (await message.channel.messages.fetch({ limit: 2})).at(1)
 
-        console.log(Number(latestCount) + 1 === Number(message.content))
-        console.log(message.author !== lastMsg?.author)
-
         if (Number(latestCount) + 1 === Number(message.content) && message.author !== lastMsg?.author) {
-            console.log("counting")
             await VariablesDB.set("latestCount", Number(latestCount) + 1)
             await CountingDB.addCount(message.author.id)
         } else {

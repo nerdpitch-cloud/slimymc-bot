@@ -104,7 +104,7 @@ module.exports = {
 
                 break;
 
-            case "give-xp": 
+            case "give-xp":
                 if (interaction.member?.permissions instanceof PermissionsBitField) {
                     let user = interaction.options.getUser("user")
                     let xpToAdd = interaction.options.get("xp")?.value
@@ -121,6 +121,8 @@ module.exports = {
                     }
                 }
 
+                break;
+                
             case "set-multiplier":
                 if (interaction.member?.permissions instanceof PermissionsBitField) {
                     let xpMultiplier = interaction.options.get("multiplier")?.value
