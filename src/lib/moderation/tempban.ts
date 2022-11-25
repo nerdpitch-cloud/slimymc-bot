@@ -1,8 +1,12 @@
 import SlimyClient from "../../client";
 import {promises as fsp} from "fs"
+import { VariablesDB } from "../mysql/variables";
 
 export async function tempbanCheck(client: SlimyClient) {
-    let currentTempbans = await fsp.readFile(`${__dirname}/../../commands/tempbans.json`);
+    let currentTempbandsVar = await VariablesDB.get("currentTempbans")
+    if (!currentTempbandsVar) throw new Error("currentTempbans not found in db")
+
+    let currentTempbans = JSON.parse(currentTempbandsVar)
     let currentTempbansObj = JSON.parse(currentTempbans.toString());
 
 
@@ -18,12 +22,14 @@ export class TempBanFile {
     private static filepath = `${__dirname}/../../commands/tempbans.json`
 
     private static async _open() {
-        let currentTempbans = await fsp.readFile(TempBanFile.filepath);
-        return JSON.parse(currentTempbans.toString());
+        let currentTempbans = await VariablesDB.get("currentTempbans")
+        if (!currentTempbans) throw new Error("currentTempbans not found in db")
+
+        return JSON.parse(currentTempbans)
     }
 
     private static async _write(data: Object) {
-        await fsp.writeFile(TempBanFile.filepath, JSON.stringify(data, null, 4));
+        await VariablesDB.set("currentTempbans", JSON.stringify(data))
     }
 
     public static async genExpiration(duration: number) {

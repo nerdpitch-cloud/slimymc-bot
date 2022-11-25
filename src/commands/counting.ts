@@ -29,7 +29,6 @@ module.exports = {
             )
         )
 
-		.setDefaultMemberPermissions(PermissionFlagsBits.BanMembers)
         .setDMPermission(false),
 
 	async execute(client: SlimyClient, config: Config, interaction: ChatInputCommandInteraction) {

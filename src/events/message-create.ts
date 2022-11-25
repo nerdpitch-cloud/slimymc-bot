@@ -19,7 +19,7 @@ export var messageMultiplier: MessageMultiplier = {
     value: 1
 }
 
-export async function handleMessageCreate(client: SlimyClient, config: Config, message: Message) {
+async function handleXp(config: Config, message: Message) {
     if (messageMultiplier.expires < new Date() && messageMultiplier.value !== 1) {
         await VariablesDB.set("xp_multiplier", `{"expires": ${Math.round(new Date().getTime() / 1000)}, "value": 1}`)
     }
@@ -54,22 +54,46 @@ export async function handleMessageCreate(client: SlimyClient, config: Config, m
     
         LevelsDB.addXp(message.author.id, messageXp);
     }
+}
+
+async function handleCounting(message: Message) {
+    let latestCount = Number(await VariablesDB.get("latestCount"))
+
+    if (!latestCount) {
+        await VariablesDB.set("latestCount", 0)
+        latestCount = 0
+    }
+
+    let lastMsg = (await message.channel.messages.fetch({ limit: 2})).at(1)
+
+    if (Number(latestCount) + 1 === Number(message.content) && message.author !== lastMsg?.author) {
+        await VariablesDB.set("latestCount", Number(latestCount) + 1)
+        await CountingDB.addCount(message.author.id)
+    } else {
+        return message.delete()
+    }
+}
+
+async function handleAutomod(config: Config, message: Message) {
+    let inviteRegex = /(https?:\/\/)?(www\.)?(discord\.(gg|io|me|li)|discordapp\.com\/invite)\/.+[a-z]/g
+    let foundInvite = message.content.match(inviteRegex)
+    if (foundInvite) {
+        console.log("invite")
+    }
+
+    if (config.automod.bannedWords.some(v => message.content.includes(v))) {
+        console.log("swearword")
+    }
+}
+
+export async function handleMessageCreate(client: SlimyClient, config: Config, message: Message) {
+    await handleAutomod(config, message);
+
+    await handleXp(config, message);
 
     if (message.channelId == config.counting.channelId) {
-        let latestCount = Number(await VariablesDB.get("latestCount"))
-
-        if (!latestCount) {
-            await VariablesDB.set("latestCount", 0)
-            latestCount = 0
-        }
-
-        let lastMsg = (await message.channel.messages.fetch({ limit: 2})).at(1)
-
-        if (Number(latestCount) + 1 === Number(message.content) && message.author !== lastMsg?.author) {
-            await VariablesDB.set("latestCount", Number(latestCount) + 1)
-            await CountingDB.addCount(message.author.id)
-        } else {
-            return message.delete()
-        }
+        await handleCounting(message);
     }
+
+
 }

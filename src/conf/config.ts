@@ -1,4 +1,5 @@
 
+
 import prod from "../conf/prod.json"
 
 
@@ -38,6 +39,9 @@ export class Config {
     readonly counting: {
         channelId: string
     }
+    readonly automod: {
+        bannedWords: Array<string>
+    }
 
     constructor(enviroment: Enviroment ) {
         if (enviroment == Enviroment.PROD) {
@@ -47,6 +51,8 @@ export class Config {
             this.verify = prod.verify
             this.levels = prod.levels
             this.counting = prod.counting
+            this.automod = prod["automod:"]
+
         } else {
             // handle DEV
             this.discord = prod.discord
@@ -55,6 +61,7 @@ export class Config {
             this.verify = prod.verify
             this.levels = prod.levels
             this.counting = prod.counting
+            this.automod = prod["automod:"]
         }
 
     }

@@ -7,7 +7,9 @@ import { InvitesDB } from "../lib/mysql/invites";
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName("invites")
-		.setDescription("See the invites leaderboard"),
+		.setDescription("See the invites leaderboard")
+
+        .setDMPermission(false),
         
 	async execute(client: SlimyClient, config: Config, interaction: CommandInteraction) {
 		let leaderboard = await InvitesDB.getAll()

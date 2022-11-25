@@ -1,4 +1,4 @@
-import { time , ChatInputCommandInteraction , SlashCommandBuilder, EmbedBuilder, codeBlock, Embed, ActionRowBuilder, SelectMenuBuilder, SelectMenuComponentOptionData } from "discord.js";
+import { time , ChatInputCommandInteraction , SlashCommandBuilder, EmbedBuilder, codeBlock, Embed, ActionRowBuilder, SelectMenuBuilder, SelectMenuComponentOptionData, PermissionFlagsBits } from "discord.js";
 import SlimyClient from "../client";
 import { Config } from "../conf/config";
 import { convertUTCDateToLocalDate } from "../lib/date";
@@ -33,9 +33,10 @@ module.exports = {
                     .setDescription("Member who's infraction you want to remove")
                     .setRequired(true)
             )
-            
-    ),
-                    
+        )
+
+        .setDefaultMemberPermissions(PermissionFlagsBits.BanMembers)
+        .setDMPermission(false),
 
 	async execute(client: SlimyClient, config: Config, interaction: ChatInputCommandInteraction) {
         let subCommand = interaction.options.getSubcommand()
