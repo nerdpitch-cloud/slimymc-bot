@@ -32,7 +32,8 @@ export class TempBanFile {
         await VariablesDB.set("currentTempbans", JSON.stringify(data))
     }
 
-    public static async genExpiration(duration: number) {
+    public static async genExpiration(duration: number | null) {
+        if (!duration) duration = 1
         return Math.round(Date.now() / 1000 + duration * 3600)
     }
     
