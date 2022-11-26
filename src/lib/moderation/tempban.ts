@@ -1,19 +1,17 @@
 import SlimyClient from "../../client";
-import {promises as fsp} from "fs"
 import { VariablesDB } from "../mysql/variables";
 
 export async function tempbanCheck(client: SlimyClient) {
     let currentTempbandsVar = await VariablesDB.get("currentTempbans")
-    if (!currentTempbandsVar) throw new Error("currentTempbans not found in db")
+    if (!currentTempbandsVar) currentTempbandsVar = ""
 
     let currentTempbans = JSON.parse(currentTempbandsVar)
-    let currentTempbansObj = JSON.parse(currentTempbans.toString());
 
 
-    for (let key in currentTempbansObj){
-        if(Math.round(Date.now() / 1000) > currentTempbansObj[key]["expires"]) {
+    for (let key in currentTempbans){
+        if(Math.round(Date.now() / 1000) > currentTempbans[key]["expires"]) {
             TempBanFile.removeMember(key);
-            await (await client.guilds.fetch(currentTempbansObj[key]["guild"])).members.unban(key);
+            await (await client.guilds.fetch(currentTempbans[key]["guild"])).members.unban(key);
         }
     }
 }
@@ -23,7 +21,7 @@ export class TempBanFile {
 
     private static async _open() {
         let currentTempbans = await VariablesDB.get("currentTempbans")
-        if (!currentTempbans) throw new Error("currentTempbans not found in db")
+        if (!currentTempbans) currentTempbans = ""
 
         return JSON.parse(currentTempbans)
     }

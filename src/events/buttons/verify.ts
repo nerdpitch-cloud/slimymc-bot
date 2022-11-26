@@ -43,8 +43,6 @@ async function _sendVerifyMessage(client: SlimyClient, config: Config, channel: 
         4
     )
 
-    await fsp.writeFile(`${__dirname}/../conf/verify.json`, conf);
-
 }
 
 export async function handleVerifyButton(interaction: ButtonInteraction, config: Config) {

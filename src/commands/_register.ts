@@ -2,7 +2,15 @@ import { REST, Routes } from "discord.js";
 import fs from "node:fs";
 import { Config, Enviroment } from "../conf/config";
 
-let config = new Config(Enviroment.PROD)
+let enviroment = process.argv.slice(2)[0];
+
+let config: Config
+
+if (enviroment === "dev") {
+	config = new Config(Enviroment.DEV)
+} else {
+	config = new Config(Enviroment.PROD)
+}
 
 const commands = [];
 

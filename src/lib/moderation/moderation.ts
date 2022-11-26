@@ -1,4 +1,4 @@
-import { CommandInteraction, EmbedBuilder, Guild, inlineCode, User } from "discord.js";
+import { CommandInteraction, EmbedBuilder, Guild, inlineCode, Interaction, User } from "discord.js";
 import SlimyClient from "../../client";
 import { Config } from "../../conf/config";
 import { addEmbedFooter } from "../embed-footer";
@@ -52,14 +52,7 @@ export class ModerationAction {
     }
 }
 
-interface SetupReturn {
-    target: User;
-    reason: string;
-    duration: number | null
-    guild: Guild
-}
-
-type ModerationOptions = {
+export type ModerationOptions = {
     author: User
     target: User
     guild: Guild
@@ -71,49 +64,23 @@ export async function punishmentTextFromId(id: number) {
     return punishmentIds[id]
 }
 
-export async function moderationSetup(client: SlimyClient, interaction: CommandInteraction, action: Punishment): Promise<SetupReturn | void> {
-    let targetArg = interaction.options.get("user");
-    let reasonArg = interaction.options.get("reason");
-    let durationArg = interaction.options.get("duration");
-    let targetUsr: User;
-    let reasonTxt: string;
-    let durationInt: number | null = null;
+export async function genModerationOptions(interaction: CommandInteraction): Promise<ModerationOptions> {
+    let target = interaction.options.getUser("user")
+    let guild = interaction.guild
 
-    if (!interaction.guild) throw new Error("interaction.guild was null");
-    if (typeof targetArg?.user == "undefined") throw new Error("targetArg?.user was undefined");
-
-    targetUsr = targetArg.user
-    
-    if (typeof reasonArg?.value == "undefined") {
-        reasonTxt = "not specified"
-    } else {
-        reasonTxt = String(reasonArg.value)
-    }
-
-
-    if (durationArg?.value) {
-        durationInt = Number(durationArg.value);
-    }
-    
-    if (targetUsr == client.user) {
-        return cannotPunish(client, interaction, action.text, targetUsr, "cannot punish itself")
-    }
+    if (!target || !guild) throw new Error("error in generating moderation options")
 
     return {
-        target: targetUsr,
-        reason: reasonTxt,
-        duration: durationInt,
-        guild: interaction.guild
+        author: interaction.user,
+        target: target,
+        guild: guild,
+        reason: String(interaction.options.get("reason")?.value),
+        duration: Number(interaction.options.get("duration")?.value)
     }
 }
-
 export async function handleModeration(client: SlimyClient, config: Config, command: ModerationOptions, punishment: Punishment) {
     if (!command.reason) {
         command.reason = "not specified"
-    }
-
-    if (!command.duration) {
-        command.duration = 1
     }
 
     let durationTimestamp = await TempBanFile.genExpiration(command.duration)
@@ -122,7 +89,7 @@ export async function handleModeration(client: SlimyClient, config: Config, comm
     let dmEmbed = new EmbedBuilder()
         .setColor(punishment.color)
         .setTitle(`You have been ${punishment.text}ed`)
-        .setDescription(`You have been ${punishment.text}ed by **${command.author.tag}** from **${command.guild.name}**\nReason: ${inlineCode(command.reason)}\n${command.duration ? `duration: ${command.duration} hours` : null}`)
+        .setDescription(`You have been ${punishment.text}ed by **${command.author.tag}** from **${command.guild.name}**\nReason: ${inlineCode(command.reason)}\n${command.duration ? `duration: ${command.duration} hours` : ""}`)
         .setTimestamp()
         await addEmbedFooter(client, dmEmbed);
 
@@ -131,11 +98,15 @@ export async function handleModeration(client: SlimyClient, config: Config, comm
     let modlogEmbed = new EmbedBuilder()
         .setColor(punishment.color)
         .setTitle(`You have been ${punishment.text}ed`)
-        .setDescription(`<@${command.author.id}> has banned <@${command.target.id}> with reason:\n${inlineCode(command.reason)}\n${command.duration ? `duration: ${command.duration} hours` : null}`)
+        .setDescription(`<@${command.author.id}> has banned <@${command.target.id}> with reason:\n${inlineCode(command.reason)}\n${command.duration ? `duration: ${command.duration} hours` : ""}`)
         .setTimestamp()
         await addEmbedFooter(client, modlogEmbed);
 
     await sendModLog(client, config, modlogEmbed)
+
+    if (!command.duration) {
+        command.duration = 1
+    }
 
     switch(punishment.id) {
         case 0: // ban

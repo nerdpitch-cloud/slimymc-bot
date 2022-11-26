@@ -1,6 +1,7 @@
 
 
 import prod from "../conf/prod.json"
+import dev from "../conf/dev.json"
 
 
 export class Enviroment {
@@ -55,13 +56,13 @@ export class Config {
 
         } else {
             // handle DEV
-            this.discord = prod.discord
-            this.log = prod.log
-            this.mysql = prod.mysql
-            this.verify = prod.verify
-            this.levels = prod.levels
-            this.counting = prod.counting
-            this.automod = prod["automod:"]
+            this.discord = dev.discord
+            this.log = dev.log
+            this.mysql = dev.mysql
+            this.verify = dev.verify
+            this.levels = dev.levels
+            this.counting = dev.counting
+            this.automod = dev["automod:"]
         }
 
     }

@@ -15,8 +15,18 @@ import { Config, Enviroment } from "./conf/config";
 
 const client = new SlimyClient({ 
 	intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildInvites, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMessages],
-	partials: [Partials.Message] });
-const config = new Config(Enviroment.PROD)
+	partials: [Partials.Message] 
+});
+
+let enviroment = process.argv.slice(2)[0];
+
+let config: Config
+
+if (enviroment === "dev") {
+	config = new Config(Enviroment.DEV)
+} else {
+	config = new Config(Enviroment.PROD)
+}
 
 client.once(Events.ClientReady, () => {
 	runReady(client, config);
