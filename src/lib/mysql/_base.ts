@@ -11,16 +11,16 @@ export async function initSQLPool(config: Config) {
         database: config.mysql.database,
         supportBigNumbers: true
     });
-
 }
 export async function sendSQLQuery(query: string, args: Array<string | number> | null = null) {
     try {
         let res = await pool.execute(query, args);
-
+        
         return {
             success: true,
             result: res
         }
+
 
     } catch (err) {
         return {

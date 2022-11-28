@@ -3,7 +3,7 @@ import { runReady } from "./events/ready";
 import SlimyClient from "./client"
 import { handleCommand } from "./commands/_handle";
 import { handleGuildMemberUpdate } from "./events/guild/member-update";
-import { handleUserUpdate } from "./events/guild/user-update";
+import { handleUserUpdate } from "./events/user-update"
 import { handleInviteCreate, handleInviteDelete, handleMemberAdd } from "./events/guild/member-add";
 import { handleMemberRemove } from "./events/guild/member-remove";
 import { handleMessageUpdate } from "./events/message-update";
