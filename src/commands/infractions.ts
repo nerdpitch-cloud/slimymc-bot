@@ -84,7 +84,7 @@ module.exports = {
                 let curr = allInfractions.result[i]
                 options.push({
                     label: await punishmentTextFromId(curr.punishment),
-                    description: `${curr.reason} - issued at: ${curr.date_issued}`,
+                    description: `${curr.reason} - issued at: ${curr.date_issued.toLocaleString()}`,
                     value: `remove-infraction_${curr.punishment_id}`,
                 })
             }

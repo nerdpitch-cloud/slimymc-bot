@@ -87,6 +87,7 @@ async function handleAutomod(client: SlimyClient, config: Config, message: Messa
             duration: 0
         }
 
+        message.delete()
         handleModeration(client, config, options, ModerationAction.WARN)
     }
 
@@ -99,6 +100,7 @@ async function handleAutomod(client: SlimyClient, config: Config, message: Messa
             duration: 0
         }
         
+        message.delete()
         handleModeration(client, config, options, ModerationAction.WARN)
     }
 }

@@ -1,4 +1,4 @@
-import { CommandInteraction, EmbedBuilder, Guild, inlineCode, Interaction, User } from "discord.js";
+import { bold, CommandInteraction, EmbedBuilder, Guild, inlineCode, Interaction, User } from "discord.js";
 import SlimyClient from "../../client";
 import { Config } from "../../conf/config";
 import { addEmbedFooter } from "../embed-footer";
@@ -15,37 +15,55 @@ let punishmentIds = [
     "warn"
 ]
 
+
 export type Punishment = {
-    text: string;
+    text: PunishmentText;
     id: number;
     color: number
     duration: boolean
 };
 
+interface PunishmentText {
+    noun: string
+    verb: string
+}
+
 export class ModerationAction {
     static BAN: Punishment = {
-        text: "ban",
+        text: {
+            noun: "ban",
+            verb: "banned"
+        },
         id: 0,
         color: 0xbb2525,
         duration: false
     }
 
     static TEMPBAN: Punishment = {
-        text: "tempban",
+        text: {
+            noun: "tempban",
+            verb: "tempbanned"
+        },
         id: 1,
         color: 0xbb2525,
         duration: true
     }
     
     static TEMPMUTE: Punishment = {
-        text: "tempmute",
+        text: {
+            noun: "tempmute",
+            verb: "tempmuted"
+        },
         id: 2,
         color: 0xbb2525,
         duration: true
     }
 
     static WARN: Punishment = {
-        text: "warn",
+        text: {
+            noun: "warn",
+            verb: "warned"
+        },
         id: 3,
         color: 0xbb2525,
         duration: false
@@ -79,34 +97,50 @@ export async function genModerationOptions(interaction: CommandInteraction): Pro
     }
 }
 export async function handleModeration(client: SlimyClient, config: Config, command: ModerationOptions, punishment: Punishment) {
+    let durationTimestamp = await TempBanFile.genExpiration(command.duration)
+    let memberTarget = await command.guild.members.fetch(command.target.id)
+    let recentInfractions = await InfractionsDB.getRecentInfractions(command.target.id);
+    let additionalPunishment = ""
+    
+    console.log(recentInfractions.result.length)
+
+    if (recentInfractions.result.length + 1 == 2) {
+        additionalPunishment =  `\nAdditional punishment - ${bold("1 hour timeout")}`
+
+    } else if(recentInfractions.result.length + 1 == 3 || recentInfractions.result.length + 1 == 4) {
+        additionalPunishment = `\nAdditional punishment -  ${bold("24 hour timeout")}`
+
+    } else if (recentInfractions.result.length + 1 >= 5) {
+        additionalPunishment = `\nAdditional punishment - ${bold("1 week temporary ban")}`
+    }
+
     if (!command.reason) {
         command.reason = "not specified"
     }
 
+    let dmDescription = `You have been ${punishment.text.verb} by **${command.author.tag}** from **${command.guild.name}**\nReason: ${inlineCode(command.reason)}\n${command.duration ? `duration: ${command.duration} hours` : ""}${additionalPunishment}`
+    let logDescription = `<@${command.author.id}> has ${punishment.text.verb} <@${command.target.id}> with reason:\n${inlineCode(command.reason)}\n${command.duration ? `duration: ${command.duration} hours` : ""}${additionalPunishment}`
+
     let dmEmbed = new EmbedBuilder()
         .setColor(punishment.color)
-        .setTitle(`You have been ${punishment.text}ed`)
-        .setDescription(`You have been ${punishment.text}ed by **${command.author.tag}** from **${command.guild.name}**\nReason: ${inlineCode(command.reason)}\n${command.duration ? `duration: ${command.duration} hours` : ""}`)
+        .setTitle(`You have been ${punishment.text.verb}`)
+        .setDescription(dmDescription)
         .setTimestamp()
         await addEmbedFooter(client, dmEmbed);
 
-    await sendDmEmbed(client, command.target, dmEmbed);
-
-    let modlogEmbed = new EmbedBuilder()
+    let logEmbed = new EmbedBuilder()
         .setColor(punishment.color)
-        .setTitle(`You have been ${punishment.text}ed`)
-        .setDescription(`<@${command.author.id}> has banned <@${command.target.id}> with reason:\n${inlineCode(command.reason)}\n${command.duration ? `duration: ${command.duration} hours` : ""}`)
+        .setTitle(`A user has been been ${punishment.text.verb}`)
+        .setDescription(logDescription)
         .setTimestamp()
-        await addEmbedFooter(client, modlogEmbed);
+        await addEmbedFooter(client, logEmbed);
 
-    await sendModLog(client, config, modlogEmbed)
+    await sendDmEmbed(client, command.target, dmEmbed);
+    await sendModLog(client, config, logEmbed);
 
     if (!command.duration) {
         command.duration = 1
     }
-
-    let durationTimestamp = await TempBanFile.genExpiration(command.duration)
-    let memberTarget = await command.guild.members.fetch(command.target.id)
     
     switch(punishment.id) {
         case 0: // ban
@@ -132,19 +166,14 @@ export async function handleModeration(client: SlimyClient, config: Config, comm
 
         case 3: // warn
             let recentInfractions = await InfractionsDB.getRecentInfractions(command.target.id);
-            let additionalPunishment = "No additional punishment"
-            
-            if (recentInfractions.result.length == 2) {
+  
+            if (recentInfractions.result.length + 1 == 2) {
                 await memberTarget.timeout(1 * 3600000, command.reason); // 1 hour
-                additionalPunishment = "1 hour timeout";
 
-            } else if(recentInfractions.result.length == 3 || recentInfractions.result.length == 4) {
+            } else if(recentInfractions.result.length + 1 == 3 || recentInfractions.result.length + 1 == 4) {
                 await memberTarget.timeout(24 * 3600000, command.reason); // 24 hours
-                additionalPunishment = "24 hour timeout";
 
-            } else if (recentInfractions.result.length >= 5) {
-                additionalPunishment = "1 week temporary ban";
-
+            } else if (recentInfractions.result.length + 1 >= 5) {
                 let durationTimestamp = await TempBanFile.genExpiration(168);
                 await command.guild.members.ban(command.target.id, { reason: command.reason });
                 TempBanFile.addMember(command.target.id, command.guild.id, durationTimestamp)

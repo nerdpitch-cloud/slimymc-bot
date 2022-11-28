@@ -32,8 +32,7 @@ export class InfractionsDB {
         return res
     }
 
-    public static async addInfraction(userId: string, punishment: Punishment, reason: string | null = null) {
-        if (!reason) reason = "not provided"
+    public static async addInfraction(userId: string, punishment: Punishment, reason: string) {
         return await sendSQLQuery("INSERT INTO infractions (user_id, punishment, reason) VALUES (?, ?, ?);", [userId, punishment.id, reason])
     }
 
@@ -56,11 +55,11 @@ export class InfractionsDB {
     }
 
     public static async getRecentInfractions(userId: string): Promise<GetInfractionsRes> {
-        let res = await sendSQLQuery("SELECT * FROM infractions WHERE user_id = ? AND YEAR(date_issued) = YEAR(CURRENT_DATE - INTERVAL 1 MONTH) AND MONTH(date_issued) = MONTH(CURRENT_DATE - INTERVAL 1 MONTH) ORDER BY date_issued DES;", [userId])
+        let res = await sendSQLQuery("SELECT * FROM `infractions` WHERE user_id = ? AND date_issued >= CURRENT_TIMESTAMP -30;", [userId])
         if(!res.success) throw new Error(String(res.result));
         if (!Array.isArray(res.result)) throw new Error("res.result was not an array");
         if (!Array.isArray(res.result[0])) throw new Error("res.result[0] was not an array");
-        
+
         let formattedRes = await InfractionsDB._formatGetInfractions(res.result[0])
 
         return {
