@@ -83,9 +83,6 @@ export async function handleModeration(client: SlimyClient, config: Config, comm
         command.reason = "not specified"
     }
 
-    let durationTimestamp = await TempBanFile.genExpiration(command.duration)
-    let memberTarget = await command.guild.members.fetch(command.target.id)
-
     let dmEmbed = new EmbedBuilder()
         .setColor(punishment.color)
         .setTitle(`You have been ${punishment.text}ed`)
@@ -108,6 +105,9 @@ export async function handleModeration(client: SlimyClient, config: Config, comm
         command.duration = 1
     }
 
+    let durationTimestamp = await TempBanFile.genExpiration(command.duration)
+    let memberTarget = await command.guild.members.fetch(command.target.id)
+    
     switch(punishment.id) {
         case 0: // ban
             await command.guild.members.ban(command.target.id, { reason: command.reason });

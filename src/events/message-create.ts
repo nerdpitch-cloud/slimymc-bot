@@ -2,6 +2,7 @@ import { Message } from "discord.js";
 import { channel } from "node:diagnostics_channel";
 import SlimyClient from "../client";
 import { Config } from "../conf/config";
+import { handleModeration, ModerationAction, ModerationOptions } from "../lib/moderation/moderation";
 import { CountingDB } from "../lib/mysql/counting";
 import { LevelsDB } from "../lib/mysql/levels";
 import { VariablesDB } from "../lib/mysql/variables";
@@ -74,20 +75,36 @@ async function handleCounting(message: Message) {
     }
 }
 
-async function handleAutomod(config: Config, message: Message) {
+async function handleAutomod(client: SlimyClient, config: Config, message: Message) {
     let inviteRegex = /(https?:\/\/)?(www\.)?(discord\.(gg|io|me|li)|discordapp\.com\/invite)\/.+[a-z]/g
     let foundInvite = message.content.match(inviteRegex)
     if (foundInvite) {
-        console.log("invite")
+        let options: ModerationOptions = {
+            author: await client.users.fetch("764898085666291744"),
+            target: message.author,
+            guild: await client.guilds.fetch(message.guild ? message.guild.id : config.discord.guildId ),
+            reason: "posting an invite (automod)",
+            duration: 0
+        }
+
+        handleModeration(client, config, options, ModerationAction.WARN)
     }
 
     if (config.automod.bannedWords.some(v => message.content.includes(v))) {
-        console.log("swearword")
+        let options: ModerationOptions = {
+            author: await client.users.fetch("764898085666291744"),
+            target: message.author,
+            guild: await client.guilds.fetch(message.guild ? message.guild.id : config.discord.guildId ),
+            reason: "sending a banned word (automod)",
+            duration: 0
+        }
+        
+        handleModeration(client, config, options, ModerationAction.WARN)
     }
 }
 
 export async function handleMessageCreate(client: SlimyClient, config: Config, message: Message) {
-    await handleAutomod(config, message);
+    await handleAutomod(client, config, message);
 
     await handleXp(config, message);
 
