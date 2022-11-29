@@ -80,7 +80,7 @@ async function handleAutomod(client: SlimyClient, config: Config, message: Messa
     let foundInvite = message.content.match(inviteRegex)
     if (foundInvite) {
         let options: ModerationOptions = {
-            author: await client.users.fetch("764898085666291744"),
+            author: await client.users.fetch(config.discord.clientId),
             target: message.author,
             guild: await client.guilds.fetch(message.guild ? message.guild.id : config.discord.guildId ),
             reason: "posting an invite (automod)",
@@ -93,7 +93,7 @@ async function handleAutomod(client: SlimyClient, config: Config, message: Messa
 
     if (config.automod.bannedWords.some(v => message.content.includes(v))) {
         let options: ModerationOptions = {
-            author: await client.users.fetch("764898085666291744"),
+            author: await client.users.fetch(config.discord.clientId),
             target: message.author,
             guild: await client.guilds.fetch(message.guild ? message.guild.id : config.discord.guildId ),
             reason: "sending a banned word (automod)",

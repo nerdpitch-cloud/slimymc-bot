@@ -101,8 +101,6 @@ export async function handleModeration(client: SlimyClient, config: Config, comm
     let memberTarget = await command.guild.members.fetch(command.target.id)
     let recentInfractions = await InfractionsDB.getRecentInfractions(command.target.id);
     let additionalPunishment = ""
-    
-    console.log(recentInfractions.result.length)
 
     if (recentInfractions.result.length + 1 == 2) {
         additionalPunishment =  `\nAdditional punishment - ${bold("1 hour timeout")}`
@@ -164,9 +162,7 @@ export async function handleModeration(client: SlimyClient, config: Config, comm
 
             break;
 
-        case 3: // warn
-            let recentInfractions = await InfractionsDB.getRecentInfractions(command.target.id);
-  
+        case 3: // warn  
             if (recentInfractions.result.length + 1 == 2) {
                 await memberTarget.timeout(1 * 3600000, command.reason); // 1 hour
 

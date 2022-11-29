@@ -23,10 +23,7 @@ export async function sendSQLQuery(query: string, args: Array<string | number> |
 
 
     } catch (err) {
-        return {
-            success: false,
-            result: err
-        }
+        throw err;
     }
 }
 
