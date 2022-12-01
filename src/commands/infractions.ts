@@ -1,9 +1,8 @@
-import { time , ChatInputCommandInteraction , SlashCommandBuilder, EmbedBuilder, codeBlock, Embed, ActionRowBuilder, SelectMenuBuilder, SelectMenuComponentOptionData, PermissionFlagsBits } from "discord.js";
+import { time , ChatInputCommandInteraction , SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, SelectMenuBuilder, SelectMenuComponentOptionData, PermissionFlagsBits } from "discord.js";
 import SlimyClient from "../client";
 import { Config } from "../conf/config";
 import { convertUTCDateToLocalDate } from "../lib/date";
 import { addEmbedFooter } from "../lib/embed-footer";
-import { handleUnexpectedError } from "../lib/errors/handler";
 import { punishmentTextFromId } from "../lib/moderation/moderation";
 import { InfractionsDB } from "../lib/mysql/infractions";
 

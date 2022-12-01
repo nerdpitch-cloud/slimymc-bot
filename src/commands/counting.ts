@@ -1,11 +1,8 @@
-import { ChatInputCommandInteraction, CommandInteraction, EmbedBuilder, inlineCode, PermissionFlagsBits, PermissionsBitField, SlashCommandBuilder, time, User } from "discord.js";
+import { ChatInputCommandInteraction, inlineCode, PermissionFlagsBits, PermissionsBitField, SlashCommandBuilder } from "discord.js";
 import SlimyClient from "../client";
 import { Config } from "../conf/config";
-import { addEmbedFooter } from "../lib/embed-footer";
 import { userMissingPermissions } from "../lib/errors/common/permissions";
-import { LevelsDB } from "../lib/mysql/levels";
 import { VariablesDB } from "../lib/mysql/variables";
-import { xpToLevel } from "../lib/xp";
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -52,7 +49,7 @@ module.exports = {
 
                         interaction.reply(`Current count set to ${inlineCode(String(val))}`)
                     } else{
-                        userMissingPermissions(client, interaction, "add xp")
+                        userMissingPermissions(client, interaction, "set count")
                     }
                 }
 
