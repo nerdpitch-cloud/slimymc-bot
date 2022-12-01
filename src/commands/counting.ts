@@ -34,8 +34,8 @@ module.exports = {
         switch (subCommand) {
             case "current": 
                 let latestCount = await VariablesDB.get("latestCount")
-
-                interaction.reply(`Latest count is ${inlineCode(String(latestCount))}`)
+                
+                interaction.reply(`Latest count is ${inlineCode(String(latestCount.value))}`)
 
                 break;
 

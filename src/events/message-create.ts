@@ -58,9 +58,10 @@ async function handleXp(config: Config, message: Message) {
 }
 
 async function handleCounting(message: Message) {
-    let latestCount = Number(await VariablesDB.get("latestCount"))
+    let latestCount = Number(await (await VariablesDB.get("latestCount")).value)
 
     if (!latestCount) {
+        console.log("setting count to 0")
         await VariablesDB.set("latestCount", 0)
         latestCount = 0
     }
