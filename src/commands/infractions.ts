@@ -45,8 +45,7 @@ module.exports = {
         if(!target) throw new Error("target was null");
 
         if (subCommand == "view") {
-            let allInfractions = await InfractionsDB.getInfractions(target.id)
-            if (!allInfractions.success) return handleUnexpectedError(client, allInfractions.result);
+            let allInfractions = await InfractionsDB.getAllInfractions(target.id)
 
             let infractionsSrc = ""
 
@@ -56,8 +55,8 @@ module.exports = {
                 .setTimestamp()
                 await addEmbedFooter(client, infractionsEmbed)
 
-            for (let i = 0; i < allInfractions.result.length; i++) {
-                let curr = allInfractions.result[i]
+            for (let i = 0; i < allInfractions.length; i++) {
+                let curr = allInfractions[i]
                 let date_issued = await convertUTCDateToLocalDate(curr.date_issued)
 
                 let punishmentStr = await punishmentTextFromId(curr.punishment)
@@ -68,8 +67,7 @@ module.exports = {
 
             interaction.reply( {embeds: [infractionsEmbed] })
         } else if (subCommand == "remove") {
-            let allInfractions = await InfractionsDB.getInfractions(target.id)
-            if (!allInfractions.success) return handleUnexpectedError(client, allInfractions.result);
+            let allInfractions = await InfractionsDB.getAllInfractions(target.id)
 
             let actionRow = new ActionRowBuilder<SelectMenuBuilder>()
                 .addComponents(
@@ -80,8 +78,8 @@ module.exports = {
             
             let options: Array<SelectMenuComponentOptionData> = [];
             
-            for (let i = 0; i < allInfractions.result.length; i++) {
-                let curr = allInfractions.result[i]
+            for (let i = 0; i < allInfractions.length; i++) {
+                let curr = allInfractions[i]
                 options.push({
                     label: await punishmentTextFromId(curr.punishment),
                     description: `${curr.reason} - issued at: ${curr.date_issued.toLocaleString()}`,

@@ -63,7 +63,7 @@ module.exports = {
 
         switch (subCommand) {
             case "leaderboard": 
-                let leaderboard = await LevelsDB.getLeaderboard()
+                let leaderboard = await LevelsDB.getAll()
 
                 let leaderboardEmbed = new EmbedBuilder()
                     .setColor(0x77b94d)
@@ -74,7 +74,7 @@ module.exports = {
                 let embedDescription = "Showing top 10 ranks"
     
                 for (let i = 0; i < leaderboard.length; i++) {
-                    embedDescription += `\n**${i+1} • **${inlineCode(`lvl ${String(await xpToLevel(leaderboard[i].xp))}`)}** • **<@${leaderboard[i].user_id}>`
+                    embedDescription += `\n**${i+1} • **${inlineCode(`lvl ${String(await xpToLevel(leaderboard[i].xp))}`)}** • **<@${leaderboard[i].userId}>`
                 }
     
                 leaderboardEmbed.setDescription(embedDescription);
@@ -89,7 +89,7 @@ module.exports = {
                     user = interaction.user
                 }
     
-                let xp = await LevelsDB.getXp(user.id)
+                let xp = Number(await LevelsDB.getXp(user.id))
                 if (!xp) return interaction.reply(`Failed to get the rank of ${user.tag}`)
     
                 let level = await xpToLevel(xp);

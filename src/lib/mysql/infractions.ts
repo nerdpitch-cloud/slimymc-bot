@@ -1,22 +1,10 @@
 import { Punishment } from "../moderation/moderation"
+import { InfractionEntry } from "./types"
 import { sendSQLQuery } from "./_base"
 
-interface Infraction {
-    punishment_id: number
-    user_id: string
-    punishment: number
-    reason: string
-    date_issued: Date
-}
-
-interface GetInfractionsRes {
-    success: boolean
-    result: Array<Infraction>
-}
-
 export class InfractionsDB {
-    private static async _formatGetInfractions(infractionsArr: Array<any>): Promise<Array<Infraction>> {
-        let res: Array<Infraction> = []
+    private static async _formmatInfractions(infractionsArr: Array<any>): Promise<Array<InfractionEntry>> {
+        let res: Array<InfractionEntry> = []
 
         for (let i = 0; i < infractionsArr.length; i++) {
 
@@ -40,31 +28,21 @@ export class InfractionsDB {
         return await sendSQLQuery("DELETE FROM infractions WHERE punishment_id = ?", [punishmentId])
     }
 
-    public static async getInfractions(userId: string): Promise<GetInfractionsRes> {
+    public static async getAllInfractions(userId: string): Promise<Array<InfractionEntry>> {
         let res = await sendSQLQuery("SELECT * FROM infractions WHERE user_id = ? ORDER BY date_issued DESC;", [userId])
-        if(!res.success) throw new Error(String(res.result));
-        if (!Array.isArray(res.result)) throw new Error("res.result was not an array");
-        if (!Array.isArray(res.result[0])) throw new Error("res.result[0] was not an array");
+        if (!Array.isArray(res[0])) throw new Error("res[0] was not an array");
         
-        let formattedRes = await InfractionsDB._formatGetInfractions(res.result[0])
+        let formattedRes = await InfractionsDB._formmatInfractions(res[0])
 
-        return {
-            success: res.success, 
-            result: formattedRes
-        }
+        return formattedRes
     }
 
-    public static async getRecentInfractions(userId: string): Promise<GetInfractionsRes> {
+    public static async getRecentInfractions(userId: string): Promise<Array<InfractionEntry>> {
         let res = await sendSQLQuery("SELECT * FROM `infractions` WHERE user_id = ? AND date_issued >= CURRENT_TIMESTAMP -30;", [userId])
-        if(!res.success) throw new Error(String(res.result));
-        if (!Array.isArray(res.result)) throw new Error("res.result was not an array");
-        if (!Array.isArray(res.result[0])) throw new Error("res.result[0] was not an array");
+        if (!Array.isArray(res[0])) throw new Error("res[0] was not an array");
 
-        let formattedRes = await InfractionsDB._formatGetInfractions(res.result[0])
+        let formattedRes = await InfractionsDB._formmatInfractions(res[0])
 
-        return {
-            success: res.success, 
-            result: formattedRes
-        }
+        return formattedRes
     }
 }

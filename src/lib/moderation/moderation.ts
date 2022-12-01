@@ -6,7 +6,7 @@ import { cannotPunish } from "../errors/common/permissions";
 import { InfractionsDB } from "../mysql/infractions";
 import { sendModLog } from "./modlog";
 import { sendDmEmbed } from "./send-dm";
-import { TempBanFile } from "./tempban";
+import { TempBans } from "./tempban";
 
 let punishmentIds = [
     "ban",
@@ -97,18 +97,18 @@ export async function genModerationOptions(interaction: CommandInteraction): Pro
     }
 }
 export async function handleModeration(client: SlimyClient, config: Config, command: ModerationOptions, punishment: Punishment) {
-    let durationTimestamp = await TempBanFile.genExpiration(command.duration)
+    let durationTimestamp = await TempBans.genExpiration(command.duration)
     let memberTarget = await command.guild.members.fetch(command.target.id)
     let recentInfractions = await InfractionsDB.getRecentInfractions(command.target.id);
     let additionalPunishment = ""
 
-    if (recentInfractions.result.length + 1 == 2) {
+    if (recentInfractions.length + 1 == 2) {
         additionalPunishment =  `\nAdditional punishment - ${bold("1 hour timeout")}`
 
-    } else if(recentInfractions.result.length + 1 == 3 || recentInfractions.result.length + 1 == 4) {
+    } else if(recentInfractions.length + 1 == 3 || recentInfractions.length + 1 == 4) {
         additionalPunishment = `\nAdditional punishment -  ${bold("24 hour timeout")}`
 
-    } else if (recentInfractions.result.length + 1 >= 5) {
+    } else if (recentInfractions.length + 1 >= 5) {
         additionalPunishment = `\nAdditional punishment - ${bold("1 week temporary ban")}`
     }
 
@@ -151,7 +151,7 @@ export async function handleModeration(client: SlimyClient, config: Config, comm
             await command.guild.members.ban(command.target.id, { reason: command.reason });
 
             await InfractionsDB.addInfraction(command.target.id, ModerationAction.TEMPBAN, command.reason)
-            await TempBanFile.addMember(command.target.id, command.guild.id, durationTimestamp)
+            await TempBans.addMember(command.target.id, command.guild.id, durationTimestamp)
 
             break;
 
@@ -163,16 +163,16 @@ export async function handleModeration(client: SlimyClient, config: Config, comm
             break;
 
         case 3: // warn  
-            if (recentInfractions.result.length + 1 == 2) {
+            if (recentInfractions.length + 1 == 2) {
                 await memberTarget.timeout(1 * 3600000, command.reason); // 1 hour
 
-            } else if(recentInfractions.result.length + 1 == 3 || recentInfractions.result.length + 1 == 4) {
+            } else if(recentInfractions.length + 1 == 3 || recentInfractions.length + 1 == 4) {
                 await memberTarget.timeout(24 * 3600000, command.reason); // 24 hours
 
-            } else if (recentInfractions.result.length + 1 >= 5) {
-                let durationTimestamp = await TempBanFile.genExpiration(168);
+            } else if (recentInfractions.length + 1 >= 5) {
+                let durationTimestamp = await TempBans.genExpiration(168);
                 await command.guild.members.ban(command.target.id, { reason: command.reason });
-                TempBanFile.addMember(command.target.id, command.guild.id, durationTimestamp)
+                TempBans.addMember(command.target.id, command.guild.id, durationTimestamp)
             }
 
             await InfractionsDB.addInfraction(command.target.id, ModerationAction.WARN, command.reason)

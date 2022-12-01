@@ -15,7 +15,7 @@ module.exports = {
 		let leaderboard = await InvitesDB.getAll()
 
         var items = Object.keys(leaderboard).map(function(key) {
-            return [key, leaderboard[key]];
+            return [key, leaderboard[Number(key)]];
         });
         
         items.sort(function(first, second) {

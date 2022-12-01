@@ -14,13 +14,14 @@ export async function initSQLPool(config: Config) {
 }
 export async function sendSQLQuery(query: string, args: Array<string | number> | null = null) {
     try {
-        let res = await pool.execute(query, args);
+        return await pool.execute(query, args);
         
+        /*
         return {
             success: true,
             result: res
         }
-
+        */
 
     } catch (err) {
         throw err;
