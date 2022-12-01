@@ -4,9 +4,8 @@ import { sendSQLQuery } from "./_base"
 export class InvitesDB {
     private static async _formatInvites(invites: Array<any>): Promise<Array<InviteEntry>> {
         let res: Array<InviteEntry> = []
-
+        
         for (let i = 0; i < invites.length; i++) {
-
             res.push({
                 inviterId: String(invites[i]["inviter_id"]),
                 userId: String(invites[i]["user_id"])
@@ -17,7 +16,7 @@ export class InvitesDB {
 
     }
     static async getAll() {
-        let res = await sendSQLQuery("SELECT inviter_id FROM invites;")
+        let res = await sendSQLQuery("SELECT * FROM invites;")
         if (!Array.isArray(res[0])) throw new Error("res[0] was not an array");
 
         return await InvitesDB._formatInvites(res[0])
