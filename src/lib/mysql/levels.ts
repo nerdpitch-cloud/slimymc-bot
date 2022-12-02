@@ -3,6 +3,10 @@ import { sendSQLQuery } from "./_base";
 
 
 export class LevelsDB {
+    private static async _formatLevel(level: Array<any>): Promise<number> {
+        return Number(level[0]["xp"])
+    }
+
     private static async _formatLevels(levels: Array<any>): Promise<Array<LevelsEntry>> {
         let res: Array<LevelsEntry> = []
 
@@ -21,10 +25,10 @@ export class LevelsDB {
     }
 
     static async getXp(user_id: string) {
-        let res = await sendSQLQuery("SELECT xp FROM levels WHERE user_id = ?;", [user_id]);
+        let res = await sendSQLQuery("SELECT * FROM levels WHERE user_id = ?;", [user_id]);
         if (!Array.isArray(res[0])) throw new Error("res[0] was not an array");
 
-        return Number(res[0])
+        return await LevelsDB._formatLevel(res[0])
 
     }
 

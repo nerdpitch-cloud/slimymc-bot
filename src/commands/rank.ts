@@ -82,13 +82,13 @@ module.exports = {
 
                 break;
 
-            case "user": 
+            case "user":
                 let user = interaction.options.getUser("user");
                 if (!user) {
                     user = interaction.user
                 }
     
-                let xp = Number(await LevelsDB.getXp(user.id))
+                let xp = await LevelsDB.getXp(user.id)
                 if (!xp) return interaction.reply(`Failed to get the level of ${user.tag}`)
     
                 let level = await xpToLevel(xp);
