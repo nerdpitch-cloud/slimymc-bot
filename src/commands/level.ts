@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction, CommandInteraction, EmbedBuilder, inlineCode, PermissionFlagsBits, PermissionsBitField, SlashCommandBuilder, time, User } from "discord.js";
+import { ChatInputCommandInteraction, EmbedBuilder, inlineCode, PermissionFlagsBits, PermissionsBitField, SlashCommandBuilder, time, User } from "discord.js";
 import SlimyClient from "../client";
 import { Config } from "../conf/config";
 import { addEmbedFooter } from "../lib/embed-footer";
@@ -9,21 +9,21 @@ import { xpToLevel } from "../lib/xp";
 
 module.exports = {
 	data: new SlashCommandBuilder()
-		.setName("rank")
-		.setDescription("Chatting rank")
+		.setName("level")
+		.setDescription("Chatting level")
         .addSubcommand(subcommand =>
             subcommand
                 .setName("leaderboard")
-                .setDescription("Get the rank leaderboard")
+                .setDescription("Get the level leaderboard")
         )
         .addSubcommand(subcommand =>
             subcommand
                 .setName("user")
-                .setDescription("Get your rank or another member's rank")
+                .setDescription("Get your level or another member's level")
             .addUserOption((option) =>
                 option
                     .setName("user")
-                    .setDescription("User who's rank you want to view")
+                    .setDescription("User who's level you want to view")
                     .setRequired(false)
             )
         )
@@ -55,7 +55,6 @@ module.exports = {
                     .setRequired(true)
             )
         )
-		.setDefaultMemberPermissions(PermissionFlagsBits.BanMembers)
         .setDMPermission(false),
 
 	async execute(client: SlimyClient, config: Config, interaction: ChatInputCommandInteraction) {
@@ -63,40 +62,40 @@ module.exports = {
 
         switch (subCommand) {
             case "leaderboard": 
-                let leaderboard = await LevelsDB.getLeaderboard()
+                let leaderboard = await LevelsDB.getAll()
 
                 let leaderboardEmbed = new EmbedBuilder()
                     .setColor(0x77b94d)
-                    .setTitle("Rank leaderboard")
+                    .setTitle("Level leaderboard")
                     .setTimestamp()
                     await addEmbedFooter(client, leaderboardEmbed)
                 
-                let embedDescription = "Showing top 10 ranks"
+                let embedDescription = "Showing top 10 levels"
     
-                for (let i = 0; i < leaderboard.length; i++) {
-                    embedDescription += `\n**${i+1} • **${inlineCode(`lvl ${String(await xpToLevel(leaderboard[i].xp))}`)}** • **<@${leaderboard[i].user_id}>`
+                for (let i = 0; i < 10; i++) {
+                    embedDescription += `\n**${i+1} • **${inlineCode(`lvl ${String(await xpToLevel(leaderboard[i].xp))}`)}** • **<@${leaderboard[i].userId}>`
                 }
     
                 leaderboardEmbed.setDescription(embedDescription);
-    
+                
                 interaction.reply({ embeds: [leaderboardEmbed] })
 
                 break;
 
-            case "user": 
+            case "user":
                 let user = interaction.options.getUser("user");
                 if (!user) {
                     user = interaction.user
                 }
     
                 let xp = await LevelsDB.getXp(user.id)
-                if (!xp) return interaction.reply(`Failed to get the rank of ${user.tag}`)
+                if (!xp) return interaction.reply(`Failed to get the level of ${user.tag}`)
     
                 let level = await xpToLevel(xp);
                 let levelEmbed = new EmbedBuilder()
                     .setColor(0x77b94d)
                     .setTitle(`Rank of ${user.tag}`)
-                    .setDescription(`Current rank is ${inlineCode(String(level))}`)
+                    .setDescription(`Current level is ${inlineCode(String(level))}`)
                     .setTimestamp()
                     await addEmbedFooter(client, levelEmbed)
                 
@@ -139,6 +138,8 @@ module.exports = {
                         userMissingPermissions(client, interaction, "set xp multiplier")
                     }
                 }
+
+                break;
         }
     }
 }

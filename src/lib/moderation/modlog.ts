@@ -1,12 +1,12 @@
-import { ChannelType, Client, EmbedBuilder } from "discord.js";
+import { ChannelType, Client, EmbedBuilder, Message } from "discord.js";
 import { Config } from "../../conf/config";
 
-export async function sendModLog(client:Client, config: Config, embed: EmbedBuilder) {
+export async function sendModLog(client:Client, config: Config, embed: EmbedBuilder): Promise<Message | void> {
     var modlogChannel = await client.channels.fetch(config.log.modlogChannelId);
 
     if (modlogChannel) {
         if(modlogChannel.type == ChannelType.GuildText) {
-            modlogChannel.send({ embeds: [embed] });
+            await modlogChannel.send({ embeds: [embed] });
         }
     }
 }

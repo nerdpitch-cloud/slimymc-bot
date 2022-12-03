@@ -1,5 +1,5 @@
 import { EmbedBuilder, PartialUser, User } from "discord.js";
-import { Config } from "../../conf/config";
+import { Config } from "../conf/config";
 
 export async function handleUserUpdate(config: Config, oldUser: User | PartialUser, newUser: User) {
     let logChannel = await newUser.client.channels.fetch(config.log.userlogChannelId);

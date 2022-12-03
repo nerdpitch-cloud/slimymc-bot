@@ -1,5 +1,6 @@
 import { messageMultiplier } from "../events/message-create"
-import { dbVariable, VariablesDB } from "./mysql/variables"
+import { VariableEntry } from "./mysql/types";
+import { VariablesDB } from "./mysql/variables"
 
 export async function refreshDbVariables() {
     let allVars = await VariablesDB.getAll()
@@ -16,7 +17,7 @@ export async function refreshDbVariables() {
         
 }
 
-async function refreshXpMultiplier(variable: dbVariable) {
+async function refreshXpMultiplier(variable: VariableEntry) {
     let jsonVar = JSON.parse(variable.value)
 
     messageMultiplier.expires = new Date(jsonVar["expires"] * 1000)

@@ -30,7 +30,7 @@ export async function runReady(client: SlimyClient, config: Config) {
         null,
         true
     );
-
+    
     job.start()
 
     console.log("Ready!");

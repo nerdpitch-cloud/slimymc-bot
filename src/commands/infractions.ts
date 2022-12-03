@@ -1,9 +1,8 @@
-import { time , ChatInputCommandInteraction , SlashCommandBuilder, EmbedBuilder, codeBlock, Embed, ActionRowBuilder, SelectMenuBuilder, SelectMenuComponentOptionData, PermissionFlagsBits } from "discord.js";
+import { time , ChatInputCommandInteraction , SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, SelectMenuBuilder, SelectMenuComponentOptionData, PermissionFlagsBits } from "discord.js";
 import SlimyClient from "../client";
 import { Config } from "../conf/config";
 import { convertUTCDateToLocalDate } from "../lib/date";
 import { addEmbedFooter } from "../lib/embed-footer";
-import { handleUnexpectedError } from "../lib/errors/handler";
 import { punishmentTextFromId } from "../lib/moderation/moderation";
 import { InfractionsDB } from "../lib/mysql/infractions";
 
@@ -45,8 +44,7 @@ module.exports = {
         if(!target) throw new Error("target was null");
 
         if (subCommand == "view") {
-            let allInfractions = await InfractionsDB.getInfractions(target.id)
-            if (!allInfractions.success) return handleUnexpectedError(client, allInfractions.result);
+            let allInfractions = await InfractionsDB.getAllInfractions(target.id)
 
             let infractionsSrc = ""
 
@@ -56,8 +54,8 @@ module.exports = {
                 .setTimestamp()
                 await addEmbedFooter(client, infractionsEmbed)
 
-            for (let i = 0; i < allInfractions.result.length; i++) {
-                let curr = allInfractions.result[i]
+            for (let i = 0; i < allInfractions.length; i++) {
+                let curr = allInfractions[i]
                 let date_issued = await convertUTCDateToLocalDate(curr.date_issued)
 
                 let punishmentStr = await punishmentTextFromId(curr.punishment)
@@ -68,8 +66,7 @@ module.exports = {
 
             interaction.reply( {embeds: [infractionsEmbed] })
         } else if (subCommand == "remove") {
-            let allInfractions = await InfractionsDB.getInfractions(target.id)
-            if (!allInfractions.success) return handleUnexpectedError(client, allInfractions.result);
+            let allInfractions = await InfractionsDB.getAllInfractions(target.id)
 
             let actionRow = new ActionRowBuilder<SelectMenuBuilder>()
                 .addComponents(
@@ -80,11 +77,11 @@ module.exports = {
             
             let options: Array<SelectMenuComponentOptionData> = [];
             
-            for (let i = 0; i < allInfractions.result.length; i++) {
-                let curr = allInfractions.result[i]
+            for (let i = 0; i < allInfractions.length; i++) {
+                let curr = allInfractions[i]
                 options.push({
                     label: await punishmentTextFromId(curr.punishment),
-                    description: `${curr.reason} - issued at: ${curr.date_issued}`,
+                    description: `${curr.reason} - issued at: ${curr.date_issued.toLocaleString()}`,
                     value: `remove-infraction_${curr.punishment_id}`,
                 })
             }

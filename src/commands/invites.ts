@@ -1,4 +1,4 @@
-import { CommandInteraction, EmbedBuilder, SlashCommandBuilder } from "discord.js";
+import { bold, CommandInteraction, EmbedBuilder, SlashCommandBuilder } from "discord.js";
 import SlimyClient from "../client";
 import { Config } from "../conf/config";
 import { addEmbedFooter } from "../lib/embed-footer";
@@ -12,27 +12,33 @@ module.exports = {
         .setDMPermission(false),
         
 	async execute(client: SlimyClient, config: Config, interaction: CommandInteraction) {
-		let leaderboard = await InvitesDB.getAll()
-
-        var items = Object.keys(leaderboard).map(function(key) {
-            return [key, leaderboard[key]];
-        });
+		let allInvites = await InvitesDB.getAll()
         
-        items.sort(function(first, second) {
-            return Number(second[1]) - Number(first[1]);
-        });
+        let leaderboardDict: { [inviterId: string]: number } = {};
 
+        for (let i = 0; i < allInvites.length; i++) {
+            leaderboardDict[allInvites[i].inviterId] = (Number(leaderboardDict[allInvites[i].inviterId])) + 1 || 1;
+        }
+
+        var leaderboardArr = Object.keys(leaderboardDict).map((key) => { return [key, leaderboardDict[key]] });
+
+        leaderboardArr.sort((first, second) => { return Number(first[1]) - Number(second[1]) }).reverse();
+          
         let leaderboardEmbed = new EmbedBuilder()
-            .setTitle("Invite leaderboard")
-            .setColor(0x4b90f3)
+            .setColor(0x77b94d)
+            .setTitle("Invites leaderboard")
             .setTimestamp()
             await addEmbedFooter(client, leaderboardEmbed)
+    
+        let embedDescription = "Showing top 10 inviters"
 
-        let embedDescription = "Showing top 10 inviters\n"
-        let top10 = items.slice(0, 5)
 
-        for (let i = 0; i < top10.length; i++) {
-            embedDescription += `\n<@${top10[i][0]}> - **${top10[i][1]}**`
+        for (let i = 0; i < 10; i++) {
+            if (typeof leaderboardArr[i] !== "undefined") {
+                embedDescription += `\n${bold(String(i+1))} • <@${leaderboardArr[i][0]}> • ${bold(String(leaderboardArr[i][1]))}`
+            } else {
+                break
+            }
         }
 
         leaderboardEmbed.setDescription(embedDescription);

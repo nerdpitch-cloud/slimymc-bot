@@ -1,7 +1,8 @@
-import { Message } from "discord.js";
+import { bold, Message } from "discord.js";
 import { channel } from "node:diagnostics_channel";
 import SlimyClient from "../client";
 import { Config } from "../conf/config";
+import { handleModeration, ModerationAction, ModerationOptions } from "../lib/moderation/moderation";
 import { CountingDB } from "../lib/mysql/counting";
 import { LevelsDB } from "../lib/mysql/levels";
 import { VariablesDB } from "../lib/mysql/variables";
@@ -39,25 +40,31 @@ async function handleXp(config: Config, message: Message) {
         
         let oldXp = await LevelsDB.getXp(message.author.id)
         let messageXp =  (Math.floor(Math.random() * (15 - 10 + 1)) + 10) * messageMultiplier.value;
-    
+        let lvl = await xpToLevel(oldXp + messageXp)
+        
+        LevelsDB.addXp(message.author.id, messageXp);
+
         if (oldXp && await checkLevelUp(oldXp, oldXp + messageXp)) {
-            let lvl = await xpToLevel(oldXp + messageXp)
-    
+            let lvlupChannel = await message.guild?.channels.fetch(config.levels.levelupChannelId)
+        
+            if (lvlupChannel?.isTextBased()) {
+                lvlupChannel.send(`<:Slimy:887084999965311067> Congratulations <@${message.author.id}>! You have just reached Level ${bold(String(lvl))}!`)
+            }
+
             if (lvl !== -1 && lvl % 5 === 0 && lvl >= 10) {
+                let closestRoleLevel = Math.floor(lvl / 5) * 5
+
                 if (lvl !== 10) {
-                    message.member?.roles.remove(config.levels.roles[String(lvl-5)])
+                    message.member?.roles.remove(Object.values(config.levels.roles))
                 }
-    
-                message.member?.roles.add(config.levels.roles[String(lvl)])
+                message.member?.roles.add(config.levels.roles[closestRoleLevel])
             }
         }
-    
-        LevelsDB.addXp(message.author.id, messageXp);
     }
 }
 
 async function handleCounting(message: Message) {
-    let latestCount = Number(await VariablesDB.get("latestCount"))
+    let latestCount = Number(await (await VariablesDB.get("latestCount")).value)
 
     if (!latestCount) {
         await VariablesDB.set("latestCount", 0)
@@ -74,26 +81,48 @@ async function handleCounting(message: Message) {
     }
 }
 
-async function handleAutomod(config: Config, message: Message) {
+async function handleAutomod(client: SlimyClient, config: Config, message: Message) {
     let inviteRegex = /(https?:\/\/)?(www\.)?(discord\.(gg|io|me|li)|discordapp\.com\/invite)\/.+[a-z]/g
     let foundInvite = message.content.match(inviteRegex)
     if (foundInvite) {
-        console.log("invite")
+        let options: ModerationOptions = {
+            author: await client.users.fetch(config.discord.clientId),
+            target: message.author,
+            guild: await client.guilds.fetch(message.guild ? message.guild.id : config.discord.guildId ),
+            reason: "posting an invite (automod)",
+            duration: 0
+        }
+
+        message.delete()
+        handleModeration(client, config, options, ModerationAction.WARN)
     }
 
     if (config.automod.bannedWords.some(v => message.content.includes(v))) {
-        console.log("swearword")
+        let options: ModerationOptions = {
+            author: await client.users.fetch(config.discord.clientId),
+            target: message.author,
+            guild: await client.guilds.fetch(message.guild ? message.guild.id : config.discord.guildId ),
+            reason: "sending a banned word (automod)",
+            duration: 0
+        }
+        
+        message.delete()
+        handleModeration(client, config, options, ModerationAction.WARN)
     }
 }
 
 export async function handleMessageCreate(client: SlimyClient, config: Config, message: Message) {
-    await handleAutomod(config, message);
+    if (message.author.bot) return;
+    let authorRoles = await message.guild?.members.fetch(message.author.id).then(member => member?.roles.cache.map(role => role.id))
+
+    if (config.automod.excludedRoles.some(r=> authorRoles?.includes(r))) {
+        await handleAutomod(client, config, message);
+    }
 
     await handleXp(config, message);
 
     if (message.channelId == config.counting.channelId) {
         await handleCounting(message);
     }
-
 
 }

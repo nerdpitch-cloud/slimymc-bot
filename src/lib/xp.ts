@@ -113,10 +113,10 @@ export async function xpToLevel(xp: number): Promise<number> {
 }
 
 export async function checkLevelUp(a: number, b: number ): Promise<boolean> {
-    let levela = await xpToLevel(a);
-    let levelb = await xpToLevel(b);
+    let levelA = await xpToLevel(a);
+    let levelB = await xpToLevel(b);
 
-    if (levela === levelb) {
+    if (levelA === levelB) {
         return false;
     }
 
