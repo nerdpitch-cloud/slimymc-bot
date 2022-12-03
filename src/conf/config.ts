@@ -42,6 +42,7 @@ export class Config {
         channelId: string
     }
     readonly automod: {
+        excludedRoles: Array<string>
         bannedWords: Array<string>
     }
 

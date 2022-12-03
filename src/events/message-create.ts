@@ -45,7 +45,11 @@ async function handleXp(config: Config, message: Message) {
         LevelsDB.addXp(message.author.id, messageXp);
 
         if (oldXp && await checkLevelUp(oldXp, oldXp + messageXp)) {
-    
+            let lvlupChannel = await message.guild?.channels.fetch(config.levels.levelupChannelId)
+        
+            if (lvlupChannel?.isTextBased()) {
+                lvlupChannel.send(`<@${message.author.id}> has advanced to level **${lvl}**!`)
+            }
 
             if (lvl !== -1 && lvl % 5 === 0 && lvl >= 10) {
                 let closestRoleLevel = Math.floor(lvl / 5) * 5
@@ -55,12 +59,6 @@ async function handleXp(config: Config, message: Message) {
                 }
                 message.member?.roles.add(config.levels.roles[closestRoleLevel])
             }
-        }
-        
-        let channel = await message.guild?.channels.fetch(config.levels.levelupChannelId)
-        
-        if (channel?.isTextBased()) {
-            channel.send(`<@${message.author.id}> has advanced to level **${lvl}**!`)
         }
     }
 }
@@ -84,6 +82,8 @@ async function handleCounting(message: Message) {
 }
 
 async function handleAutomod(client: SlimyClient, config: Config, message: Message) {
+    console.log("automod")
+    /*
     let inviteRegex = /(https?:\/\/)?(www\.)?(discord\.(gg|io|me|li)|discordapp\.com\/invite)\/.+[a-z]/g
     let foundInvite = message.content.match(inviteRegex)
     if (foundInvite) {
@@ -111,10 +111,16 @@ async function handleAutomod(client: SlimyClient, config: Config, message: Messa
         message.delete()
         handleModeration(client, config, options, ModerationAction.WARN)
     }
+    */
 }
 
 export async function handleMessageCreate(client: SlimyClient, config: Config, message: Message) {
-    await handleAutomod(client, config, message);
+    if (message.author.bot) return;
+    let authorRoles = await message.guild?.members.fetch(message.author.id).then(member => member?.roles.cache.map(role => role.id))
+
+    if (config.automod.excludedRoles.some(r=> authorRoles?.includes(r))) {
+        await handleAutomod(client, config, message);
+    }
 
     await handleXp(config, message);
 
