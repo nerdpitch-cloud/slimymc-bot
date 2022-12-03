@@ -82,8 +82,6 @@ async function handleCounting(message: Message) {
 }
 
 async function handleAutomod(client: SlimyClient, config: Config, message: Message) {
-    console.log("automod")
-    /*
     let inviteRegex = /(https?:\/\/)?(www\.)?(discord\.(gg|io|me|li)|discordapp\.com\/invite)\/.+[a-z]/g
     let foundInvite = message.content.match(inviteRegex)
     if (foundInvite) {
@@ -111,7 +109,6 @@ async function handleAutomod(client: SlimyClient, config: Config, message: Messa
         message.delete()
         handleModeration(client, config, options, ModerationAction.WARN)
     }
-    */
 }
 
 export async function handleMessageCreate(client: SlimyClient, config: Config, message: Message) {
