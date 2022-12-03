@@ -20,3 +20,8 @@ export interface VariableEntry {
     key: string
     value: string
 }
+
+export interface CountingEntry {
+    userId: string
+    count: number
+}
