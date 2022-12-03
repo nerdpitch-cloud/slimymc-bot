@@ -1,5 +1,4 @@
 import { bold, Message } from "discord.js";
-import { channel } from "node:diagnostics_channel";
 import SlimyClient from "../client";
 import { Config } from "../conf/config";
 import { handleModeration, ModerationAction, ModerationOptions } from "../lib/moderation/moderation";
