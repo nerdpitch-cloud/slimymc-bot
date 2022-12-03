@@ -35,7 +35,7 @@ module.exports = {
 
         for (let i = 0; i < 10; i++) {
             if (typeof leaderboardArr[i] !== "undefined") {
-                embedDescription += `\n${i+1} <@${leaderboardArr[i][0]}> - ${bold(String(leaderboardArr[i][1]))}`
+                embedDescription += `\n${bold(String(i+1))} • <@${leaderboardArr[i][0]}> • ${bold(String(leaderboardArr[i][1]))}`
             } else {
                 break
             }

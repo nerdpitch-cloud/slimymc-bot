@@ -1,4 +1,4 @@
-import { Message } from "discord.js";
+import { bold, Message } from "discord.js";
 import { channel } from "node:diagnostics_channel";
 import SlimyClient from "../client";
 import { Config } from "../conf/config";
@@ -48,7 +48,7 @@ async function handleXp(config: Config, message: Message) {
             let lvlupChannel = await message.guild?.channels.fetch(config.levels.levelupChannelId)
         
             if (lvlupChannel?.isTextBased()) {
-                lvlupChannel.send(`<@${message.author.id}> has advanced to level **${lvl}**!`)
+                lvlupChannel.send(`<:Slimy:887084999965311067> Congratulations <@${message.author.id}>! You have just reached Level ${bold(String(lvl))}!`)
             }
 
             if (lvl !== -1 && lvl % 5 === 0 && lvl >= 10) {
