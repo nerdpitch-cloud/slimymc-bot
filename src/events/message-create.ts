@@ -40,20 +40,28 @@ async function handleXp(config: Config, message: Message) {
         
         let oldXp = await LevelsDB.getXp(message.author.id)
         let messageXp =  (Math.floor(Math.random() * (15 - 10 + 1)) + 10) * messageMultiplier.value;
-    
+        let lvl = await xpToLevel(oldXp + messageXp)
+        
+        LevelsDB.addXp(message.author.id, messageXp);
+
         if (oldXp && await checkLevelUp(oldXp, oldXp + messageXp)) {
-            let lvl = await xpToLevel(oldXp + messageXp)
     
+
             if (lvl !== -1 && lvl % 5 === 0 && lvl >= 10) {
+                let closestRoleLevel = Math.floor(lvl / 5) * 5
+
                 if (lvl !== 10) {
-                    message.member?.roles.remove(config.levels.roles[String(lvl-5)])
+                    message.member?.roles.remove(Object.values(config.levels.roles))
                 }
-    
-                message.member?.roles.add(config.levels.roles[String(lvl)])
+                message.member?.roles.add(config.levels.roles[closestRoleLevel])
             }
         }
-    
-        LevelsDB.addXp(message.author.id, messageXp);
+        
+        let channel = await message.guild?.channels.fetch(config.levels.levelupChannelId)
+        
+        if (channel?.isTextBased()) {
+            channel.send(`<@${message.author.id}> has advanced to level **${lvl}**!`)
+        }
     }
 }
 
@@ -113,6 +121,5 @@ export async function handleMessageCreate(client: SlimyClient, config: Config, m
     if (message.channelId == config.counting.channelId) {
         await handleCounting(message);
     }
-
 
 }

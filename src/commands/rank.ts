@@ -77,7 +77,7 @@ module.exports = {
                 }
     
                 leaderboardEmbed.setDescription(embedDescription);
-    
+                
                 interaction.reply({ embeds: [leaderboardEmbed] })
 
                 break;
@@ -138,6 +138,8 @@ module.exports = {
                         userMissingPermissions(client, interaction, "set xp multiplier")
                     }
                 }
+
+                break;
         }
     }
 }

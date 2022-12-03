@@ -34,6 +34,7 @@ export class Config {
         recommendedChannels: Array<string>
     }
     readonly levels: {
+        levelupChannelId: string,
         ignoredChannels: Array<string>
         roles: { [key: string]: string }
     }
