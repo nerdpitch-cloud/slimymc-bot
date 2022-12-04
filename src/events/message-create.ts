@@ -1,5 +1,4 @@
 import { bold, Message } from "discord.js";
-import { channel } from "node:diagnostics_channel";
 import SlimyClient from "../client";
 import { Config } from "../conf/config";
 import { handleModeration, ModerationAction, ModerationOptions } from "../lib/moderation/moderation";
@@ -38,9 +37,10 @@ async function handleXp(config: Config, message: Message) {
             60000
         );
         
-        let oldXp = await LevelsDB.getXp(message.author.id)
+        let oldXp = await LevelsDB.getXp(message.author.id);
+        if (!oldXp) oldXp = 0;
         let messageXp =  (Math.floor(Math.random() * (15 - 10 + 1)) + 10) * messageMultiplier.value;
-        let lvl = await xpToLevel(oldXp + messageXp)
+        let lvl = await xpToLevel(oldXp + messageXp);
         
         LevelsDB.addXp(message.author.id, messageXp);
 

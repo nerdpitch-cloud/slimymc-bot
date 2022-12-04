@@ -2,7 +2,6 @@ import { bold, CommandInteraction, EmbedBuilder, Guild, inlineCode, Interaction,
 import SlimyClient from "../../client";
 import { Config } from "../../conf/config";
 import { addEmbedFooter } from "../embed-footer";
-import { cannotPunish } from "../errors/common/permissions";
 import { InfractionsDB } from "../mysql/infractions";
 import { sendModLog } from "./modlog";
 import { sendDmEmbed } from "./send-dm";

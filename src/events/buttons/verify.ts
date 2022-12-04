@@ -1,7 +1,6 @@
 import { ButtonStyle, EmbedBuilder, TextBasedChannel, ButtonBuilder, ActionRowBuilder, ButtonInteraction, TextChannel } from "discord.js";
 import SlimyClient from "../../client"
 import { addEmbedFooter } from "../../lib/embed-footer";
-import { promises as fsp } from "fs"
 import { Config } from "../../conf/config";
 
 const verifyEmbed = new EmbedBuilder()
