@@ -3,8 +3,13 @@ import { sendSQLQuery } from "./_base";
 
 
 export class LevelsDB {
-    private static async _formatLevel(level: Array<any>): Promise<number> {
-        return Number(level[0]["xp"])
+    private static async _formatLevel(level: Array<any>): Promise<number | null> {
+        try {
+            return Number(level[0]["xp"])
+        }
+        catch (err) {
+            return null
+        }
     }
 
     private static async _formatLevels(levels: Array<any>): Promise<Array<LevelsEntry>> {
