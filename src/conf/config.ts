@@ -20,6 +20,7 @@ export class Config {
         errorlogChannelId: string,
         userlogChannelId: string,
         inviteLogsId: string
+        ticketLogsId: string
     }
     readonly mysql: {
         host: string,
@@ -47,7 +48,9 @@ export class Config {
     }
     readonly tickets: {
         createChannelId: string,
+        createMessageId: string,
         categoryId: string,
+        supportRoleId: string,
     }
 
     constructor(enviroment: Enviroment ) {
