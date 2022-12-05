@@ -13,7 +13,12 @@ export async function tempbanCheck(client: SlimyClient) {
     for (let key in currentTempbans){
         if(Math.round(Date.now() / 1000) > currentTempbans[key]["expires"]) {
             TempBans.removeMember(key);
-            await (await client.guilds.fetch(currentTempbans[key]["guild"])).members.unban(key);
+            try {
+                await (await client.guilds.fetch(currentTempbans[key]["guild"])).members.unban(key);
+            } catch (e) {
+                return
+            }
+
         }
     }
 }
