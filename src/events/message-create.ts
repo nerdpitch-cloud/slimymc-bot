@@ -115,7 +115,7 @@ export async function handleMessageCreate(client: SlimyClient, config: Config, m
     if (message.author.bot) return;
     let authorRoles = await message.guild?.members.fetch(message.author.id).then(member => member?.roles.cache.map(role => role.id))
 
-    if (config.automod.excludedRoles.some(r=> authorRoles?.includes(r))) {
+    if (!config.automod.excludedRoles.some(role=> authorRoles?.includes(role))) {
         await handleAutomod(client, config, message);
     }
 
