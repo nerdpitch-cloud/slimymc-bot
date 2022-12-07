@@ -36,7 +36,15 @@ module.exports = {
 		}
 
 		try {
-			const res = String((eval(code.value))).slice(0, 1990);
+			let res = String((eval(code.value))).slice(0, 1990);
+			
+			res = res.replace(
+				config.discord.token, 
+				"<TOKEN>"
+				).replace(
+					config.mysql.password,
+					"<MYSQL PASSWORD>"
+				);
 
 			await interaction.reply(`\`\`\`${res}\`\`\``);
 
