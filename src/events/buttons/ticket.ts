@@ -111,8 +111,6 @@ export async function handleCreateTicketButton(interaction: ButtonInteraction, c
         );
 
     await ticketChannel?.send({ embeds: [welcomeEmbed], components: [actionRow] });
-    
-    //console.log(ticketChannel?.id)
 
     interaction.reply({
         content: `Your ticket has been created!\nYou can view it here: <#${ticketChannel?.id}>`,
