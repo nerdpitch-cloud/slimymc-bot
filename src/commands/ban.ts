@@ -7,29 +7,19 @@ module.exports = {
 	data: new SlashCommandBuilder()
 		.setName("ban")
 		.setDescription("Ban a user")
-		.addUserOption((option) =>
-			option
-				.setName("user")
-				.setDescription("The member to ban")
-				.setRequired(true)
-		)
-        .addStringOption((option) =>
-			option
-				.setName("reason")
-				.setDescription("Reason for the ban")
-				.setRequired(false)
-		)
+		.addUserOption((option) => option.setName("user").setDescription("The member to ban").setRequired(true))
+		.addStringOption((option) => option.setName("reason").setDescription("Reason for the ban").setRequired(false))
 		.setDefaultMemberPermissions(PermissionFlagsBits.BanMembers)
-        .setDMPermission(false),
+		.setDMPermission(false),
 
 	async execute(client: SlimyClient, config: Config, interaction: CommandInteraction) {
-        let commandOptions = await genModerationOptions(interaction);
+		let commandOptions = await genModerationOptions(interaction);
 
-        await handleModeration(client, config, commandOptions, ModerationAction.BAN)
+		await handleModeration(client, config, commandOptions, ModerationAction.BAN);
 
-        await interaction.reply({
-            content: `Banned <@${commandOptions.target.id}> for ${commandOptions.reason}`,
-            ephemeral: true
-        });
+		await interaction.reply({
+			content: `Banned <@${commandOptions.target.id}> for ${commandOptions.reason}`,
+			ephemeral: true,
+		});
 	},
 };
