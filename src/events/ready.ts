@@ -9,7 +9,6 @@ import { constants } from 'fs';
 import { checkVerifyMessage } from "./buttons/verify";
 import { Config } from "../conf/config";
 import { refreshDbVariables } from "../lib/variables";
-import { checkTicketMessage } from "./buttons/create-ticket";
 
 export async function runReady(client: SlimyClient, config: Config) {
     try {
@@ -20,7 +19,6 @@ export async function runReady(client: SlimyClient, config: Config) {
     
     await loadErrorLogChannel(client, config);
     await checkVerifyMessage(client, config);
-    await checkTicketMessage(client, config);
     await initSQLPool(config);
     await invitesInit(client, config)
     await tempbanCheck(client);
