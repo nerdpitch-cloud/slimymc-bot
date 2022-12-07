@@ -20,6 +20,7 @@ export class Config {
         errorlogChannelId: string,
         userlogChannelId: string,
         inviteLogsId: string
+        ticketLogsId: string
     }
     readonly mysql: {
         host: string,
@@ -45,6 +46,12 @@ export class Config {
         excludedRoles: Array<string>
         bannedWords: Array<string>
     }
+    readonly tickets: {
+        createChannelId: string,
+        createMessageId: string,
+        categoryId: string,
+        supportRoleId: string,
+    }
 
     constructor(enviroment: Enviroment ) {
         if (enviroment == Enviroment.PROD) {
@@ -55,6 +62,7 @@ export class Config {
             this.levels = prod.levels
             this.counting = prod.counting
             this.automod = prod["automod:"]
+            this.tickets = prod.tickets
 
         } else {
             // handle DEV
@@ -65,6 +73,7 @@ export class Config {
             this.levels = dev.levels
             this.counting = dev.counting
             this.automod = dev["automod:"]
+            this.tickets = dev.tickets
         }
 
     }
