@@ -1,27 +1,27 @@
 export interface InfractionEntry {
-    punishment_id: number
-    user_id: string
-    punishment: number
-    reason: string
-    date_issued: Date
+	punishment_id: number;
+	user_id: string;
+	punishment: number;
+	reason: string;
+	date_issued: Date;
 }
 
 export interface InviteEntry {
-    inviterId: string
-    userId: string
+	inviterId: string;
+	userId: string;
 }
 
 export interface LevelsEntry {
-    userId: string
-    xp: number
+	userId: string;
+	xp: number;
 }
 
 export interface VariableEntry {
-    key: string
-    value: string
+	key: string;
+	value: string;
 }
 
 export interface CountingEntry {
-    userId: string
-    count: number
+	userId: string;
+	count: number;
 }

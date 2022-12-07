@@ -1,48 +1,47 @@
-import { Punishment } from "../moderation/moderation"
-import { InfractionEntry } from "./types"
-import { sendSQLQuery } from "./_base"
+import { Punishment } from "../moderation/moderation";
+import { InfractionEntry } from "./types";
+import { sendSQLQuery } from "./_base";
 
 export class InfractionsDB {
-    private static async _formmatInfractions(infractionsArr: Array<any>): Promise<Array<InfractionEntry>> {
-        let res: Array<InfractionEntry> = []
+	private static async _formmatInfractions(infractionsArr: Array<any>): Promise<Array<InfractionEntry>> {
+		let res: Array<InfractionEntry> = [];
 
-        for (let i = 0; i < infractionsArr.length; i++) {
+		for (let i = 0; i < infractionsArr.length; i++) {
+			res.push({
+				punishment_id: Number(infractionsArr[i]["punishment_id"]),
+				user_id: String(infractionsArr[i]["user_id"]),
+				punishment: Number(infractionsArr[i]["punishment"]),
+				reason: String(infractionsArr[i]["reason"]),
+				date_issued: new Date(infractionsArr[i]["date_issued"]),
+			});
+		}
 
-            res.push({
-                punishment_id: Number(infractionsArr[i]["punishment_id"]),
-                user_id: String(infractionsArr[i]["user_id"]),
-                punishment: Number(infractionsArr[i]["punishment"]),
-                reason: String(infractionsArr[i]["reason"]),
-                date_issued: new Date(infractionsArr[i]["date_issued"])
-            })
-        }
-        
-        return res
-    }
+		return res;
+	}
 
-    public static async addInfraction(userId: string, punishment: Punishment, reason: string) {
-        return await sendSQLQuery("INSERT INTO infractions (user_id, punishment, reason) VALUES (?, ?, ?);", [userId, punishment.id, reason])
-    }
+	public static async addInfraction(userId: string, punishment: Punishment, reason: string) {
+		return await sendSQLQuery("INSERT INTO infractions (user_id, punishment, reason) VALUES (?, ?, ?);", [userId, punishment.id, reason]);
+	}
 
-    public static async removeInfraction(punishmentId: number) {
-        return await sendSQLQuery("DELETE FROM infractions WHERE punishment_id = ?", [punishmentId])
-    }
+	public static async removeInfraction(punishmentId: number) {
+		return await sendSQLQuery("DELETE FROM infractions WHERE punishment_id = ?", [punishmentId]);
+	}
 
-    public static async getAllInfractions(userId: string): Promise<Array<InfractionEntry>> {
-        let res = await sendSQLQuery("SELECT * FROM infractions WHERE user_id = ? ORDER BY date_issued DESC;", [userId])
-        if (!Array.isArray(res[0])) throw new Error("res[0] was not an array");
-        
-        let formattedRes = await InfractionsDB._formmatInfractions(res[0])
+	public static async getAllInfractions(userId: string): Promise<Array<InfractionEntry>> {
+		let res = await sendSQLQuery("SELECT * FROM infractions WHERE user_id = ? ORDER BY date_issued DESC;", [userId]);
+		if (!Array.isArray(res[0])) throw new Error("res[0] was not an array");
 
-        return formattedRes
-    }
+		let formattedRes = await InfractionsDB._formmatInfractions(res[0]);
 
-    public static async getRecentInfractions(userId: string): Promise<Array<InfractionEntry>> {
-        let res = await sendSQLQuery("SELECT * FROM `infractions` WHERE user_id = ? AND date_issued >= CURRENT_TIMESTAMP -30;", [userId])
-        if (!Array.isArray(res[0])) throw new Error("res[0] was not an array");
+		return formattedRes;
+	}
 
-        let formattedRes = await InfractionsDB._formmatInfractions(res[0])
+	public static async getRecentInfractions(userId: string): Promise<Array<InfractionEntry>> {
+		let res = await sendSQLQuery("SELECT * FROM `infractions` WHERE user_id = ? AND date_issued >= CURRENT_TIMESTAMP -30;", [userId]);
+		if (!Array.isArray(res[0])) throw new Error("res[0] was not an array");
 
-        return formattedRes
-    }
+		let formattedRes = await InfractionsDB._formmatInfractions(res[0]);
+
+		return formattedRes;
+	}
 }
