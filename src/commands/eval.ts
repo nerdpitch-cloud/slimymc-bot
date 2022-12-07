@@ -37,6 +37,7 @@ module.exports = {
 
 		try {
 			let res = String((eval(code.value))).slice(0, 1990);
+			
 			res = res.replace(
 				config.discord.token, 
 				"<TOKEN>"
