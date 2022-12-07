@@ -3,6 +3,7 @@ import SlimyClient from "../../client"
 import { addEmbedFooter } from "../../lib/embed-footer";
 import { createTranscript } from "discord-html-transcripts";
 import { Config } from "../../conf/config";
+import { sendDM, sendDmString } from "../../lib/moderation/send-dm";
 
 
 export async function checkTicketMessage(client: SlimyClient, config: Config) {
@@ -192,6 +193,7 @@ export async function handleCloseTicketButton(interaction: ButtonInteraction, co
     let transcript = await createTranscript(ticketChannel);
 
     let ticketCreatorId = ticketChannel.topic?.split(" ")[3].replace("(", "").replace(")", "");
+    if (!ticketCreatorId) return;
 
     let ticketClaimerId = "none";
     if (ticketChannel.topic?.includes("claimed by")) {
@@ -210,9 +212,16 @@ export async function handleCloseTicketButton(interaction: ButtonInteraction, co
         await addEmbedFooter(interaction.client, ticketLogEmbed);
 
     let ticketLogChannel = interaction.client.channels.cache.get(config.log.ticketLogsId) as TextChannel;
-    await ticketLogChannel?.send({ embeds: [ticketLogEmbed] });
+    
+    let ticketCreator = await interaction.client.users.fetch(ticketCreatorId);
 
+    await ticketLogChannel?.send({ embeds: [ticketLogEmbed], files: [transcript] });
+    await sendDM(interaction.client, ticketCreator, { 
+        embeds: [ticketLogEmbed],
+        files: [transcript]
+        })
     
     interaction.deferUpdate();
-    //await ticketChannel.delete();
+
+    await ticketChannel.delete();
 }
