@@ -9,7 +9,7 @@ import { constants } from 'fs';
 import { checkVerifyMessage } from "./buttons/verify";
 import { Config } from "../conf/config";
 import { refreshDbVariables } from "../lib/variables";
-import { checkTicketMessage } from "./buttons/create-ticket";
+import { checkTicketMessage } from "./buttons/ticket";
 
 export async function runReady(client: SlimyClient, config: Config) {
     try {

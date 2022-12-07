@@ -1,6 +1,6 @@
 import { ButtonInteraction } from "discord.js";
 import { Config } from "../../conf/config";
-import { handleClaimTicketButton, handleCloseTicketButton, handleCreateTicketButton } from "./create-ticket";
+import { handleClaimTicketButton, handleCloseTicketButton, handleCreateTicketButton } from "./ticket";
 import { handleVerifyButton } from "./verify";
 
 export async function handleButton(config: Config, interaction: ButtonInteraction) {
