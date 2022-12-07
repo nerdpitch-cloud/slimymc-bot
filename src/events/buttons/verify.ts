@@ -12,6 +12,7 @@ export async function checkVerifyMessage(client: SlimyClient, config: Config) {
     if (!config.verify.verifyMessageId) {
         let channel = await client.channels.fetch(config.verify.verifyChannelId);
         if (channel instanceof TextChannel) {
+            channel.bulkDelete(100);
             _sendVerifyMessage(client, config, channel);
         }
     }
@@ -31,7 +32,15 @@ async function _sendVerifyMessage(client: SlimyClient, config: Config, channel: 
                 .setStyle(ButtonStyle.Primary),
         );
 
-    await channel.send({ embeds: [verifyEmbed], components: [actionRow] });
+    let message = await channel.send({ embeds: [verifyEmbed], components: [actionRow] });
+
+    let conf = JSON.stringify({
+        verifyChannelId: config.verify.verifyChannelId,
+        verifyMessageId: message.id
+        },
+        null,
+        4
+    )
 
 }
 
