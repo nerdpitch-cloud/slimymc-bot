@@ -44,6 +44,7 @@ async function handleXp(config: Config, message: Message) {
         
         LevelsDB.addXp(message.author.id, messageXp);
 
+        
         if (oldXp && await checkLevelUp(oldXp, oldXp + messageXp)) {
             let lvlupChannel = await message.guild?.channels.fetch(config.levels.levelupChannelId)
         
