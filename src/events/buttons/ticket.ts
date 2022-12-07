@@ -1,4 +1,4 @@
-import { ButtonStyle, EmbedBuilder, TextBasedChannel, ButtonBuilder, ActionRowBuilder, ButtonInteraction, TextChannel, bold, CategoryChannel, Collection, ChannelType, PermissionsBitField, inlineCode } from "discord.js";
+import { ButtonStyle, EmbedBuilder, TextBasedChannel, ButtonBuilder, ActionRowBuilder, ButtonInteraction, TextChannel, bold, CategoryChannel, Collection, ChannelType, PermissionsBitField, inlineCode, italic } from "discord.js";
 import SlimyClient from "../../client"
 import { addEmbedFooter } from "../../lib/embed-footer";
 import { createTranscript } from "discord-html-transcripts";
@@ -203,6 +203,7 @@ export async function handleCloseTicketButton(interaction: ButtonInteraction, co
     let ticketLogEmbed = new EmbedBuilder()
         .setColor(0x77b94d)
         .setTitle(`Ticket ${ticketChannel.name} closed`)
+        .setDescription(italic("To view the transcript, download the file above and open it in a web browser."))
         .addFields(
             { name: "Created by", value: `<@${ticketCreatorId}> (${ticketCreatorId})` },
             { name: "Claimed by", value: `<@${ticketClaimerId}> (${ticketClaimerId})` },
