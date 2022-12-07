@@ -5,7 +5,8 @@
   "main": "dist/index.js",
   "scripts": {
     "deploy-commands": "tsc && node dist/commands/_register.js",
-    "start": "tsc && node dist/index.js"
+    "start": "tsc && node dist/index.js",
+    "build": "tsc"
   },
   "keywords": [],
   "author": "",
