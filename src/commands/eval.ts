@@ -20,7 +20,7 @@ module.exports = {
 			});
 		}
 
-		let code = interaction.options.get("code", true);
+		const code = interaction.options.get("code", true);
 
 		if (!code.value || typeof code.value !== "string") {
 			return await interaction.reply({

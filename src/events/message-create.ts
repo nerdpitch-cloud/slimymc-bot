@@ -7,7 +7,7 @@ import { LevelsDB } from "../lib/mysql/levels";
 import { VariablesDB } from "../lib/mysql/variables";
 import { checkLevelUp, xpToLevel } from "../lib/xp";
 
-var userCache: Array<string> = [];
+let userCache: Array<string> = [];
 
 interface MessageMultiplier {
 	expires: Date;
@@ -36,13 +36,13 @@ async function handleXp(config: Config, message: Message) {
 
 		let oldXp = await LevelsDB.getXp(message.author.id);
 		if (!oldXp) oldXp = 0;
-		let messageXp = (Math.floor(Math.random() * (15 - 10 + 1)) + 10) * messageMultiplier.value;
-		let lvl = await xpToLevel(oldXp + messageXp);
+		const messageXp = (Math.floor(Math.random() * (15 - 10 + 1)) + 10) * messageMultiplier.value;
+		const lvl = await xpToLevel(oldXp + messageXp);
 
 		LevelsDB.addXp(message.author.id, messageXp);
 
 		if (oldXp && (await checkLevelUp(oldXp, oldXp + messageXp))) {
-			let lvlupChannel = await message.guild?.channels.fetch(config.levels.levelupChannelId);
+			const lvlupChannel = await message.guild?.channels.fetch(config.levels.levelupChannelId);
 
 			if (lvlupChannel?.isTextBased()) {
 				lvlupChannel.send(
@@ -51,7 +51,7 @@ async function handleXp(config: Config, message: Message) {
 			}
 
 			if (lvl !== -1 && lvl % 5 === 0 && lvl >= 10) {
-				let closestRoleLevel = Math.floor(lvl / 5) * 5;
+				const closestRoleLevel = Math.floor(lvl / 5) * 5;
 
 				if (lvl !== 10) {
 					message.member?.roles.remove(Object.values(config.levels.roles));
@@ -70,7 +70,7 @@ async function handleCounting(message: Message) {
 		latestCount = 0;
 	}
 
-	let lastMsg = (await message.channel.messages.fetch({ limit: 2 })).at(1);
+	const lastMsg = (await message.channel.messages.fetch({ limit: 2 })).at(1);
 
 	if (Number(latestCount) + 1 === Number(message.content) && message.author !== lastMsg?.author) {
 		await VariablesDB.set("latestCount", Number(latestCount) + 1);
@@ -81,10 +81,10 @@ async function handleCounting(message: Message) {
 }
 
 async function handleAutomod(client: SlimyClient, config: Config, message: Message) {
-	let inviteRegex = /(https?:\/\/)?(www\.)?(discord\.(gg|io|me|li)|discordapp\.com\/invite)\/.+[a-z]/g;
-	let foundInvite = message.content.match(inviteRegex);
+	const inviteRegex = /(https?:\/\/)?(www\.)?(discord\.(gg|io|me|li)|discordapp\.com\/invite)\/.+[a-z]/g;
+	const foundInvite = message.content.match(inviteRegex);
 	if (foundInvite) {
-		let options: ModerationOptions = {
+		const options: ModerationOptions = {
 			author: await client.users.fetch(config.discord.clientId),
 			target: message.author,
 			guild: await client.guilds.fetch(message.guild ? message.guild.id : config.discord.guildId),
@@ -97,7 +97,7 @@ async function handleAutomod(client: SlimyClient, config: Config, message: Messa
 	}
 
 	if (config.automod.bannedWords.some((v) => message.content.includes(v))) {
-		let options: ModerationOptions = {
+		const options: ModerationOptions = {
 			author: await client.users.fetch(config.discord.clientId),
 			target: message.author,
 			guild: await client.guilds.fetch(message.guild ? message.guild.id : config.discord.guildId),
@@ -112,7 +112,7 @@ async function handleAutomod(client: SlimyClient, config: Config, message: Messa
 
 export async function handleMessageCreate(client: SlimyClient, config: Config, message: Message) {
 	if (message.author.bot) return;
-	let authorRoles = await message.guild?.members.fetch(message.author.id).then((member) => member?.roles.cache.map((role) => role.id));
+	const authorRoles = await message.guild?.members.fetch(message.author.id).then((member) => member?.roles.cache.map((role) => role.id));
 
 	if (!config.automod.excludedRoles.some((role) => authorRoles?.includes(role))) {
 		await handleAutomod(client, config, message);

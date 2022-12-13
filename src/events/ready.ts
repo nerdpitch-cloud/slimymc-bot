@@ -24,7 +24,7 @@ export async function runReady(client: SlimyClient, config: Config) {
 	await tempbanCheck(client);
 	await refreshDbVariables();
 
-	let job = new CronJob(
+	const job = new CronJob(
 		"*/15 * * * *",
 		function () {
 			tempbanCheck(client);

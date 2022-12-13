@@ -43,13 +43,13 @@ module.exports = {
 		.setDMPermission(false),
 
 	async execute(client: SlimyClient, config: Config, interaction: ChatInputCommandInteraction) {
-		let subCommand = interaction.options.getSubcommand();
+		const subCommand = interaction.options.getSubcommand();
 
 		switch (subCommand) {
 			case "leaderboard":
-				let leaderboard = await LevelsDB.getAll();
+				const leaderboard = await LevelsDB.getAll();
 
-				let leaderboardEmbed = new EmbedBuilder().setColor(0x77b94d).setTitle("Level leaderboard").setTimestamp();
+				const leaderboardEmbed = new EmbedBuilder().setColor(0x77b94d).setTitle("Level leaderboard").setTimestamp();
 				await addEmbedFooter(client, leaderboardEmbed);
 
 				let embedDescription = "Showing top 10 levels";
@@ -72,11 +72,11 @@ module.exports = {
 					user = interaction.user;
 				}
 
-				let xp = await LevelsDB.getXp(user.id);
+				const xp = await LevelsDB.getXp(user.id);
 				if (!xp) return interaction.reply(`Failed to get the level of ${user.tag}`);
 
-				let level = await xpToLevel(xp);
-				let levelEmbed = new EmbedBuilder()
+				const level = await xpToLevel(xp);
+				const levelEmbed = new EmbedBuilder()
 					.setColor(0x77b94d)
 					.setTitle(`Rank of ${user.tag}`)
 					.setDescription(`Current level is ${inlineCode(String(level))}`)
@@ -89,8 +89,8 @@ module.exports = {
 
 			case "give-xp":
 				if (interaction.member?.permissions instanceof PermissionsBitField) {
-					let user = interaction.options.getUser("user");
-					let xpToAdd = interaction.options.get("xp")?.value;
+					const user = interaction.options.getUser("user");
+					const xpToAdd = interaction.options.get("xp")?.value;
 
 					if (interaction.member?.permissions.has(PermissionFlagsBits.ModerateMembers)) {
 						if (user instanceof User && xpToAdd) {
@@ -106,11 +106,11 @@ module.exports = {
 
 			case "set-multiplier":
 				if (interaction.member?.permissions instanceof PermissionsBitField) {
-					let xpMultiplier = interaction.options.get("multiplier")?.value;
+					const xpMultiplier = interaction.options.get("multiplier")?.value;
 
 					if (interaction.member?.permissions.has(PermissionFlagsBits.Administrator)) {
 						if (xpMultiplier) {
-							let expires = Math.round(new Date().getTime() / 1000 + 86400);
+							const expires = Math.round(new Date().getTime() / 1000 + 86400);
 							await VariablesDB.set("xp_multiplier", `{"expires": ${expires}, "value": ${xpMultiplier}}`);
 
 							interaction.reply(`Set multipler to ${xpMultiplier}, expires at ${time(expires, "F")}`);

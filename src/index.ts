@@ -24,7 +24,7 @@ const client = new SlimyClient({
 	partials: [Partials.Message],
 });
 
-let enviroment = process.argv.slice(2)[0];
+const enviroment = process.argv.slice(2)[0];
 
 let config: Config;
 

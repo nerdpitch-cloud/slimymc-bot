@@ -3,7 +3,7 @@ import { VariableEntry } from "./mysql/types";
 import { VariablesDB } from "./mysql/variables";
 
 export async function refreshDbVariables() {
-	let allVars = await VariablesDB.getAll();
+	const allVars = await VariablesDB.getAll();
 
 	if (allVars) {
 		for (let i = 0; i < allVars.length; i++) {
@@ -17,7 +17,7 @@ export async function refreshDbVariables() {
 }
 
 async function refreshXpMultiplier(variable: VariableEntry) {
-	let jsonVar = JSON.parse(variable.value);
+	const jsonVar = JSON.parse(variable.value);
 
 	messageMultiplier.expires = new Date(jsonVar["expires"] * 1000);
 	messageMultiplier.value = Number(jsonVar["value"]);

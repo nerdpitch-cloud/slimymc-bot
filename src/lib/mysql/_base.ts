@@ -1,7 +1,7 @@
 import { createPool, Pool } from "mysql2/promise";
 import { Config } from "../../conf/config";
 
-var pool: Pool;
+let pool: Pool;
 
 export async function initSQLPool(config: Config) {
 	pool = await createPool({

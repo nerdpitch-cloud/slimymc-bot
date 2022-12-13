@@ -39,24 +39,24 @@ module.exports = {
 		.setDMPermission(false),
 
 	async execute(client: SlimyClient, config: Config, interaction: ChatInputCommandInteraction) {
-		let subCommand = interaction.options.getSubcommand();
+		const subCommand = interaction.options.getSubcommand();
 
-		let target = interaction.options.getUser("member");
+		const target = interaction.options.getUser("member");
 		if (!target) throw new Error("target was null");
 
 		if (subCommand == "view") {
-			let allInfractions = await InfractionsDB.getAllInfractions(target.id);
+			const allInfractions = await InfractionsDB.getAllInfractions(target.id);
 
 			let infractionsSrc = "";
 
-			let infractionsEmbed = new EmbedBuilder().setColor(0x3075ff).setTitle("View infractions").setTimestamp();
+			const infractionsEmbed = new EmbedBuilder().setColor(0x3075ff).setTitle("View infractions").setTimestamp();
 			await addEmbedFooter(client, infractionsEmbed);
 
 			for (let i = 0; i < allInfractions.length; i++) {
-				let curr = allInfractions[i];
-				let date_issued = await convertUTCDateToLocalDate(curr.date_issued);
+				const curr = allInfractions[i];
+				const date_issued = await convertUTCDateToLocalDate(curr.date_issued);
 
-				let punishmentStr = await punishmentTextFromId(curr.punishment);
+				const punishmentStr = await punishmentTextFromId(curr.punishment);
 				infractionsSrc += `**${punishmentStr.charAt(0).toUpperCase() + punishmentStr.slice(1)}** - ${time(date_issued, "F")} - ${
 					curr.reason
 				}\n`;
@@ -66,16 +66,16 @@ module.exports = {
 
 			interaction.reply({ embeds: [infractionsEmbed] });
 		} else if (subCommand == "remove") {
-			let allInfractions = await InfractionsDB.getAllInfractions(target.id);
+			const allInfractions = await InfractionsDB.getAllInfractions(target.id);
 
-			let actionRow = new ActionRowBuilder<SelectMenuBuilder>().addComponents(
+			const actionRow = new ActionRowBuilder<SelectMenuBuilder>().addComponents(
 				new SelectMenuBuilder().setCustomId("infractions").setPlaceholder("Nothing selected")
 			);
 
-			let options: Array<SelectMenuComponentOptionData> = [];
+			const options: Array<SelectMenuComponentOptionData> = [];
 
 			for (let i = 0; i < allInfractions.length; i++) {
-				let curr = allInfractions[i];
+				const curr = allInfractions[i];
 				options.push({
 					label: await punishmentTextFromId(curr.punishment),
 					description: `${curr.reason} - issued at: ${curr.date_issued.toLocaleString()}`,

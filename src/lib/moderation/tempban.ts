@@ -9,9 +9,9 @@ export async function tempbanCheck(client: SlimyClient) {
 			value: "",
 		};
 
-	let currentTempbans = JSON.parse(currentTempbansVar.value);
+	const currentTempbans = JSON.parse(currentTempbansVar.value);
 
-	for (let key in currentTempbans) {
+	for (const key in currentTempbans) {
 		if (Math.round(Date.now() / 1000) > currentTempbans[key]["expires"]) {
 			TempBans.removeMember(key);
 			await (await client.guilds.fetch(currentTempbans[key]["guild"])).members.unban(key);
@@ -41,7 +41,7 @@ export class TempBans {
 	}
 
 	public static async addMember(memberId: string, guildId: string, expiresTimestamp: number) {
-		let tempBans = await TempBans._open();
+		const tempBans = await TempBans._open();
 
 		tempBans[memberId] = { guild: guildId, expires: expiresTimestamp };
 
@@ -49,7 +49,7 @@ export class TempBans {
 	}
 
 	public static async removeMember(memberId: string) {
-		let tempBans = await TempBans._open();
+		const tempBans = await TempBans._open();
 
 		delete tempBans[memberId];
 

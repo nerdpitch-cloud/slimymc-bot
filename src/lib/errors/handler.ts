@@ -3,7 +3,7 @@ import SlimyClient from "../../client";
 import { Config } from "../../conf/config";
 import { addEmbedFooter } from "../embed-footer";
 
-var errorLogChannel: TextBasedChannel | null;
+let errorLogChannel: TextBasedChannel | null;
 
 process.on("uncaughtException", (error) => {
 	console.log(error);
@@ -38,7 +38,7 @@ async function _errorReply(embed: EmbedBuilder, interaction: CommandInteraction)
 }
 
 export async function loadErrorLogChannel(client: SlimyClient, config: Config) {
-	let channel = await client.channels.fetch(config.log.errorlogChannelId);
+	const channel = await client.channels.fetch(config.log.errorlogChannelId);
 
 	if (channel?.type == ChannelType.GuildText) {
 		errorLogChannel = channel;

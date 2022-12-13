@@ -34,11 +34,11 @@ module.exports = {
 		.setDMPermission(false),
 
 	async execute(client: SlimyClient, config: Config, interaction: ChatInputCommandInteraction) {
-		let subCommand = interaction.options.getSubcommand();
+		const subCommand = interaction.options.getSubcommand();
 
 		switch (subCommand) {
 			case "current":
-				let latestCount = await VariablesDB.get("latestCount");
+				const latestCount = await VariablesDB.get("latestCount");
 
 				interaction.reply(`Latest count is ${inlineCode(String(latestCount.value))}`);
 
@@ -47,7 +47,7 @@ module.exports = {
 			case "set-current":
 				if (interaction.member?.permissions instanceof PermissionsBitField) {
 					if (interaction.member?.permissions.has(PermissionFlagsBits.ModerateMembers)) {
-						let val = interaction.options.getNumber("value");
+						const val = interaction.options.getNumber("value");
 						if (!val) throw new Error("value was none");
 
 						await VariablesDB.set("latestCount", val);
@@ -61,9 +61,9 @@ module.exports = {
 				break;
 
 			case "leaderboard":
-				let leaderboard = await CountingDB.getAll();
+				const leaderboard = await CountingDB.getAll();
 
-				let leaderboardEmbed = new EmbedBuilder().setColor(0x77b94d).setTitle("Counting leaderboard").setTimestamp();
+				const leaderboardEmbed = new EmbedBuilder().setColor(0x77b94d).setTitle("Counting leaderboard").setTimestamp();
 				await addEmbedFooter(client, leaderboardEmbed);
 
 				let embedDescription = "Showing top 10 counters";

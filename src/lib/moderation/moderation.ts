@@ -7,7 +7,7 @@ import { sendModLog } from "./modlog";
 import { sendDmEmbed } from "./send-dm";
 import { TempBans } from "./tempban";
 
-let punishmentIds = ["ban", "tempban", "tempmute", "warn"];
+const punishmentIds = ["ban", "tempban", "tempmute", "warn"];
 
 export type Punishment = {
 	text: PunishmentText;
@@ -76,8 +76,8 @@ export async function punishmentTextFromId(id: number) {
 }
 
 export async function genModerationOptions(interaction: CommandInteraction): Promise<ModerationOptions> {
-	let target = interaction.options.getUser("user");
-	let guild = interaction.guild;
+	const target = interaction.options.getUser("user");
+	const guild = interaction.guild;
 
 	if (!target || !guild) throw new Error("error in generating moderation options");
 
@@ -90,9 +90,9 @@ export async function genModerationOptions(interaction: CommandInteraction): Pro
 	};
 }
 export async function handleModeration(client: SlimyClient, config: Config, command: ModerationOptions, punishment: Punishment) {
-	let durationTimestamp = await TempBans.genExpiration(command.duration);
-	let memberTarget = await command.guild.members.fetch(command.target.id);
-	let recentInfractions = await InfractionsDB.getRecentInfractions(command.target.id);
+	const durationTimestamp = await TempBans.genExpiration(command.duration);
+	const memberTarget = await command.guild.members.fetch(command.target.id);
+	const recentInfractions = await InfractionsDB.getRecentInfractions(command.target.id);
 	let additionalPunishment = "";
 
 	if (recentInfractions.length + 1 == 2) {
@@ -107,21 +107,21 @@ export async function handleModeration(client: SlimyClient, config: Config, comm
 		command.reason = "not specified";
 	}
 
-	let dmDescription = `You have been ${punishment.text.verb} by **${command.author.tag}** from **${command.guild.name}**\nReason: ${inlineCode(
+	const dmDescription = `You have been ${punishment.text.verb} by **${command.author.tag}** from **${command.guild.name}**\nReason: ${inlineCode(
 		command.reason
 	)}\n${command.duration ? `duration: ${command.duration} hours` : ""}${additionalPunishment}`;
-	let logDescription = `<@${command.author.id}> has ${punishment.text.verb} <@${command.target.id}> with reason:\n${inlineCode(command.reason)}\n${
+	const logDescription = `<@${command.author.id}> has ${punishment.text.verb} <@${command.target.id}> with reason:\n${inlineCode(command.reason)}\n${
 		command.duration ? `duration: ${command.duration} hours` : ""
 	}${additionalPunishment}`;
 
-	let dmEmbed = new EmbedBuilder()
+	const dmEmbed = new EmbedBuilder()
 		.setColor(punishment.color)
 		.setTitle(`You have been ${punishment.text.verb}`)
 		.setDescription(dmDescription)
 		.setTimestamp();
 	await addEmbedFooter(client, dmEmbed);
 
-	let logEmbed = new EmbedBuilder()
+	const logEmbed = new EmbedBuilder()
 		.setColor(punishment.color)
 		.setTitle(`A user has been been ${punishment.text.verb}`)
 		.setDescription(logDescription)
@@ -163,7 +163,7 @@ export async function handleModeration(client: SlimyClient, config: Config, comm
 			} else if (recentInfractions.length + 1 == 3 || recentInfractions.length + 1 == 4) {
 				await memberTarget.timeout(24 * 3600000, command.reason); // 24 hours
 			} else if (recentInfractions.length + 1 >= 5) {
-				let durationTimestamp = await TempBans.genExpiration(168);
+				const durationTimestamp = await TempBans.genExpiration(168);
 				await command.guild.members.ban(command.target.id, { reason: command.reason });
 				TempBans.addMember(command.target.id, command.guild.id, durationTimestamp);
 			}

@@ -8,7 +8,7 @@ interface removeInteractionArgs {
 	issued_at: Date;
 }
 export async function removeInteractionFromSelect(interaction: SelectMenuInteraction) {
-	let punishmentId = interaction.values[0].split("_")[1];
+	const punishmentId = interaction.values[0].split("_")[1];
 
 	await InfractionsDB.removeInfraction(Number(punishmentId));
 

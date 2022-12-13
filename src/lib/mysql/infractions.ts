@@ -4,7 +4,7 @@ import { sendSQLQuery } from "./_base";
 
 export class InfractionsDB {
 	private static async _formmatInfractions(infractionsArr: Array<any>): Promise<Array<InfractionEntry>> {
-		let res: Array<InfractionEntry> = [];
+		const res: Array<InfractionEntry> = [];
 
 		for (let i = 0; i < infractionsArr.length; i++) {
 			res.push({
@@ -28,19 +28,19 @@ export class InfractionsDB {
 	}
 
 	public static async getAllInfractions(userId: string): Promise<Array<InfractionEntry>> {
-		let res = await sendSQLQuery("SELECT * FROM infractions WHERE user_id = ? ORDER BY date_issued DESC;", [userId]);
+		const res = await sendSQLQuery("SELECT * FROM infractions WHERE user_id = ? ORDER BY date_issued DESC;", [userId]);
 		if (!Array.isArray(res[0])) throw new Error("res[0] was not an array");
 
-		let formattedRes = await InfractionsDB._formmatInfractions(res[0]);
+		const formattedRes = await InfractionsDB._formmatInfractions(res[0]);
 
 		return formattedRes;
 	}
 
 	public static async getRecentInfractions(userId: string): Promise<Array<InfractionEntry>> {
-		let res = await sendSQLQuery("SELECT * FROM `infractions` WHERE user_id = ? AND date_issued >= CURRENT_TIMESTAMP -30;", [userId]);
+		const res = await sendSQLQuery("SELECT * FROM `infractions` WHERE user_id = ? AND date_issued >= CURRENT_TIMESTAMP -30;", [userId]);
 		if (!Array.isArray(res[0])) throw new Error("res[0] was not an array");
 
-		let formattedRes = await InfractionsDB._formmatInfractions(res[0]);
+		const formattedRes = await InfractionsDB._formmatInfractions(res[0]);
 
 		return formattedRes;
 	}

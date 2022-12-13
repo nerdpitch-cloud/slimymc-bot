@@ -11,7 +11,7 @@ export class LevelsDB {
 	}
 
 	private static async _formatLevels(levels: Array<any>): Promise<Array<LevelsEntry>> {
-		let res: Array<LevelsEntry> = [];
+		const res: Array<LevelsEntry> = [];
 
 		for (let i = 0; i < levels.length; i++) {
 			res.push({
@@ -27,14 +27,14 @@ export class LevelsDB {
 	}
 
 	static async getXp(user_id: string) {
-		let res = await sendSQLQuery("SELECT * FROM levels WHERE user_id = ?;", [user_id]);
+		const res = await sendSQLQuery("SELECT * FROM levels WHERE user_id = ?;", [user_id]);
 		if (!Array.isArray(res[0])) throw new Error("res[0] was not an array");
 
 		return await LevelsDB._formatLevel(res[0]);
 	}
 
 	static async getAll() {
-		let res = await sendSQLQuery("SELECT * FROM levels ORDER BY xp DESC;");
+		const res = await sendSQLQuery("SELECT * FROM levels ORDER BY xp DESC;");
 		if (!Array.isArray(res[0])) throw new Error("res[0] was not an array");
 
 		return await LevelsDB._formatLevels(res[0]);
