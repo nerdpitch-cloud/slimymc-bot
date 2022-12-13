@@ -2,11 +2,11 @@ import { EmbedBuilder, GuildMember, PartialGuildMember } from "discord.js";
 import { Config } from "../../conf/config";
 
 export async function handleGuildMemberUpdate(config: Config, oldMember: GuildMember | PartialGuildMember, newMember: GuildMember) {
-	let logChannel = await newMember.client.channels.fetch(config.log.userlogChannelId);
+	const logChannel = await newMember.client.channels.fetch(config.log.userlogChannelId);
 	if (!logChannel) throw new Error("logChannel was null");
 	if (!logChannel.isTextBased()) throw new Error("logChannel wasn't text based ");
 
-	let LogEmbed = new EmbedBuilder()
+	const LogEmbed = new EmbedBuilder()
 		.setColor(0x4286f4)
 		.setFooter({ text: `ID - ${newMember.id}` })
 		.setAuthor({ name: `${newMember.user.username}#${newMember.user.discriminator}`, iconURL: newMember.displayAvatarURL() })

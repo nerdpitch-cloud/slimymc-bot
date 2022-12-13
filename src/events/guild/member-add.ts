@@ -4,11 +4,11 @@ import { Config } from "../../conf/config";
 import { InvitesDB } from "../../lib/mysql/invites";
 
 type UserInviteCollection = Collection<Snowflake, Collection<string, number | null>>;
-let invites: UserInviteCollection = new Collection();
+const invites: UserInviteCollection = new Collection();
 
 export async function invitesInit(client: SlimyClient, config: Config) {
-	let guild = await client.guilds.fetch(config.discord.guildId);
-	let firstInvites = await guild.invites.fetch();
+	const guild = await client.guilds.fetch(config.discord.guildId);
+	const firstInvites = await guild.invites.fetch();
 	invites.set(guild.id, new Collection(firstInvites.map((invite) => [invite.code, invite.uses])));
 }
 export async function handleInviteCreate(invite: Invite) {
@@ -26,11 +26,11 @@ async function getUsedInvite(
 	newInvites: Collection<string, Invite>,
 	oldInvites: Collection<string, number | null> | undefined
 ): Promise<Invite | void> {
-	for (let [key, newInvite] of newInvites) {
+	for (const [key, newInvite] of newInvites) {
 		if (newInvite.uses == null) throw new Error("newInvite.uses was null");
 		if (!oldInvites) throw new Error("oldInvites was null");
 
-		let oldInviteUses = oldInvites.get(newInvite.code);
+		const oldInviteUses = oldInvites.get(newInvite.code);
 
 		if (oldInviteUses != null) {
 			if (newInvite.uses > oldInviteUses) {
@@ -41,13 +41,13 @@ async function getUsedInvite(
 }
 
 export async function handleMemberAdd(config: Config, member: GuildMember) {
-	let usedInvite = await getUsedInvite(await member.guild.invites.fetch(), invites.get(member.guild.id));
+	const usedInvite = await getUsedInvite(await member.guild.invites.fetch(), invites.get(member.guild.id));
 	if (!usedInvite) throw new Error("usedInvite was null");
 
-	let inviteLogChannel = await member.guild.channels.fetch(config.log.inviteLogsId);
+	const inviteLogChannel = await member.guild.channels.fetch(config.log.inviteLogsId);
 	if (!inviteLogChannel?.isTextBased()) throw new Error("inviteLogChannel was not text based");
 
-	let inviteLogEmbed = new EmbedBuilder()
+	const inviteLogEmbed = new EmbedBuilder()
 		.setColor(0x62c421)
 		.setTitle("Member joined")
 		.setAuthor({ name: member.user.tag, iconURL: member.displayAvatarURL() })

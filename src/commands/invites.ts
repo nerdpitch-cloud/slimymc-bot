@@ -12,15 +12,15 @@ module.exports = {
 		.setDMPermission(false),
 
 	async execute(client: SlimyClient, config: Config, interaction: CommandInteraction) {
-		let allInvites = await InvitesDB.getAll();
+		const allInvites = await InvitesDB.getAll();
 
-		let leaderboardDict: { [inviterId: string]: number } = {};
+		const leaderboardDict: { [inviterId: string]: number } = {};
 
 		for (let i = 0; i < allInvites.length; i++) {
 			leaderboardDict[allInvites[i].inviterId] = Number(leaderboardDict[allInvites[i].inviterId]) + 1 || 1;
 		}
 
-		var leaderboardArr = Object.keys(leaderboardDict).map((key) => {
+		const leaderboardArr = Object.keys(leaderboardDict).map((key) => {
 			return [key, leaderboardDict[key]];
 		});
 
@@ -30,7 +30,7 @@ module.exports = {
 			})
 			.reverse();
 
-		let leaderboardEmbed = new EmbedBuilder().setColor(0x77b94d).setTitle("Invites leaderboard").setTimestamp();
+		const leaderboardEmbed = new EmbedBuilder().setColor(0x77b94d).setTitle("Invites leaderboard").setTimestamp();
 		await addEmbedFooter(client, leaderboardEmbed);
 
 		let embedDescription = "Showing top 10 inviters";

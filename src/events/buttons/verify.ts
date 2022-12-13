@@ -7,7 +7,7 @@ const verifyEmbed = new EmbedBuilder().setColor(0xabf243).setTitle("Verification
 
 export async function checkVerifyMessage(client: SlimyClient, config: Config) {
 	if (!config.verify.verifyMessageId) {
-		let channel = await client.channels.fetch(config.verify.verifyChannelId);
+		const channel = await client.channels.fetch(config.verify.verifyChannelId);
 		if (channel instanceof TextChannel) {
 			channel.bulkDelete(100);
 			_sendVerifyMessage(client, config, channel);
@@ -22,9 +22,9 @@ async function _sendVerifyMessage(client: SlimyClient, config: Config, channel: 
 		new ButtonBuilder().setCustomId("verify").setEmoji("📩").setLabel("Click to verify!").setStyle(ButtonStyle.Primary)
 	);
 
-	let message = await channel.send({ embeds: [verifyEmbed], components: [actionRow] });
+	const message = await channel.send({ embeds: [verifyEmbed], components: [actionRow] });
 
-	let conf = JSON.stringify(
+	const conf = JSON.stringify(
 		{
 			verifyChannelId: config.verify.verifyChannelId,
 			verifyMessageId: message.id,
@@ -35,7 +35,7 @@ async function _sendVerifyMessage(client: SlimyClient, config: Config, channel: 
 }
 
 export async function handleVerifyButton(interaction: ButtonInteraction, config: Config) {
-	let member = await interaction.guild?.members.fetch(interaction.user.id);
+	const member = await interaction.guild?.members.fetch(interaction.user.id);
 
 	if (member) {
 		if (member.roles.cache.some((role) => role.id === config.verify.verifyRoleId)) {

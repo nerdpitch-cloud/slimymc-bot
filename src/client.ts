@@ -4,7 +4,7 @@ import path from "node:path";
 import { Client, ClientOptions, Collection } from "discord.js";
 
 export default class SlimyClient extends Client {
-	public commands: Collection<String, ApplicationCommandModule>;
+	public commands: Collection<string, ApplicationCommandModule>;
 
 	constructor(options: ClientOptions) {
 		super(options);

@@ -3,7 +3,7 @@ import { sendSQLQuery } from "./_base";
 
 export class CountingDB {
 	private static async _FormatCount(count: Array<any>): Promise<Array<CountingEntry>> {
-		let formatted: Array<CountingEntry> = [];
+		const formatted: Array<CountingEntry> = [];
 		for (let i = 0; i < count.length; i++) {
 			formatted.push({
 				userId: count[i].user_id,
@@ -18,7 +18,7 @@ export class CountingDB {
 	}
 
 	public static async getAll() {
-		let res = await sendSQLQuery("SELECT * FROM counting ORDER BY count DESC");
+		const res = await sendSQLQuery("SELECT * FROM counting ORDER BY count DESC");
 		if (!Array.isArray(res[0])) throw new Error("res[0] was not an array");
 
 		return await this._FormatCount(res[0]);

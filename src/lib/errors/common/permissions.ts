@@ -12,7 +12,7 @@ export async function cannotPunish(
 ) {
 	if (!interaction.channel) throw new Error("interaction.channel was null");
 
-	let error = `Missing permission to ${action} ${target.username}#${target.discriminator} (${target.id}) - ${reason})`;
+	const error = `Missing permission to ${action} ${target.username}#${target.discriminator} (${target.id}) - ${reason})`;
 
 	handleExpectedError(client, interaction, error);
 }
@@ -20,7 +20,7 @@ export async function cannotPunish(
 export async function userMissingPermissions(client: SlimyClient, interaction: CommandInteraction, action: string) {
 	if (!interaction.channel) throw new Error("interaction.channel was null");
 
-	let error = `You do not have the sufficient permission to run ${action}`;
+	const error = `You do not have the sufficient permission to run ${action}`;
 
 	handleExpectedError(client, interaction, error);
 }

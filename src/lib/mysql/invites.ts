@@ -3,7 +3,7 @@ import { sendSQLQuery } from "./_base";
 
 export class InvitesDB {
 	private static async _formatInvites(invites: Array<any>): Promise<Array<InviteEntry>> {
-		let res: Array<InviteEntry> = [];
+		const res: Array<InviteEntry> = [];
 
 		for (let i = 0; i < invites.length; i++) {
 			res.push({
@@ -15,7 +15,7 @@ export class InvitesDB {
 		return res;
 	}
 	static async getAll() {
-		let res = await sendSQLQuery("SELECT * FROM invites;");
+		const res = await sendSQLQuery("SELECT * FROM invites;");
 		if (!Array.isArray(res[0])) throw new Error("res[0] was not an array");
 
 		return await InvitesDB._formatInvites(res[0]);

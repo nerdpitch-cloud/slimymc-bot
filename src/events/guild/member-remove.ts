@@ -3,7 +3,7 @@ import { Config } from "../../conf/config";
 import { InvitesDB } from "../../lib/mysql/invites";
 
 export async function handleMemberRemove(config: Config, member: GuildMember | PartialGuildMember) {
-	let inviteLogChannel = await member.guild.channels.fetch(config.log.inviteLogsId);
+	const inviteLogChannel = await member.guild.channels.fetch(config.log.inviteLogsId);
 	if (!inviteLogChannel?.isTextBased()) throw new Error("inviteLogChannel was not text based");
 
 	let joinedAt;
@@ -13,7 +13,7 @@ export async function handleMemberRemove(config: Config, member: GuildMember | P
 		joinedAt = time(member.joinedAt, "F");
 	}
 
-	let memberRoles = member.roles.cache.map((role) => role.id);
+	const memberRoles = member.roles.cache.map((role) => role.id);
 
 	let rolesMention = "";
 	for (let i = 0; i < memberRoles.length; i++) {
@@ -24,7 +24,7 @@ export async function handleMemberRemove(config: Config, member: GuildMember | P
 
 	await InvitesDB.removeInvite(member.id);
 
-	let inviteLogEmbed = new EmbedBuilder()
+	const inviteLogEmbed = new EmbedBuilder()
 		.setColor(0xdb4d40)
 		.setTitle("Member left")
 		.setAuthor({ name: member.user.tag, iconURL: member.displayAvatarURL() })

@@ -2,7 +2,7 @@ import { REST, Routes } from "discord.js";
 import fs from "node:fs";
 import { Config, Enviroment } from "../conf/config";
 
-let enviroment = process.argv.slice(2)[0];
+const enviroment = process.argv.slice(2)[0];
 
 let config: Config;
 

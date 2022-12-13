@@ -13,7 +13,7 @@ module.exports = {
 		.setDMPermission(false),
 
 	async execute(client: SlimyClient, config: Config, interaction: CommandInteraction) {
-		let commandOptions = await genModerationOptions(interaction);
+		const commandOptions = await genModerationOptions(interaction);
 
 		await handleModeration(client, config, commandOptions, ModerationAction.BAN);
 
