@@ -22,16 +22,7 @@ async function _sendVerifyMessage(client: SlimyClient, config: Config, channel: 
 		new ButtonBuilder().setCustomId("verify").setEmoji("📩").setLabel("Click to verify!").setStyle(ButtonStyle.Primary)
 	);
 
-	const message = await channel.send({ embeds: [verifyEmbed], components: [actionRow] });
-
-	const conf = JSON.stringify(
-		{
-			verifyChannelId: config.verify.verifyChannelId,
-			verifyMessageId: message.id,
-		},
-		null,
-		4
-	);
+	await channel.send({ embeds: [verifyEmbed], components: [actionRow] });
 }
 
 export async function handleVerifyButton(interaction: ButtonInteraction, config: Config) {
