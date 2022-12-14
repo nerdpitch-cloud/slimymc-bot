@@ -17,6 +17,7 @@ export class Config {
 		errorlogChannelId: string;
 		userlogChannelId: string;
 		inviteLogsId: string;
+		ticketLogsId: string;
 	};
 	readonly mysql: {
 		host: string;
@@ -42,6 +43,17 @@ export class Config {
 		excludedRoles: Array<string>;
 		bannedWords: Array<string>;
 	};
+	readonly tickets: {
+		createChannelId: string;
+		createMessageId: string;
+		categoryId: string;
+		supportRoleId: string;
+	};
+	readonly modroles: {
+		helperId: string;
+		moderatorId: string;
+		srModeratorId: string;
+	};
 
 	constructor(enviroment: Enviroment) {
 		if (enviroment == Enviroment.PROD) {
@@ -52,6 +64,8 @@ export class Config {
 			this.levels = prod.levels;
 			this.counting = prod.counting;
 			this.automod = prod["automod:"];
+			this.tickets = prod.tickets;
+			this.modroles = prod.modroles;
 		} else {
 			// handle DEV
 			this.discord = dev.discord;
@@ -61,6 +75,8 @@ export class Config {
 			this.levels = dev.levels;
 			this.counting = dev.counting;
 			this.automod = dev["automod:"];
+			this.tickets = dev.tickets;
+			this.modroles = dev.modroles;
 		}
 	}
 }
