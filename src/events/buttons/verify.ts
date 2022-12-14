@@ -8,7 +8,7 @@ const verifyEmbed = new EmbedBuilder().setColor(0xabf243).setTitle("Verification
 export async function checkVerifyMessage(client: SlimyClient, config: Config) {
     if (!config.verify.verifyMessageId) {
 
-        let channel = await client.channels.fetch(config.verify.verifyChannelId);
+        const channel = await client.channels.fetch(config.verify.verifyChannelId);
 
         if (channel instanceof TextChannel) {
             _sendVerifyMessage(client, config, channel);
