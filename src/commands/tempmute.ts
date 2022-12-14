@@ -7,35 +7,20 @@ module.exports = {
 	data: new SlashCommandBuilder()
 		.setName("tempmute")
 		.setDescription("tempmute a user")
-		.addUserOption((option) =>
-			option
-				.setName("user")
-				.setDescription("The member to tempmute")
-				.setRequired(true)
-		)
-        .addIntegerOption((option) =>
-        option
-            .setName("duration")
-            .setDescription("Duration of the tempmute (IN HOURS)")
-            .setRequired(true)
-    )
-        .addStringOption((option) =>
-			option
-				.setName("reason")
-				.setDescription("Reason for the tempmute")
-				.setRequired(false)
-		)
+		.addUserOption((option) => option.setName("user").setDescription("The member to tempmute").setRequired(true))
+		.addIntegerOption((option) => option.setName("duration").setDescription("Duration of the tempmute (IN HOURS)").setRequired(true))
+		.addStringOption((option) => option.setName("reason").setDescription("Reason for the tempmute").setRequired(false))
 		.setDefaultMemberPermissions(PermissionFlagsBits.ModerateMembers)
-        .setDMPermission(false),
+		.setDMPermission(false),
 
 	async execute(client: SlimyClient, config: Config, interaction: CommandInteraction) {
-        let commandOptions = await genModerationOptions(interaction);
+		const commandOptions = await genModerationOptions(interaction);
 
-        await handleModeration(client, config, commandOptions, ModerationAction.TEMPMUTE)
+		await handleModeration(client, config, commandOptions, ModerationAction.TEMPMUTE);
 
-        await interaction.reply({
-            content: `temporarily muted <@${commandOptions.target.id}> for ${commandOptions.reason}`,
-            ephemeral: true
-        });
-    }
-}
+		await interaction.reply({
+			content: `temporarily muted <@${commandOptions.target.id}> for ${commandOptions.reason}`,
+			ephemeral: true,
+		});
+	},
+};

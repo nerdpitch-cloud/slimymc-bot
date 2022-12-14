@@ -9,41 +9,42 @@ module.exports = {
 		.setName("invites")
 		.setDescription("See the invites leaderboard")
 
-        .setDMPermission(false),
-        
+		.setDMPermission(false),
+
 	async execute(client: SlimyClient, config: Config, interaction: CommandInteraction) {
-		let allInvites = await InvitesDB.getAll()
-        
-        let leaderboardDict: { [inviterId: string]: number } = {};
+		const allInvites = await InvitesDB.getAll();
 
-        for (let i = 0; i < allInvites.length; i++) {
-            leaderboardDict[allInvites[i].inviterId] = (Number(leaderboardDict[allInvites[i].inviterId])) + 1 || 1;
-        }
+		const leaderboardDict: { [inviterId: string]: number } = {};
 
-        var leaderboardArr = Object.keys(leaderboardDict).map((key) => { return [key, leaderboardDict[key]] });
+		for (let i = 0; i < allInvites.length; i++) {
+			leaderboardDict[allInvites[i].inviterId] = Number(leaderboardDict[allInvites[i].inviterId]) + 1 || 1;
+		}
 
-        leaderboardArr.sort((first, second) => { return Number(first[1]) - Number(second[1]) }).reverse();
-          
-        let leaderboardEmbed = new EmbedBuilder()
-            .setColor(0x77b94d)
-            .setTitle("Invites leaderboard")
-            .setTimestamp()
-            await addEmbedFooter(client, leaderboardEmbed)
-    
-        let embedDescription = "Showing top 10 inviters"
+		const leaderboardArr = Object.keys(leaderboardDict).map((key) => {
+			return [key, leaderboardDict[key]];
+		});
 
+		leaderboardArr
+			.sort((first, second) => {
+				return Number(first[1]) - Number(second[1]);
+			})
+			.reverse();
 
-        for (let i = 0; i < 10; i++) {
-            if (typeof leaderboardArr[i] !== "undefined") {
-                embedDescription += `\n${bold(String(i+1))} • <@${leaderboardArr[i][0]}> • ${bold(String(leaderboardArr[i][1]))}`
-            } else {
-                break
-            }
-        }
+		const leaderboardEmbed = new EmbedBuilder().setColor(0x77b94d).setTitle("Invites leaderboard").setTimestamp();
+		await addEmbedFooter(client, leaderboardEmbed);
 
-        leaderboardEmbed.setDescription(embedDescription);
+		let embedDescription = "Showing top 10 inviters";
 
-        await interaction.reply({ embeds: [leaderboardEmbed] })
+		for (let i = 0; i < 10; i++) {
+			if (typeof leaderboardArr[i] !== "undefined") {
+				embedDescription += `\n${bold(String(i + 1))} • <@${leaderboardArr[i][0]}> • ${bold(String(leaderboardArr[i][1]))}`;
+			} else {
+				break;
+			}
+		}
 
+		leaderboardEmbed.setDescription(embedDescription);
+
+		await interaction.reply({ embeds: [leaderboardEmbed] });
 	},
 };
