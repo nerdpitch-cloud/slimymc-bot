@@ -12,11 +12,28 @@ import { refreshDbVariables } from "../lib/variables";
 import { checkTicketMessage } from "./buttons/ticket";
 
 export async function runReady(client: SlimyClient, config: Config) {
-	try {
-		await fsp.access(`${__dirname}/../commands/tempbans.json`, constants.R_OK | constants.W_OK);
-	} catch {
-		await fsp.writeFile(`${__dirname}/../commands/tempbans.json`, "{}");
-	}
+    try {
+        await fsp.access(`${__dirname}/../commands/tempbans.json`, constants.R_OK | constants.W_OK)
+    } catch {
+        await fsp.writeFile(`${__dirname}/../commands/tempbans.json`, "{}")
+    }
+    
+    await loadErrorLogChannel(client, config);
+    await checkVerifyMessage(client, config);
+    await checkTicketMessage(client, config);
+    await initSQLPool(config);
+    await invitesInit(client, config)
+    await tempbanCheck(client);
+    await refreshDbVariables()
+    
+    let job = new CronJob("*/15 * * * *", function() {
+            tempbanCheck(client);
+        },
+        null,
+        true
+    );
+    
+    job.start()
 
 	await loadErrorLogChannel(client, config);
 	await checkVerifyMessage(client, config);
