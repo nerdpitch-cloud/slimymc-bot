@@ -19,12 +19,12 @@ import { Config } from "../../conf/config";
 import { sendDM } from "../../lib/moderation/send-dm";
 
 export async function checkTicketMessage(client: SlimyClient, config: Config) {
-	let channel = client.channels.cache.get(
+	const channel = client.channels.cache.get(
 		config.tickets.createChannelId
 	) as TextBasedChannel;
 
 	if (config.tickets.createMessageId) {
-		let message = await channel.messages.fetch(
+		const message = await channel.messages.fetch(
 			config.tickets.createMessageId
 		);
 
@@ -37,11 +37,11 @@ export async function checkTicketMessage(client: SlimyClient, config: Config) {
 }
 
 async function sendCreateTicketMessage(client: SlimyClient, config: Config) {
-	let channel = client.channels.cache.get(
+	const channel = client.channels.cache.get(
 		config.tickets.createChannelId
 	) as TextBasedChannel;
 
-	let verifyEmbed = new EmbedBuilder()
+	const verifyEmbed = new EmbedBuilder()
 		.setColor(0x77b94d)
 		.setTitle("Create a ticket")
 		.setDescription(
@@ -95,7 +95,7 @@ async function sendCreateTicketMessage(client: SlimyClient, config: Config) {
 			.setStyle(ButtonStyle.Secondary)
 	);
 
-	let ticketMessage = await channel.send({
+	const ticketMessage = await channel.send({
 		embeds: [verifyEmbed],
 		components: [actionRow],
 	});
@@ -107,7 +107,7 @@ export async function handleCreateTicketButton(
 	interaction: ButtonInteraction,
 	config: Config
 ) {
-	let ticketType = interaction.customId.replace("create_ticket_", "");
+	const ticketType = interaction.customId.replace("create_ticket_", "");
 
 	if (ticketType === "applications") {
 		interaction.reply({
@@ -116,14 +116,14 @@ export async function handleCreateTicketButton(
 		});
 		return;
 	}
-	let ticketCategory = interaction.client.channels.cache.get(
+	const ticketCategory = interaction.client.channels.cache.get(
 		config.tickets.categoryId
 	) as CategoryChannel;
 
-	let categoryChannels = interaction.guild?.channels.cache.filter(
+	const categoryChannels = interaction.guild?.channels.cache.filter(
 		(channel) => channel.parentId === ticketCategory.id
 	) as Collection<string, TextChannel>;
-	let userTicketChannel = categoryChannels?.find((channel) =>
+	const userTicketChannel = categoryChannels?.find((channel) =>
 		channel.topic?.includes(interaction.user.id)
 	);
 
@@ -136,7 +136,7 @@ export async function handleCreateTicketButton(
 		return;
 	}
 
-	let overwrites: any[] = [];
+	const overwrites: any[] = [];
 
 	overwrites.push(
 		{
@@ -166,7 +166,7 @@ export async function handleCreateTicketButton(
 		);
 	}
 
-	let ticketChannel = await interaction.guild?.channels.create({
+	const ticketChannel = await interaction.guild?.channels.create({
 		name: `${interaction.component.emoji?.name}-${interaction.user.username}`,
 		type: ChannelType.GuildText,
 		parent: ticketCategory,
@@ -203,14 +203,14 @@ export async function handleCreateTicketButton(
 			embedDescription = `Hello player, we are here to assist you with any problems or questions you might have, feel free to describe them as we make our way to this ticket.`;
 	}
 
-	let welcomeEmbed = new EmbedBuilder()
+	const welcomeEmbed = new EmbedBuilder()
 		.setColor(0x77b94d)
 		.setTitle(`Ticket of  ${interaction.user.tag}`)
 		.setDescription(embedDescription)
 		.setTimestamp();
 	await addEmbedFooter(interaction.client, welcomeEmbed);
 
-	let actionRow = new ActionRowBuilder<ButtonBuilder>();
+	const actionRow = new ActionRowBuilder<ButtonBuilder>();
 	if (
 		interaction.customId === "create_ticket_report" ||
 		interaction.customId === "create_ticket_other"
@@ -247,9 +247,9 @@ export async function handleClaimTicketButton(
 	interaction: ButtonInteraction,
 	config: Config
 ) {
-	let ticketChannel = interaction.channel as TextChannel;
-	let member = await interaction.guild?.members.fetch(interaction.user.id);
-	let guild = await interaction.guild?.fetch();
+	const ticketChannel = interaction.channel as TextChannel;
+	const member = await interaction.guild?.members.fetch(interaction.user.id);
+	const guild = await interaction.guild?.fetch();
 
 	if (!member || !guild) return;
 
@@ -303,10 +303,10 @@ export async function handleCloseTicketButton(
 	interaction: ButtonInteraction,
 	config: Config
 ) {
-	let ticketChannel = interaction.channel as TextChannel;
+	const ticketChannel = interaction.channel as TextChannel;
 	await ticketChannel.fetch();
-	let member = await interaction.guild?.members.fetch(interaction.user.id);
-	let guild = await interaction.guild?.fetch();
+	const member = await interaction.guild?.members.fetch(interaction.user.id);
+	const guild = await interaction.guild?.fetch();
 
 	if (!member || !guild) return;
 
@@ -319,9 +319,9 @@ export async function handleCloseTicketButton(
 		return;
 	}
 
-	let transcript = await createTranscript(ticketChannel);
+	const transcript = await createTranscript(ticketChannel);
 
-	let ticketCreatorId = ticketChannel.topic
+	const ticketCreatorId = ticketChannel.topic
 		?.split(" ")[3]
 		.replace("(", "")
 		.replace(")", "");
@@ -335,7 +335,7 @@ export async function handleCloseTicketButton(
 			.replace(")", "");
 	}
 
-	let ticketLogEmbed = new EmbedBuilder()
+	const ticketLogEmbed = new EmbedBuilder()
 		.setColor(0x77b94d)
 		.setTitle(`Ticket ${ticketChannel.name} closed`)
 		.setDescription(
@@ -364,11 +364,11 @@ export async function handleCloseTicketButton(
 		.setTimestamp();
 	await addEmbedFooter(interaction.client, ticketLogEmbed);
 
-	let ticketLogChannel = interaction.client.channels.cache.get(
+	const ticketLogChannel = interaction.client.channels.cache.get(
 		config.log.ticketLogsId
 	) as TextChannel;
 
-	let ticketCreator = await interaction.client.users.fetch(ticketCreatorId);
+	const ticketCreator = await interaction.client.users.fetch(ticketCreatorId);
 
 	await ticketLogChannel?.send({
 		embeds: [ticketLogEmbed],
