@@ -1,10 +1,12 @@
-{   
-    "printWidth": 150,
+{
+	"printWidth": 150,
 	"tabWidth": 4,
 	"useTabs": true,
 	"semi": true,
 	"singleQuote": false,
 	"bracketSpacing": true,
 	"arrowParens": "always",
-	"requirePragma": false
+	"proseWrap": "preserve",
+	"requirePragma": false,
+	"semi": true
 }
