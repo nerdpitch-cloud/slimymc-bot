@@ -11,6 +11,7 @@ import SlimyClient from "../client";
 import { Config } from "../conf/config";
 import { addEmbedFooter } from "../lib/embed-footer";
 import { userMissingPermissions } from "../lib/errors/common/permissions";
+import { generateLeaderboardButtons, LeaderboardType } from "../lib/leaderboard-gen";
 import { CountingDB } from "../lib/mysql/counting";
 import { VariablesDB } from "../lib/mysql/variables";
 
@@ -73,8 +74,9 @@ module.exports = {
 				}
 
 				leaderboardEmbed.setDescription(embedDescription);
+				const actionRow = await generateLeaderboardButtons(0, LeaderboardType.COUNTING, leaderboard);
 
-				interaction.reply({ embeds: [leaderboardEmbed] });
+				interaction.reply({ embeds: [leaderboardEmbed], components: [actionRow] });
 
 				break;
 		}

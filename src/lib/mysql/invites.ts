@@ -1,4 +1,4 @@
-import { InviteEntry } from "./types";
+import { InviteEntry, InvitesLeaderboardEntry } from "./types";
 import { sendSQLQuery } from "./_base";
 
 export class InvitesDB {
@@ -27,5 +27,35 @@ export class InvitesDB {
 
 	static async removeInvite(userId: string) {
 		return await sendSQLQuery("DELETE FROM invites WHERE user_id = ?;", [userId]);
+	}
+
+	static async getLeaderboard() {
+		const allInvites = await InvitesDB.getAll();
+
+		const leaderboardDict: { [inviterId: string]: number } = {};
+
+		for (let i = 0; i < allInvites.length; i++) {
+			leaderboardDict[allInvites[i].inviterId] = Number(leaderboardDict[allInvites[i].inviterId]) + 1 || 1;
+		}
+
+		const leaderboardArr = Object.keys(leaderboardDict).map((key) => {
+			return [key, leaderboardDict[key]];
+		});
+
+		leaderboardArr
+			.sort((first, second) => {
+				return Number(first[1]) - Number(second[1]);
+			})
+			.reverse();
+		
+		const leaderboard: Array<InvitesLeaderboardEntry> = [];
+		for (let i = 0; i < leaderboardArr.length; i++) {
+			leaderboard.push({
+				userId: String(leaderboardArr[i][0]),
+				invites: Number(leaderboardArr[i][1]),
+			});
+		}
+
+		return leaderboard;
 	}
 }

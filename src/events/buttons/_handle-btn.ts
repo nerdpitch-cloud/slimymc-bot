@@ -1,5 +1,6 @@
 import { ButtonInteraction } from "discord.js";
 import { Config } from "../../conf/config";
+import { handleCountingLeaderboardButton, handleInvitesLeaderboardButton, handleLevelLeaderboardButton } from "./leaderboards";
 import {
 	handleClaimTicketButton,
 	handleCloseTicketButton,
@@ -25,5 +26,14 @@ export async function handleButton(
 			return handleCloseTicketButton(interaction, config);
 		case "claim_ticket":
 			return handleClaimTicketButton(interaction, config);
+
+		case interaction.customId.match(/level_leaderboard_[0-9]/)?.input:
+			return handleLevelLeaderboardButton(interaction, config);
+
+		case interaction.customId.match(/invites_leaderboard_[0-9]/)?.input:
+			return handleInvitesLeaderboardButton(interaction, config);
+
+		case interaction.customId.match(/counting_leaderboard_[0-9]/)?.input:
+			return handleCountingLeaderboardButton(interaction, config);
 	}
 }

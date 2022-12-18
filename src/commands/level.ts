@@ -1,4 +1,7 @@
 import {
+	ActionRowBuilder,
+	ButtonBuilder,
+	ButtonStyle,
 	ChatInputCommandInteraction,
 	EmbedBuilder,
 	inlineCode,
@@ -52,7 +55,7 @@ module.exports = {
 				const leaderboardEmbed = new EmbedBuilder().setColor(0x77b94d).setTitle("Level leaderboard").setTimestamp();
 				await addEmbedFooter(client, leaderboardEmbed);
 
-				let embedDescription = "Showing top 10 levels";
+				let embedDescription = "Showing levels leaderboard";
 
 				for (let i = 0; i < 10; i++) {
 					embedDescription += `\n**${i + 1} • **${inlineCode(`lvl ${String(await xpToLevel(leaderboard[i].xp))}`)}** • **<@${
@@ -62,7 +65,24 @@ module.exports = {
 
 				leaderboardEmbed.setDescription(embedDescription);
 
-				interaction.reply({ embeds: [leaderboardEmbed] });
+				const actionRow = new ActionRowBuilder<ButtonBuilder>().addComponents(
+					new ButtonBuilder()
+						.setCustomId("level_leaderboard_0")
+						.setLabel("Previous")
+						.setEmoji("⬅️")
+						.setStyle(ButtonStyle.Primary)
+						.setDisabled(true),
+					new ButtonBuilder()
+						.setCustomId("level_leaderboard_1")
+						.setLabel("Next")
+						.setEmoji("➡️")
+						.setStyle(ButtonStyle.Primary)
+						.setDisabled(false)
+						
+				);
+				
+				
+				await interaction.reply({ embeds: [leaderboardEmbed], components: [actionRow] });	
 
 				break;
 
@@ -73,13 +93,19 @@ module.exports = {
 				}
 
 				const xp = await LevelsDB.getXp(user.id);
-				if (!xp) return interaction.reply(`Failed to get the level of ${user.tag}`);
+				const leaderboardPosition = await LevelsDB.getPosition(user.id);
+
+				if (!xp || !leaderboardPosition) return interaction.reply(`Failed to get the level of ${user.tag}`);
 
 				const level = await xpToLevel(xp);
 				const levelEmbed = new EmbedBuilder()
 					.setColor(0x77b94d)
-					.setTitle(`Rank of ${user.tag}`)
-					.setDescription(`Current level is ${inlineCode(String(level))}`)
+					.setTitle(user.tag)
+					.setDescription(
+						`Level: ${inlineCode(String(level))}\nTotal XP: ${inlineCode(String(xp))}\nPosition: ${inlineCode(
+							String(leaderboardPosition)
+						)}`
+					)
 					.setTimestamp();
 				await addEmbedFooter(client, levelEmbed);
 

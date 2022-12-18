@@ -2,6 +2,7 @@ import { bold, CommandInteraction, EmbedBuilder, SlashCommandBuilder } from "dis
 import SlimyClient from "../client";
 import { Config } from "../conf/config";
 import { addEmbedFooter } from "../lib/embed-footer";
+import { generateLeaderboardButtons, LeaderboardType } from "../lib/leaderboard-gen";
 import { InvitesDB } from "../lib/mysql/invites";
 
 module.exports = {
@@ -12,23 +13,7 @@ module.exports = {
 		.setDMPermission(false),
 
 	async execute(client: SlimyClient, config: Config, interaction: CommandInteraction) {
-		const allInvites = await InvitesDB.getAll();
-
-		const leaderboardDict: { [inviterId: string]: number } = {};
-
-		for (let i = 0; i < allInvites.length; i++) {
-			leaderboardDict[allInvites[i].inviterId] = Number(leaderboardDict[allInvites[i].inviterId]) + 1 || 1;
-		}
-
-		const leaderboardArr = Object.keys(leaderboardDict).map((key) => {
-			return [key, leaderboardDict[key]];
-		});
-
-		leaderboardArr
-			.sort((first, second) => {
-				return Number(first[1]) - Number(second[1]);
-			})
-			.reverse();
+		const leaderboard = await InvitesDB.getLeaderboard();
 
 		const leaderboardEmbed = new EmbedBuilder().setColor(0x77b94d).setTitle("Invites leaderboard").setTimestamp();
 		await addEmbedFooter(client, leaderboardEmbed);
@@ -36,8 +21,8 @@ module.exports = {
 		let embedDescription = "Showing top 10 inviters";
 
 		for (let i = 0; i < 10; i++) {
-			if (typeof leaderboardArr[i] !== "undefined") {
-				embedDescription += `\n${bold(String(i + 1))} • <@${leaderboardArr[i][0]}> • ${bold(String(leaderboardArr[i][1]))}`;
+			if (typeof leaderboard[i] !== "undefined") {
+				embedDescription += `\n${bold(String(i + 1))} • <@${leaderboard[i].userId}> • ${bold(String(leaderboard[i].invites))}`;
 			} else {
 				break;
 			}
@@ -45,6 +30,8 @@ module.exports = {
 
 		leaderboardEmbed.setDescription(embedDescription);
 
-		await interaction.reply({ embeds: [leaderboardEmbed] });
+		const actionRow = await generateLeaderboardButtons(0, LeaderboardType.INVITES, leaderboard);
+
+		await interaction.reply({ embeds: [leaderboardEmbed], components: [actionRow] });
 	},
 };
