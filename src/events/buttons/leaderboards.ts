@@ -84,7 +84,7 @@ export async function handleCountingLeaderboardButton(interaction: ButtonInterac
         for (let i = 0; i < 10; i++) {
             if (!page[i]) break;
 
-            embedDescription += `\n$**{index * 10 + i + 1}** • ${inlineCode(String(page[i].count))} • <@${page[i].userId}>`;
+            embedDescription += `\n**${index * 10 + i + 1}** • ${inlineCode(String(page[i].count))} • <@${page[i].userId}>`;
         }
 
     leaderboardEmbed.setDescription(embedDescription);
