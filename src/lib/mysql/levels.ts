@@ -33,6 +33,13 @@ export class LevelsDB {
 		return await LevelsDB._formatLevel(res[0]);
 	}
 
+	static async getPosition(user_id: string): Promise<number> {
+		const leaderboard = await LevelsDB.getAll();
+		const leaderboardPosition = leaderboard.findIndex((entry) => entry.userId === user_id);
+
+		return leaderboardPosition + 1;
+	}
+
 	static async getAll() {
 		const res = await sendSQLQuery("SELECT * FROM levels ORDER BY xp DESC;");
 		if (!Array.isArray(res[0])) throw new Error("res[0] was not an array");

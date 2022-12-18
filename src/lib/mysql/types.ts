@@ -16,6 +16,11 @@ export interface LevelsEntry {
 	xp: number;
 }
 
+export interface InvitesLeaderboardEntry {
+	userId: string;
+	invites: number;
+}
+
 export interface VariableEntry {
 	key: string;
 	value: string;
