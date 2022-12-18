@@ -20,8 +20,6 @@ export async function generateLeaderboardButtons(index: number, type: Leaderboar
             disableNext = true
         }
     }
-
-    console.log(type)
     
     const actionRow = new ActionRowBuilder<ButtonBuilder>().addComponents(
         new ButtonBuilder()
