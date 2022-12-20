@@ -19,7 +19,7 @@ import { Command } from "./_handle";
 
 export default class InfractionsCommand implements Command {
 	name = "🔨 Infractions";
-	description = "View/Manage member's infractions!";
+	description = "View/Manage member's infractions";
 	syntax = "infractions <view|remove>";
 	subCommands = [
 		{
@@ -37,7 +37,7 @@ export default class InfractionsCommand implements Command {
 
 	data = new SlashCommandBuilder()
 		.setName("infractions")
-		.setDescription("View/Manage member's infractions!")
+		.setDescription("View/Manage member's infractions")
 		.addSubcommand((subcommand) =>
 			subcommand
 				.setName("view")
