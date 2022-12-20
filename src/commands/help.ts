@@ -4,7 +4,7 @@ import { Config } from "../conf/config";
 import { addEmbedFooter } from "../lib/embed-footer";
 import { Command } from "./_handle";
 
-export default class HelpCommand implements Command {
+export class HelpCommand implements Command {
     name = "📖 Help";
     description = "List all of my commands or info about a specific command.";
     syntax = "help [command name]";

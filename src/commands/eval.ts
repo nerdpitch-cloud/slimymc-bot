@@ -3,7 +3,7 @@ import SlimyClient from "../client";
 import { Config } from "../conf/config";
 import { Command } from "./_handle";
 
-export default class EvalCommand implements Command {
+export class EvalCommand implements Command {
 	name = "🔨 Eval"
 	description = "Evaluate js code snippets"
 	syntax = "eval <code>"

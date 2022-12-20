@@ -16,7 +16,7 @@ import { CountingDB } from "../lib/mysql/counting";
 import { VariablesDB } from "../lib/mysql/variables";
 import { Command } from "./_handle";
 
-export default class CountingCommand implements Command {
+export class CountCommand implements Command {
 	name = "📊 Counting";
 	description = "Counting channel information";
 	syntax = "count <current|set-current|leaderboard>";

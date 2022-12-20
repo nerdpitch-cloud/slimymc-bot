@@ -5,7 +5,7 @@ import { ModerationAction } from "../lib/moderation/moderation";
 import { Config } from "../conf/config";
 import { Command } from "./_handle";
 
-export default class TempbanCommand implements Command {
+export class TempbanCommand implements Command {
 	name = "🔨 Tempban";
 	description = "Tempban a user";
 	syntax = "tempban <user> <duration> [reason]";

@@ -6,7 +6,7 @@ import { generateLeaderboardButtons, LeaderboardType } from "../lib/leaderboard-
 import { InvitesDB } from "../lib/mysql/invites";
 import { Command } from "./_handle";
 
-export default class InvtesCommmand implements Command {
+export class InvtesCommmand implements Command {
 	name = "📊 Invites"
 	description = "See the invites leaderboard"
 	syntax = "invites"

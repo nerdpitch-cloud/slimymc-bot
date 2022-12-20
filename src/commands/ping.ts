@@ -3,7 +3,7 @@ import SlimyClient from "../client";
 import { Config } from "../conf/config";
 import { Command } from "./_handle";
 
-export default class PingCommand implements Command{
+export class PingCommand implements Command{
 	name = "🏓 Ping"
 	description = "Get the bot's latency"
 	syntax = "ping"

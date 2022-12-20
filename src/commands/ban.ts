@@ -4,7 +4,7 @@ import { genModerationOptions, handleModeration, ModerationAction } from "../lib
 import { Config } from "../conf/config";
 import { Command } from "./_handle";
 
-export default class BanCommand implements Command {
+export class BanCommand implements Command {
 	name = "🔨 Ban"
 	description = "Ban a user"
 	syntax = "ban <user> [reason]"

@@ -4,7 +4,7 @@ import { genModerationOptions, handleModeration, ModerationAction } from "../lib
 import { Config } from "../conf/config";
 import { Command } from "./_handle";
 
-export default class TempmuteCommand implements Command {
+export class TempmuteCommand implements Command {
 	name = "🔇 Tempmute";
 	description = "Tempmute a user";
 	syntax = "tempmute <user> <duration> [reason]";

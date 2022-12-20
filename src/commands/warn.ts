@@ -5,7 +5,7 @@ import { ModerationAction } from "../lib/moderation/moderation";
 import { Config } from "../conf/config";
 import { Command } from "./_handle";
 
-export default class WarnCommand implements Command {
+export class WarnCommand implements Command {
 	name = "⚠️ Warn";
 	description = "Warn a user";
 	syntax = "warn <user> [reason]";

@@ -17,7 +17,7 @@ import { InfractionsDB } from "../lib/mysql/infractions";
 import { Command } from "./_handle";
 
 
-export default class InfractionsCommand implements Command {
+export class InfractionsCommand implements Command {
 	name = "🔨 Infractions";
 	description = "View/Manage member's infractions";
 	syntax = "infractions <view|remove>";

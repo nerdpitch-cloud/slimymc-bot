@@ -20,7 +20,7 @@ import { VariablesDB } from "../lib/mysql/variables";
 import { xpToLevel } from "../lib/xp";
 import { Command } from "./_handle";
 
-export default class LevelCommand implements Command {
+export class LevelCommand implements Command {
 	name = "📊 Level"
 	description = "Chatting level"
 	syntax = "level <leaderboard|user|give-xp|set-multiplier>"
