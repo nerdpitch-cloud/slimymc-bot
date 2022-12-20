@@ -3,15 +3,26 @@ import SlimyClient from "../client";
 import { genModerationOptions, handleModeration } from "../lib/moderation/moderation";
 import { ModerationAction } from "../lib/moderation/moderation";
 import { Config } from "../conf/config";
+import { Command } from "./_handle";
 
-module.exports = {
-	data: new SlashCommandBuilder()
+export default class WarnCommand implements Command {
+	name = "⚠️ Warn";
+	description = "Warn a user";
+	syntax = "warn <user> [reason]";
+	data = new SlashCommandBuilder()
 		.setName("warn")
 		.setDescription("Warn a user")
-		.addUserOption((option) => option.setName("user").setDescription("The member to warn").setRequired(true))
-		.addStringOption((option) => option.setName("reason").setDescription("Reason for the warning").setRequired(false))
+		.addUserOption((option) => option
+			.setName("user")
+			.setDescription("The member to warn")
+			.setRequired(true))
+		.addStringOption((option) => option
+			.setName("reason")
+			.setDescription("Reason for the warning")
+			.setRequired(false))
+
 		.setDefaultMemberPermissions(PermissionFlagsBits.ModerateMembers)
-		.setDMPermission(false),
+		.setDMPermission(false)
 
 	async execute(client: SlimyClient, config: Config, interaction: CommandInteraction) {
 		const commandOptions = await genModerationOptions(interaction);
@@ -22,5 +33,5 @@ module.exports = {
 			content: `Warned <@${commandOptions.target.id}> for ${commandOptions.reason}`,
 			ephemeral: true,
 		});
-	},
-};
+	}
+}

@@ -18,9 +18,14 @@ import { userMissingPermissions } from "../lib/errors/common/permissions";
 import { LevelsDB } from "../lib/mysql/levels";
 import { VariablesDB } from "../lib/mysql/variables";
 import { xpToLevel } from "../lib/xp";
+import { Command } from "./_handle";
 
-module.exports = {
-	data: new SlashCommandBuilder()
+export default class LevelCommand implements Command {
+	name = "📊 Level"
+	description = "Chatting level"
+	syntax = "level <leaderboard|user|give-xp|set-multiplier>"
+
+	data = new SlashCommandBuilder()
 		.setName("level")
 		.setDescription("Chatting level")
 		.addSubcommand((subcommand) => subcommand.setName("leaderboard").setDescription("Get the level leaderboard"))
@@ -43,7 +48,7 @@ module.exports = {
 				.setDescription("Set xp multiplier")
 				.addNumberOption((option) => option.setName("multiplier").setDescription("The multiplier to xp").setRequired(true))
 		)
-		.setDMPermission(false),
+		.setDMPermission(false)
 
 	async execute(client: SlimyClient, config: Config, interaction: ChatInputCommandInteraction) {
 		const subCommand = interaction.options.getSubcommand();
@@ -148,5 +153,5 @@ module.exports = {
 
 				break;
 		}
-	},
-};
+	}
+}

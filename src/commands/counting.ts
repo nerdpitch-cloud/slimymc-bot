@@ -14,25 +14,52 @@ import { userMissingPermissions } from "../lib/errors/common/permissions";
 import { generateLeaderboardButtons, LeaderboardType } from "../lib/leaderboard-gen";
 import { CountingDB } from "../lib/mysql/counting";
 import { VariablesDB } from "../lib/mysql/variables";
+import { Command } from "./_handle";
 
-module.exports = {
-	data: new SlashCommandBuilder()
+export default class CountingCommand implements Command {
+	name = "📊 Counting";
+	description = "Counting channel information";
+	syntax = "count <current|set-current|leaderboard>";
+	subCommands = [
+		{
+			name: "current",
+			description: "Get the current count",
+			syntax: "count current",
+			
+		},
+		{
+			name: "set-current",
+			description: "Set the current count",
+			syntax: "count set-current <value>",
+		},
+		{
+			name: "leaderboard",
+			description: "Get the counting leaderboard",
+			syntax: "count leaderboard",
+		},
+	];
+
+	data = new SlashCommandBuilder()
 		.setName("count")
-		.setDescription("Counting channel information")
-		.addSubcommand((subcommand) => subcommand.setName("current").setDescription("Get the current count"))
+			.setDescription("Counting channel information")
+			.addSubcommand((subcommand) => subcommand
+				.setName("current")
+				.setDescription("Get the current count"))
 
-		.addSubcommand((subcommand) =>
-			subcommand
-				.setName("set-current")
-				.setDescription("Get the current count")
-				.addNumberOption((option) =>
-					option.setName("value").setDescription("Value to which you'd like to set the current count to").setRequired(true)
-				)
-		)
+			.addSubcommand((subcommand) =>
+				subcommand
+					.setName("set-current")
+					.setDescription("Get the current count")
+					.addNumberOption((option) =>
+						option.setName("value")
+						.setDescription("Value to which you'd like to set the current count to")
+						.setRequired(true)
+					)
+			)
 
-		.addSubcommand((subcommand) => subcommand.setName("leaderboard").setDescription("Get the counting leaderboard"))
+			.addSubcommand((subcommand) => subcommand.setName("leaderboard").setDescription("Get the counting leaderboard"))
 
-		.setDMPermission(false),
+			.setDMPermission(false);
 
 	async execute(client: SlimyClient, config: Config, interaction: ChatInputCommandInteraction) {
 		const subCommand = interaction.options.getSubcommand();
@@ -80,5 +107,5 @@ module.exports = {
 
 				break;
 		}
-	},
-};
+	}
+}

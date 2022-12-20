@@ -1,7 +1,21 @@
-import { CommandInteraction } from "discord.js";
+import { CommandInteraction, InteractionResponse, SlashCommandBuilder } from "discord.js";
 import SlimyClient from "../client";
 import { Config } from "../conf/config";
 import { handleUnexpectedError } from "../lib/errors/handler";
+export interface Command {
+	name: string;
+	description: string;
+	syntax: string;
+	subCommands?: SubCommand[]
+	data: SlashCommandBuilder;
+	execute(client: SlimyClient, config: Config, interaction: CommandInteraction): Promise<void | InteractionResponse>;
+}
+
+export interface SubCommand {
+	name: string;
+	description: string;
+	syntax: string;
+}
 
 export async function handleCommand(client: SlimyClient, config: Config, interaction: CommandInteraction) {
 	const command = client.commands.get(interaction.commandName);

@@ -4,13 +4,16 @@ import { Config } from "../conf/config";
 import { addEmbedFooter } from "../lib/embed-footer";
 import { generateLeaderboardButtons, LeaderboardType } from "../lib/leaderboard-gen";
 import { InvitesDB } from "../lib/mysql/invites";
+import { Command } from "./_handle";
 
-module.exports = {
-	data: new SlashCommandBuilder()
+export default class InvtesCommmand implements Command {
+	name = "📊 Invites"
+	description = "See the invites leaderboard"
+	syntax = "invites"
+
+	data = new SlashCommandBuilder()
 		.setName("invites")
 		.setDescription("See the invites leaderboard")
-
-		.setDMPermission(false),
 
 	async execute(client: SlimyClient, config: Config, interaction: CommandInteraction) {
 		const leaderboard = await InvitesDB.getLeaderboard();
@@ -33,5 +36,5 @@ module.exports = {
 		const actionRow = await generateLeaderboardButtons(0, LeaderboardType.INVITES, leaderboard);
 
 		await interaction.reply({ embeds: [leaderboardEmbed], components: [actionRow] });
-	},
-};
+	}
+}

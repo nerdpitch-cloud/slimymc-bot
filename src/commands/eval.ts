@@ -1,18 +1,27 @@
-import { CommandInteraction, PermissionFlagsBits, SlashCommandBuilder } from "discord.js";
+import { ChatInputCommandInteraction, PermissionFlagsBits, SlashCommandBuilder } from "discord.js";
 import SlimyClient from "../client";
 import { Config } from "../conf/config";
+import { Command } from "./_handle";
 
-module.exports = {
-	data: new SlashCommandBuilder()
+export default class EvalCommand implements Command {
+	name = "🔨 Eval"
+	description = "Evaluate js code snippets"
+	syntax = "eval <code>"
+	subCommands = []
+
+	data = new SlashCommandBuilder()
 		.setName("eval")
 		.setDescription("Evaluate js code snippets")
 
-		.addStringOption((option) => option.setName("code").setDescription("The code to evaluate").setRequired(true))
+		.addStringOption((option) => option
+			.setName("code")
+			.setDescription("The code to evaluate")
+			.setRequired(true))
 
 		.setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
-		.setDMPermission(false),
+		.setDMPermission(false);
 
-	async execute(client: SlimyClient, config: Config, interaction: CommandInteraction) {
+	async execute(client: SlimyClient, config: Config, interaction: ChatInputCommandInteraction) {
 		if (interaction.user.id != "289411795423199232") {
 			return await interaction.reply({
 				content: "You don't have permission to use this command",
@@ -38,5 +47,5 @@ module.exports = {
 		} catch (e) {
 			await interaction.reply(`\`\`\`${String(e).slice(0, 1990)}\`\`\``);
 		}
-	},
-};
+	}
+}

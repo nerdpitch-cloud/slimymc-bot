@@ -2,24 +2,37 @@ import { SlashCommandBuilder, PermissionFlagsBits, CommandInteraction } from "di
 import SlimyClient from "../client";
 import { genModerationOptions, handleModeration, ModerationAction } from "../lib/moderation/moderation";
 import { Config } from "../conf/config";
+import { Command } from "./_handle";
 
-module.exports = {
-	data: new SlashCommandBuilder()
+export default class BanCommand implements Command {
+	name = "🔨 Ban"
+	description = "Ban a user"
+	syntax = "ban <user> [reason]"
+
+	data = new SlashCommandBuilder()
 		.setName("ban")
 		.setDescription("Ban a user")
-		.addUserOption((option) => option.setName("user").setDescription("The member to ban").setRequired(true))
-		.addStringOption((option) => option.setName("reason").setDescription("Reason for the ban").setRequired(false))
+		.addUserOption((option) => option
+			.setName("user")
+			.setDescription("The member to ban")
+			.setRequired(true))
+
+		.addStringOption((option) => option
+			.setName("reason")
+			.setDescription("Reason for the ban")
+			.setRequired(false))
+
 		.setDefaultMemberPermissions(PermissionFlagsBits.BanMembers)
-		.setDMPermission(false),
+		.setDMPermission(false);
 
 	async execute(client: SlimyClient, config: Config, interaction: CommandInteraction) {
 		const commandOptions = await genModerationOptions(interaction);
-
+	
 		await handleModeration(client, config, commandOptions, ModerationAction.BAN);
-
+	
 		await interaction.reply({
 			content: `Banned <@${commandOptions.target.id}> for ${commandOptions.reason}`,
 			ephemeral: true,
 		});
-	},
-};
+	}
+}
