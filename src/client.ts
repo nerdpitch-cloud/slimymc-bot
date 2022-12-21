@@ -2,9 +2,11 @@ import fs from "node:fs";
 import path from "node:path";
 
 import { Client, ClientOptions, Collection } from "discord.js";
+import { Command } from "./commands/_handle";
+import { commands as allCommands } from "./commands/_register";
 
 export default class SlimyClient extends Client {
-	public commands: Collection<string, ApplicationCommandModule>;
+	public commands: Collection<string, Command>;
 
 	constructor(options: ClientOptions) {
 		super(options);
@@ -13,20 +15,8 @@ export default class SlimyClient extends Client {
 	}
 
 	private loadCommands(): void {
-		const commandsPath = path.join(__dirname, "commands");
-		const commandFiles = fs.readdirSync(commandsPath).filter((file) => file.endsWith(".js"));
-
-		for (const file of commandFiles) {
-			const filePath = path.join(commandsPath, file);
-
-			if (!file.startsWith("_")) {
-				const command = require(filePath);
-				this.commands.set(command.data.name, command);
-			}
+		for(const command of allCommands) {
+			this.commands.set(command.data.name, command);
 		}
 	}
-}
-
-export interface ApplicationCommandModule {
-	execute: Function;
 }

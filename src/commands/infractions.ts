@@ -14,29 +14,54 @@ import { convertUTCDateToLocalDate } from "../lib/date";
 import { addEmbedFooter } from "../lib/embed-footer";
 import { punishmentTextFromId } from "../lib/moderation/moderation";
 import { InfractionsDB } from "../lib/mysql/infractions";
+import { Command } from "./_handle";
 
-module.exports = {
-	data: new SlashCommandBuilder()
+
+export class InfractionsCommand implements Command {
+	name = "🔨 Infractions";
+	description = "View/Manage member's infractions";
+	syntax = "infractions <view|remove>";
+	subCommands = [
+		{
+			name: "view",
+			description: "View member's infractions",
+			syntax: "infractions view <member>",
+			
+		},
+		{
+			name: "remove",
+			description: "Remove member's infraction from the database",
+			syntax: "infractions remove <member>",
+		},
+	];
+
+	data = new SlashCommandBuilder()
 		.setName("infractions")
-		.setDescription("View/Manage member's infractions!")
+		.setDescription("View/Manage member's infractions")
 		.addSubcommand((subcommand) =>
 			subcommand
 				.setName("view")
 				.setDescription("View member's infractions")
-				.addUserOption((option) =>
-					option.setName("member").setDescription("Member who's history of infractions you want to view").setRequired(true)
+				.addUserOption((option) => option
+					.setName("member")
+					.setDescription("Member who's history of infractions you want to view")
+					.setRequired(true)
 				)
 		)
 
 		.addSubcommand((subcommand) =>
-			subcommand
-				.setName("remove")
-				.setDescription("Remove member's infraction from the database")
-				.addUserOption((option) => option.setName("member").setDescription("Member who's infraction you want to remove").setRequired(true))
+		subcommand
+			.setName("remove")
+			.setDescription("Remove member's infraction from the database")
+			.addUserOption((option) => option
+				.setName("member")
+				.setDescription("Member who's infraction you want to remove")
+				.setRequired(true))
 		)
 
 		.setDefaultMemberPermissions(PermissionFlagsBits.BanMembers)
-		.setDMPermission(false),
+		.setDMPermission(false);
+
 
 	async execute(client: SlimyClient, config: Config, interaction: ChatInputCommandInteraction) {
 		const subCommand = interaction.options.getSubcommand();
@@ -92,5 +117,5 @@ module.exports = {
 
 			interaction.reply({ content: "Pick an infraction to remove", components: [actionRow] });
 		}
-	},
-};
+	}
+}
