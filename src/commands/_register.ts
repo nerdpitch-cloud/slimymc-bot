@@ -24,27 +24,27 @@ if (enviroment === "dev") {
 	config = new Config(Enviroment.PROD);
 }
 
-const commands: RESTPostAPIChatInputApplicationCommandsJSONBody[] = [
-	new BanCommand().data.toJSON(),
-	new CountCommand().data.toJSON(),
-	new EvalCommand().data.toJSON(),
-	new HelpCommand().data.toJSON(),
-	new InfractionsCommand().data.toJSON(),
-	new InvtesCommmand().data.toJSON(),
-	new LevelCommand().data.toJSON(),
-	new PingCommand().data.toJSON(),
-	new TempbanCommand().data.toJSON(),
-	new TempmuteCommand().data.toJSON(),
-	new WarnCommand().data.toJSON(),
+export const commands = [
+	new BanCommand(),
+	new CountCommand(),
+	new EvalCommand(),
+	new HelpCommand(),
+	new InfractionsCommand(),
+	new InvtesCommmand(),
+	new LevelCommand(),
+	new PingCommand(),
+	new TempbanCommand(),
+	new TempmuteCommand(),
+	new WarnCommand(),
 ];
 
 const rest = new REST({ version: "10" }).setToken(config.discord.token);
 
-(async () => {
+async function registerCommands() {
 	try {
 		console.log(`Started refreshing ${commands.length} application (/) commands.`);
 
-		const data = await rest.put(Routes.applicationGuildCommands(config.discord.clientId, config.discord.guildId), { body: commands });
+		const data = await rest.put(Routes.applicationGuildCommands(config.discord.clientId, config.discord.guildId), { body: commands.map((command) => command.data.toJSON()) });
 
 		if (data instanceof Array<any>) {
 			console.log(`Successfully reloaded ${data.length} application (/) commands.`);
@@ -53,4 +53,8 @@ const rest = new REST({ version: "10" }).setToken(config.discord.token);
 	} catch (error) {
 		console.error(error);
 	}
-})();
+}
+
+if (require.main === module) {
+	registerCommands();
+}
