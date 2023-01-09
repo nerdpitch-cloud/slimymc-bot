@@ -13,6 +13,7 @@ import { PingCommand } from "./ping";
 import { TempbanCommand } from "./tempban";
 import { TempmuteCommand } from "./tempmute";
 import { WarnCommand } from "./warn";
+import { MusicCommand } from "./music";
 
 const enviroment = process.argv.slice(2)[0];
 
@@ -32,6 +33,7 @@ export const commands = [
 	new InfractionsCommand(),
 	new InvtesCommmand(),
 	new LevelCommand(),
+	new MusicCommand(),
 	new PingCommand(),
 	new TempbanCommand(),
 	new TempmuteCommand(),

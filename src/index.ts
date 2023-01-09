@@ -20,6 +20,7 @@ const client = new SlimyClient({
 		GatewayIntentBits.GuildInvites,
 		GatewayIntentBits.MessageContent,
 		GatewayIntentBits.GuildMessages,
+		GatewayIntentBits.GuildVoiceStates,
 	],
 	partials: [Partials.Message],
 });
