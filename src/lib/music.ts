@@ -1,7 +1,7 @@
 import { createAudioPlayer, joinVoiceChannel, NoSubscriberBehavior } from "@discordjs/voice";
 import { VoiceChannel } from "discord.js";
-
-export let queue: string[] = [];
+import play, { YouTubeVideo } from "play-dl";
+export let queue: YouTubeVideo[] = [];
 
 export async function initAudioPlayer() {
     return await createAudioPlayer({
@@ -19,7 +19,14 @@ export async function initVoiceConnection(voiceChannel: VoiceChannel) {
     })
 }
 
-export async function addTracktoQueue(songName: string) {
+export async function formatVideoDuration(duration: number) {
+    const minutes = Math.floor(duration / 60);
+    const seconds = duration - minutes * 60;
+    return `${minutes}:${seconds}`;
+
+}
+
+export async function addTracktoQueue(songName: YouTubeVideo) {
     queue.push(songName);
 }
 

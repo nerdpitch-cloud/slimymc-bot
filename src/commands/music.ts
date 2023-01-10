@@ -1,11 +1,11 @@
-import { ChannelType, ChatInputCommandInteraction, EmbedBuilder, GuildMember, SlashCommandBuilder } from "discord.js";
+import { ChannelType, ChatInputCommandInteraction, EmbedBuilder, GuildMember, inlineCode, SlashCommandBuilder } from "discord.js";
 import { joinVoiceChannel, createAudioResource , createAudioPlayer, NoSubscriberBehavior, VoiceConnectionStatus, entersState, AudioPlayer, VoiceConnection, AudioPlayerStatus } from "@discordjs/voice";
 import play from 'play-dl'; // Everything
 import SlimyClient from "../client";
 import { Config } from "../conf/config";
 import { Command } from "./_handle";
 import { addEmbedFooter } from "../lib/embed-footer";
-import { addTracktoQueue, getQueue, initAudioPlayer, initVoiceConnection } from "../lib/music";
+import { addTracktoQueue, formatVideoDuration, getQueue, initAudioPlayer, initVoiceConnection } from "../lib/music";
 
 let player: AudioPlayer | null = null;
 let connection: VoiceConnection | null = null;
@@ -57,32 +57,32 @@ export class MusicCommand implements Command {
         switch (subCommand) {
             case "play": {
                 await interaction.deferReply()
-
                 const songArg = interaction.options.getString("song", true);
 
                 if (!connection) {
                     connection = await initVoiceConnection(voiceChannel);
                 }
 
-                const isLink = songArg.toLowerCase().startsWith("https://www.youtube.com/watch?v=") || songArg.toLowerCase().startsWith("https://youtu.be/");
-                const songName = isLink ? songArg : await play.search(songArg, { limit: 1 }).then((res) => res[0].url);
-                
+                const video = (await play.search(songArg, { limit: 1 }))[0];
+
+
                 if ((await getQueue()).length > 0 || player?.state.status === AudioPlayerStatus.Playing) {
-                    await addTracktoQueue(songName);
-                    await interaction.editReply({ content: `Added ${songName} to the queue!` })
+                    await addTracktoQueue(video);
+                    await interaction.editReply({ content: `Added ${video.title} to the queue!` })
                     return;
                 }
 
+
                 const embed = new EmbedBuilder()
                     .setTitle("🎵 Music")
-                    .setDescription(`Now playing: ${songName}`)
+                    .setDescription(`**Now playing:** ${video.title} - ${inlineCode(await formatVideoDuration(video.durationInSec))}`)
                     .setColor(0x77b94d)
                     .setTimestamp()
                     await addEmbedFooter(client, embed)
 
                 await interaction.editReply({ embeds: [embed] })
             
-                const stream = await play.stream(songName)
+                const stream = await play.stream(video.url)
 
                 const resource = createAudioResource(stream.stream, {
                     inputType: stream.type
@@ -126,8 +126,6 @@ export class MusicCommand implements Command {
                     return;
                 }
 
-                // leave the voice channel
-
                 player.stop();
                 connection?.destroy();
                 player = null;
@@ -143,10 +141,10 @@ export class MusicCommand implements Command {
                     return;
                 }
 
-                console.log(queue)
                 const embed = new EmbedBuilder()
                     .setTitle("🎵 Music")
-                    .setDescription(`Current queue: ${queue.join("\n")}`)
+                    .setColor(0x77b94d)
+                    .setDescription(`**Current queue:**\n${queue.map((video, index) => `**${index + 1}** • ${video.title}`).join("\n")}`)
                     .setTimestamp()
                     await addEmbedFooter(client, embed)
 

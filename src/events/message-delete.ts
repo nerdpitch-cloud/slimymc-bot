@@ -1,8 +1,9 @@
 import { EmbedBuilder, Message, PartialMessage } from "discord.js";
+import SlimyClient from "../client";
 import { Config } from "../conf/config";
 
-export async function handleMessageDelete(config: Config, message: Message<boolean> | PartialMessage) {
-	if (!message.content) return;
+export async function handleMessageDelete(client: SlimyClient, config: Config, message: Message<boolean> | PartialMessage) {
+	if (!message.content || message.author == client.user) return;
 
 	const ingnoredChannels = [config.counting.channelId];
 	const logChannel = await message.client.channels.fetch(config.log.userlogChannelId);

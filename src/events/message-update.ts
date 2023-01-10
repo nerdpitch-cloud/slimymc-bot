@@ -1,12 +1,14 @@
 import { EmbedBuilder, Message, PartialMessage } from "discord.js";
+import SlimyClient from "../client";
 import { Config } from "../conf/config";
 
 export async function handleMessageUpdate(
+	client: SlimyClient,
 	config: Config,
 	oldMessage: Message<boolean> | PartialMessage,
 	newMessage: Message<boolean> | PartialMessage
 ) {
-	if (oldMessage.content === newMessage.content) return;
+	if (oldMessage.content === newMessage.content || oldMessage.author == client.user) return;
 
 	const logChannel = await oldMessage.client.channels.fetch(config.log.userlogChannelId);
 	if (!logChannel?.isTextBased()) throw new Error("logChannel is not text based");

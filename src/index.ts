@@ -54,10 +54,10 @@ client.on(Events.GuildMemberRemove, async (member) => {
 });
 
 client.on(Events.MessageUpdate, async (oldMessage, newMessage) => {
-	handleMessageUpdate(config, oldMessage, newMessage);
+	handleMessageUpdate(client, config, oldMessage, newMessage);
 });
 client.on(Events.MessageDelete, async (message) => {
-	handleMessageDelete(config, message);
+	handleMessageDelete(client, config, message);
 });
 
 client.on(Events.MessageCreate, async (message) => {
