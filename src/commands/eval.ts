@@ -4,19 +4,16 @@ import { Config } from "../conf/config";
 import { Command } from "./_handle";
 
 export class EvalCommand implements Command {
-	name = "🔨 Eval"
-	description = "Evaluate js code snippets"
-	syntax = "eval <code>"
-	subCommands = []
+	name = "🔨 Eval";
+	description = "Evaluate js code snippets";
+	syntax = "eval <code>";
+	subCommands = [];
 
 	data = new SlashCommandBuilder()
 		.setName("eval")
 		.setDescription("Evaluate js code snippets")
 
-		.addStringOption((option) => option
-			.setName("code")
-			.setDescription("The code to evaluate")
-			.setRequired(true))
+		.addStringOption((option) => option.setName("code").setDescription("The code to evaluate").setRequired(true))
 
 		.setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
 		.setDMPermission(false);

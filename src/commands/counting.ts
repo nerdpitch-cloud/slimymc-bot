@@ -25,7 +25,6 @@ export class CountCommand implements Command {
 			name: "current",
 			description: "Get the current count",
 			syntax: "count current",
-			
 		},
 		{
 			name: "set-current",
@@ -41,25 +40,21 @@ export class CountCommand implements Command {
 
 	data = new SlashCommandBuilder()
 		.setName("count")
-			.setDescription("Counting channel information")
-			.addSubcommand((subcommand) => subcommand
-				.setName("current")
-				.setDescription("Get the current count"))
+		.setDescription("Counting channel information")
+		.addSubcommand((subcommand) => subcommand.setName("current").setDescription("Get the current count"))
 
-			.addSubcommand((subcommand) =>
-				subcommand
-					.setName("set-current")
-					.setDescription("Get the current count")
-					.addNumberOption((option) =>
-						option.setName("value")
-						.setDescription("Value to which you'd like to set the current count to")
-						.setRequired(true)
-					)
-			)
+		.addSubcommand((subcommand) =>
+			subcommand
+				.setName("set-current")
+				.setDescription("Get the current count")
+				.addNumberOption((option) =>
+					option.setName("value").setDescription("Value to which you'd like to set the current count to").setRequired(true)
+				)
+		)
 
-			.addSubcommand((subcommand) => subcommand.setName("leaderboard").setDescription("Get the counting leaderboard"))
+		.addSubcommand((subcommand) => subcommand.setName("leaderboard").setDescription("Get the counting leaderboard"))
 
-			.setDMPermission(false);
+		.setDMPermission(false);
 
 	async execute(client: SlimyClient, config: Config, interaction: ChatInputCommandInteraction) {
 		const subCommand = interaction.options.getSubcommand();

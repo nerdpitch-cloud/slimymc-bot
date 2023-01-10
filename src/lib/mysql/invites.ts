@@ -47,7 +47,7 @@ export class InvitesDB {
 				return Number(first[1]) - Number(second[1]);
 			})
 			.reverse();
-		
+
 		const leaderboard: Array<InvitesLeaderboardEntry> = [];
 		for (let i = 0; i < leaderboardArr.length; i++) {
 			leaderboard.push({

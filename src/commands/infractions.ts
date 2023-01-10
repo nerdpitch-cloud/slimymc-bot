@@ -16,7 +16,6 @@ import { punishmentTextFromId } from "../lib/moderation/moderation";
 import { InfractionsDB } from "../lib/mysql/infractions";
 import { Command } from "./_handle";
 
-
 export class InfractionsCommand implements Command {
 	name = "🔨 Infractions";
 	description = "View/Manage member's infractions";
@@ -26,7 +25,6 @@ export class InfractionsCommand implements Command {
 			name: "view",
 			description: "View member's infractions",
 			syntax: "infractions view <member>",
-			
 		},
 		{
 			name: "remove",
@@ -42,26 +40,20 @@ export class InfractionsCommand implements Command {
 			subcommand
 				.setName("view")
 				.setDescription("View member's infractions")
-				.addUserOption((option) => option
-					.setName("member")
-					.setDescription("Member who's history of infractions you want to view")
-					.setRequired(true)
+				.addUserOption((option) =>
+					option.setName("member").setDescription("Member who's history of infractions you want to view").setRequired(true)
 				)
 		)
 
 		.addSubcommand((subcommand) =>
-		subcommand
-			.setName("remove")
-			.setDescription("Remove member's infraction from the database")
-			.addUserOption((option) => option
-				.setName("member")
-				.setDescription("Member who's infraction you want to remove")
-				.setRequired(true))
+			subcommand
+				.setName("remove")
+				.setDescription("Remove member's infraction from the database")
+				.addUserOption((option) => option.setName("member").setDescription("Member who's infraction you want to remove").setRequired(true))
 		)
 
 		.setDefaultMemberPermissions(PermissionFlagsBits.BanMembers)
 		.setDMPermission(false);
-
 
 	async execute(client: SlimyClient, config: Config, interaction: ChatInputCommandInteraction) {
 		const subCommand = interaction.options.getSubcommand();

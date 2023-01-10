@@ -6,30 +6,23 @@ import { Config } from "../../conf/config";
 const verifyEmbed = new EmbedBuilder().setColor(0xabf243).setTitle("Verification").setDescription("Click the button below to verify");
 
 export async function checkVerifyMessage(client: SlimyClient, config: Config) {
-    if (!config.verify.verifyMessageId) {
+	if (!config.verify.verifyMessageId) {
+		const channel = await client.channels.fetch(config.verify.verifyChannelId);
 
-        const channel = await client.channels.fetch(config.verify.verifyChannelId);
-
-        if (channel instanceof TextChannel) {
-            _sendVerifyMessage(client, config, channel);
-        }
-    }
-    
+		if (channel instanceof TextChannel) {
+			_sendVerifyMessage(client, config, channel);
+		}
+	}
 }
 
 async function _sendVerifyMessage(client: SlimyClient, config: Config, channel: TextBasedChannel) {
-    await addEmbedFooter(client, verifyEmbed);
+	await addEmbedFooter(client, verifyEmbed);
 
-    const actionRow = new ActionRowBuilder<ButtonBuilder>()
-        .addComponents(
-            new ButtonBuilder()
-                .setCustomId("verify")
-                .setEmoji("📩")
-                .setLabel("Click to verify!")
-                .setStyle(ButtonStyle.Primary),
-        );
+	const actionRow = new ActionRowBuilder<ButtonBuilder>().addComponents(
+		new ButtonBuilder().setCustomId("verify").setEmoji("📩").setLabel("Click to verify!").setStyle(ButtonStyle.Primary)
+	);
 
-    await channel.send({ embeds: [verifyEmbed], components: [actionRow] });
+	await channel.send({ embeds: [verifyEmbed], components: [actionRow] });
 
 	await channel.send({ embeds: [verifyEmbed], components: [actionRow] });
 }

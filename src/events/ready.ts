@@ -10,7 +10,6 @@ import { refreshDbVariables } from "../lib/variables";
 import { checkTicketMessage } from "./buttons/ticket";
 
 export async function runReady(client: SlimyClient, config: Config) {
-
 	await loadErrorLogChannel(client, config);
 	await checkVerifyMessage(client, config);
 	await checkTicketMessage(client, config);

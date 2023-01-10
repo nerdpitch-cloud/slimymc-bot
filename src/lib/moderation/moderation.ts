@@ -110,9 +110,9 @@ export async function handleModeration(client: SlimyClient, config: Config, comm
 	const dmDescription = `You have been ${punishment.text.verb} by **${command.author.tag}** from **${command.guild.name}**\nReason: ${inlineCode(
 		command.reason
 	)}\n${command.duration ? `duration: ${command.duration} hours` : ""}${additionalPunishment}`;
-	const logDescription = `<@${command.author.id}> has ${punishment.text.verb} <@${command.target.id}> with reason:\n${inlineCode(command.reason)}\n${
-		command.duration ? `duration: ${command.duration} hours` : ""
-	}${additionalPunishment}`;
+	const logDescription = `<@${command.author.id}> has ${punishment.text.verb} <@${command.target.id}> with reason:\n${inlineCode(
+		command.reason
+	)}\n${command.duration ? `duration: ${command.duration} hours` : ""}${additionalPunishment}`;
 
 	const dmEmbed = new EmbedBuilder()
 		.setColor(punishment.color)

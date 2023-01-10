@@ -7,13 +7,11 @@ import { InvitesDB } from "../lib/mysql/invites";
 import { Command } from "./_handle";
 
 export class InvtesCommmand implements Command {
-	name = "📊 Invites"
-	description = "See the invites leaderboard"
-	syntax = "invites"
+	name = "📊 Invites";
+	description = "See the invites leaderboard";
+	syntax = "invites";
 
-	data = new SlashCommandBuilder()
-		.setName("invites")
-		.setDescription("See the invites leaderboard")
+	data = new SlashCommandBuilder().setName("invites").setDescription("See the invites leaderboard");
 
 	async execute(client: SlimyClient, config: Config, interaction: CommandInteraction) {
 		const leaderboard = await InvitesDB.getLeaderboard();

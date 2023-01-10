@@ -7,6 +7,5 @@
 	"bracketSpacing": true,
 	"arrowParens": "always",
 	"proseWrap": "preserve",
-	"requirePragma": false,
-	"semi": true
+	"requirePragma": false
 }

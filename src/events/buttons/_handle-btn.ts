@@ -1,17 +1,10 @@
 import { ButtonInteraction } from "discord.js";
 import { Config } from "../../conf/config";
 import { handleCountingLeaderboardButton, handleInvitesLeaderboardButton, handleLevelLeaderboardButton } from "./leaderboards";
-import {
-	handleClaimTicketButton,
-	handleCloseTicketButton,
-	handleCreateTicketButton,
-} from "./ticket";
+import { handleClaimTicketButton, handleCloseTicketButton, handleCreateTicketButton } from "./ticket";
 import { handleVerifyButton } from "./verify";
 
-export async function handleButton(
-	config: Config,
-	interaction: ButtonInteraction
-) {
+export async function handleButton(config: Config, interaction: ButtonInteraction) {
 	switch (interaction.customId) {
 		case "verify":
 			return handleVerifyButton(interaction, config);

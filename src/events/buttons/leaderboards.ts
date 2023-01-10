@@ -7,89 +7,75 @@ import { InvitesDB } from "../../lib/mysql/invites";
 import { LevelsDB } from "../../lib/mysql/levels";
 import { xpToLevel } from "../../lib/xp";
 
-
 export async function handleLevelLeaderboardButton(interaction: ButtonInteraction, config: Config) {
-    if (interaction.message.interaction?.user.id !== interaction.user.id) return;
+	if (interaction.message.interaction?.user.id !== interaction.user.id) return;
 
-    const index = Number(interaction.customId.split("_")[2]);
-    const leaderboard = await LevelsDB.getAll();
-    const page = leaderboard.slice(index * 10, index * 10 + 10);
+	const index = Number(interaction.customId.split("_")[2]);
+	const leaderboard = await LevelsDB.getAll();
+	const page = leaderboard.slice(index * 10, index * 10 + 10);
 
-    const leaderboardEmbed = new EmbedBuilder().
-        setColor(0x77b94d).
-        setTitle("Level leaderboard").
-        setTimestamp();
-        await addEmbedFooter(interaction.client, leaderboardEmbed);
+	const leaderboardEmbed = new EmbedBuilder().setColor(0x77b94d).setTitle("Level leaderboard").setTimestamp();
+	await addEmbedFooter(interaction.client, leaderboardEmbed);
 
-    let embedDescription = "Showing levels leaderboard";
+	let embedDescription = "Showing levels leaderboard";
 
-    for (let i = 0; i < 10; i++) {
-        if (!page[i]) break;
-        
-        embedDescription += `\n**${index * 10 + i + 1} • **${inlineCode(`lvl ${String(await xpToLevel(page[i].xp))}`)}** • **<@${
-            page[i].userId
-        }>`;
-    }
+	for (let i = 0; i < 10; i++) {
+		if (!page[i]) break;
 
-    leaderboardEmbed.setDescription(embedDescription);
+		embedDescription += `\n**${index * 10 + i + 1} • **${inlineCode(`lvl ${String(await xpToLevel(page[i].xp))}`)}** • **<@${page[i].userId}>`;
+	}
 
-    const actionRow = await generateLeaderboardButtons(index, LeaderboardType.LEVELS, leaderboard)
+	leaderboardEmbed.setDescription(embedDescription);
 
+	const actionRow = await generateLeaderboardButtons(index, LeaderboardType.LEVELS, leaderboard);
 
-    await interaction.update({ embeds: [leaderboardEmbed], components: [actionRow] });
+	await interaction.update({ embeds: [leaderboardEmbed], components: [actionRow] });
 }
 
 export async function handleInvitesLeaderboardButton(interaction: ButtonInteraction, config: Config) {
-    if (interaction.message.interaction?.user.id !== interaction.user.id) return;
+	if (interaction.message.interaction?.user.id !== interaction.user.id) return;
 
-    const index = Number(interaction.customId.split("_")[2]);
-    const leaderboard = await InvitesDB.getLeaderboard();
-    const page = leaderboard.slice(index * 10, index * 10 + 10);
+	const index = Number(interaction.customId.split("_")[2]);
+	const leaderboard = await InvitesDB.getLeaderboard();
+	const page = leaderboard.slice(index * 10, index * 10 + 10);
 
-    const leaderboardEmbed = new EmbedBuilder().
-        setColor(0x77b94d).
-        setTitle("Level leaderboard").
-        setTimestamp();
-        await addEmbedFooter(interaction.client, leaderboardEmbed);
+	const leaderboardEmbed = new EmbedBuilder().setColor(0x77b94d).setTitle("Level leaderboard").setTimestamp();
+	await addEmbedFooter(interaction.client, leaderboardEmbed);
 
-		let embedDescription = "Showing top 10 inviters";
+	let embedDescription = "Showing top 10 inviters";
 
-		for (let i = 0; i < 10; i++) {
-            if (!page[i]) break;
+	for (let i = 0; i < 10; i++) {
+		if (!page[i]) break;
 
-			embedDescription += `\n**${index * 10 + i + 1}** • <@${page[i].userId}> • **${page[i].invites}**`;
-		}
+		embedDescription += `\n**${index * 10 + i + 1}** • <@${page[i].userId}> • **${page[i].invites}**`;
+	}
 
-    leaderboardEmbed.setDescription(embedDescription);
+	leaderboardEmbed.setDescription(embedDescription);
 
-    const actionRow = await generateLeaderboardButtons(index, LeaderboardType.INVITES, leaderboard)
-    await interaction.update({ embeds: [leaderboardEmbed], components: [actionRow] });
+	const actionRow = await generateLeaderboardButtons(index, LeaderboardType.INVITES, leaderboard);
+	await interaction.update({ embeds: [leaderboardEmbed], components: [actionRow] });
 }
 
 export async function handleCountingLeaderboardButton(interaction: ButtonInteraction, config: Config) {
-    if (interaction.message.interaction?.user.id !== interaction.user.id) return;
+	if (interaction.message.interaction?.user.id !== interaction.user.id) return;
 
-    const index = Number(interaction.customId.split("_")[2]);
-    const leaderboard = await CountingDB.getAll();
-    const page = leaderboard.slice(index * 10, index * 10 + 10);
+	const index = Number(interaction.customId.split("_")[2]);
+	const leaderboard = await CountingDB.getAll();
+	const page = leaderboard.slice(index * 10, index * 10 + 10);
 
-    const leaderboardEmbed = new EmbedBuilder()
-        .setColor(0x77b94d)
-        .setTitle("Counting leaderboard")
-        .setTimestamp();
-        await addEmbedFooter(interaction.client, leaderboardEmbed);
+	const leaderboardEmbed = new EmbedBuilder().setColor(0x77b94d).setTitle("Counting leaderboard").setTimestamp();
+	await addEmbedFooter(interaction.client, leaderboardEmbed);
 
-		let embedDescription = "Showing top 10 inviters";
+	let embedDescription = "Showing top 10 inviters";
 
-        for (let i = 0; i < 10; i++) {
-            if (!page[i]) break;
+	for (let i = 0; i < 10; i++) {
+		if (!page[i]) break;
 
-            embedDescription += `\n**${index * 10 + i + 1}** • ${inlineCode(String(page[i].count))} • <@${page[i].userId}>`;
-        }
+		embedDescription += `\n**${index * 10 + i + 1}** • ${inlineCode(String(page[i].count))} • <@${page[i].userId}>`;
+	}
 
-    leaderboardEmbed.setDescription(embedDescription);
+	leaderboardEmbed.setDescription(embedDescription);
 
-    const actionRow = await generateLeaderboardButtons(index, LeaderboardType.COUNTING, leaderboard)
-    await interaction.update({ embeds: [leaderboardEmbed], components: [actionRow] });
-    
+	const actionRow = await generateLeaderboardButtons(index, LeaderboardType.COUNTING, leaderboard);
+	await interaction.update({ embeds: [leaderboardEmbed], components: [actionRow] });
 }

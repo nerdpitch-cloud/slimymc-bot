@@ -12,17 +12,11 @@ export class WarnCommand implements Command {
 	data = new SlashCommandBuilder()
 		.setName("warn")
 		.setDescription("Warn a user")
-		.addUserOption((option) => option
-			.setName("user")
-			.setDescription("The member to warn")
-			.setRequired(true))
-		.addStringOption((option) => option
-			.setName("reason")
-			.setDescription("Reason for the warning")
-			.setRequired(false))
+		.addUserOption((option) => option.setName("user").setDescription("The member to warn").setRequired(true))
+		.addStringOption((option) => option.setName("reason").setDescription("Reason for the warning").setRequired(false))
 
 		.setDefaultMemberPermissions(PermissionFlagsBits.ModerateMembers)
-		.setDMPermission(false)
+		.setDMPermission(false);
 
 	async execute(client: SlimyClient, config: Config, interaction: CommandInteraction) {
 		const commandOptions = await genModerationOptions(interaction);

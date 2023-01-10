@@ -21,9 +21,9 @@ import { xpToLevel } from "../lib/xp";
 import { Command } from "./_handle";
 
 export class LevelCommand implements Command {
-	name = "📊 Level"
-	description = "Chatting level"
-	syntax = "level <leaderboard|user|give-xp|set-multiplier>"
+	name = "📊 Level";
+	description = "Chatting level";
+	syntax = "level <leaderboard|user|give-xp|set-multiplier>";
 
 	data = new SlashCommandBuilder()
 		.setName("level")
@@ -48,7 +48,7 @@ export class LevelCommand implements Command {
 				.setDescription("Set xp multiplier")
 				.addNumberOption((option) => option.setName("multiplier").setDescription("The multiplier to xp").setRequired(true))
 		)
-		.setDMPermission(false)
+		.setDMPermission(false);
 
 	async execute(client: SlimyClient, config: Config, interaction: ChatInputCommandInteraction) {
 		const subCommand = interaction.options.getSubcommand();
@@ -83,11 +83,9 @@ export class LevelCommand implements Command {
 						.setEmoji("➡️")
 						.setStyle(ButtonStyle.Primary)
 						.setDisabled(false)
-						
 				);
-				
-				
-				await interaction.reply({ embeds: [leaderboardEmbed], components: [actionRow] });	
+
+				await interaction.reply({ embeds: [leaderboardEmbed], components: [actionRow] });
 
 				break;
 

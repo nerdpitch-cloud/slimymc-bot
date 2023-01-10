@@ -2,7 +2,7 @@ import { REST, RESTPostAPIChatInputApplicationCommandsJSONBody, Routes } from "d
 import fs from "node:fs";
 import { Config, Enviroment } from "../conf/config";
 import { Command } from "./_handle";
-import { BanCommand }  from "./ban";
+import { BanCommand } from "./ban";
 import { CountCommand } from "./counting";
 import { EvalCommand } from "./eval";
 import { HelpCommand } from "./help";
@@ -44,7 +44,9 @@ async function registerCommands() {
 	try {
 		console.log(`Started refreshing ${commands.length} application (/) commands.`);
 
-		const data = await rest.put(Routes.applicationGuildCommands(config.discord.clientId, config.discord.guildId), { body: commands.map((command) => command.data.toJSON()) });
+		const data = await rest.put(Routes.applicationGuildCommands(config.discord.clientId, config.discord.guildId), {
+			body: commands.map((command) => command.data.toJSON()),
+		});
 
 		if (data instanceof Array<any>) {
 			console.log(`Successfully reloaded ${data.length} application (/) commands.`);

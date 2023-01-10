@@ -6,7 +6,7 @@ export interface Command {
 	name: string;
 	description: string;
 	syntax: string;
-	subCommands?: SubCommand[]
+	subCommands?: SubCommand[];
 	data: SlashCommandBuilder;
 	execute(client: SlimyClient, config: Config, interaction: CommandInteraction): Promise<void | InteractionResponse>;
 }

@@ -15,7 +15,7 @@ export default class SlimyClient extends Client {
 	}
 
 	private loadCommands(): void {
-		for(const command of allCommands) {
+		for (const command of allCommands) {
 			this.commands.set(command.data.name, command);
 		}
 	}

@@ -11,21 +11,12 @@ export class TempmuteCommand implements Command {
 	data = new SlashCommandBuilder()
 		.setName("tempmute")
 		.setDescription("tempmute a user")
-		.addUserOption((option) => option
-			.setName("user")
-			.setDescription("The member to tempmute")
-			.setRequired(true))
-		.addIntegerOption((option) => option
-			.setName("duration")
-			.setDescription("Duration of the tempmute (IN HOURS)")
-			.setRequired(true))
-		.addStringOption((option) => option
-			.setName("reason")
-			.setDescription("Reason for the tempmute")
-			.setRequired(false))
+		.addUserOption((option) => option.setName("user").setDescription("The member to tempmute").setRequired(true))
+		.addIntegerOption((option) => option.setName("duration").setDescription("Duration of the tempmute (IN HOURS)").setRequired(true))
+		.addStringOption((option) => option.setName("reason").setDescription("Reason for the tempmute").setRequired(false))
 
 		.setDefaultMemberPermissions(PermissionFlagsBits.ModerateMembers)
-		.setDMPermission(false)
+		.setDMPermission(false);
 
 	async execute(client: SlimyClient, config: Config, interaction: CommandInteraction) {
 		const commandOptions = await genModerationOptions(interaction);
